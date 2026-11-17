@@ -8,13 +8,13 @@ Everything here is separate: own Linux user `noor`, own DB role, own systemd ser
 
 ```bash
 # user + folders
-sudo adduser --system --group --home /srv/noor-travels noor
-sudo mkdir -p /srv/noor-travels /srv/noor-travels-backups && sudo chown noor:noor /srv/noor-travels /srv/noor-travels-backups
+sudo adduser --system --group --home /var/www/noor-travels noor
+sudo mkdir -p /var/www/noor-travels /var/www/noor-travels-backups && sudo chown noor:noor /var/www/noor-travels /var/www/noor-travels-backups
 sudo apt install -y python3.10-venv postgresql-client     # venv module for the system Python (if missing)
 
 # code
-sudo -u noor git clone <REPO_URL> /srv/noor-travels
-cd /srv/noor-travels
+sudo -u noor git clone <REPO_URL> /var/www/noor-travels
+cd /var/www/noor-travels
 sudo -u noor mkdir -p uploads logs
 
 # Python venv with the system python3.10
@@ -52,15 +52,13 @@ sudo systemctl enable --now noor-travels
 sudo systemctl status noor-travels          # should be active (running)
 curl -s http://127.0.0.1:8030/health        # {"ok":true}
 
-# nginx – its own file; edit server_name first
-sudo cp deploy/nginx-noor-travels.conf /etc/nginx/sites-available/noor-travels
-sudo nano /etc/nginx/sites-available/noor-travels      # server_name <domain> www.<domain>
-sudo ln -s /etc/nginx/sites-available/noor-travels /etc/nginx/sites-enabled/
+# nginx – its own file, straight into sites-enabled
+sudo cp deploy/nginx-noor-travels.conf /etc/nginx/sites-enabled/noortrip.in      # server_name is noortrip.in
 sudo nginx -t && sudo systemctl reload nginx
 
 # cron: reminders every 30 min + nightly backup
 sudo chmod +x deploy/backup.sh
-sudo -u noor crontab deploy/crontab.txt
+(crontab -l; grep '^[*0-9]' deploy/crontab.txt) | crontab -     # append – never replace other apps' jobs
 sudo timedatectl set-timezone Asia/Kolkata     # only if the other app is fine with it; the app works in IST anyway
 ```
 
@@ -75,7 +73,7 @@ sudo timedatectl set-timezone Asia/Kolkata     # only if the other app is fine w
 ## 3. Update routine
 
 ```bash
-cd /srv/noor-travels
+cd /var/www/noor-travels
 sudo -u noor git pull
 sudo -u noor .venv/bin/pip install -r requirements.txt
 sudo -u noor .venv/bin/python migrate.py          # applies only new migrations/00N_*.sql
@@ -90,13 +88,13 @@ Never edit a migration that has already run – add a new numbered file.
 - `https://<domain>/` website, `/login` staff login, `/my` customer portal, `/health`.
 - Log in as owner → Settings: GSTIN, RA licence, SAC code, next file / ticket number, bank accounts, staff users.
 - Messages → Rules / Wording: check the texts and the language.
-- `ls /srv/noor-travels-backups` the morning after – a `db_*.dump` file should be there.
-- Restore test once: `pg_restore --list /srv/noor-travels-backups/db_<date>.dump | head`.
+- `ls /var/www/noor-travels-backups` the morning after – a `db_*.dump` file should be there.
+- Restore test once: `pg_restore --list /var/www/noor-travels-backups/db_<date>.dump | head`.
 
 ## 5. Logs
 
 ```bash
 journalctl -u noor-travels -f                 # app
-tail -f /srv/noor-travels/logs/jobs.log       # reminders
+tail -f /var/www/noor-travels/logs/jobs.log       # reminders
 tail -f /var/log/nginx/noor-travels.error.log
 ```

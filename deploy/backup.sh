@@ -3,8 +3,8 @@
 # Run as the 'noor' user from cron (deploy/crontab.txt). Restore: pg_restore -d noor_travels --clean FILE.dump
 set -euo pipefail
 
-APP_DIR=/srv/noor-travels
-BACKUP_DIR=/srv/noor-travels-backups
+APP_DIR=/var/www/noor-travels
+BACKUP_DIR=/var/www/noor-travels-backups
 KEEP_DAYS=30
 STAMP=$(date +%Y-%m-%d_%H%M)
 

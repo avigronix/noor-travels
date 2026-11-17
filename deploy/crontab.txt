@@ -1,10 +1,11 @@
-# crontab for the 'noor' user:   sudo -u noor crontab /srv/noor-travels/deploy/crontab.txt
+# ADD these lines to the app user's crontab (root here) – do not replace it, other apps' jobs live there too:
+#   (crontab -l; grep '^[*0-9]' /var/www/noor-travels/deploy/crontab.txt) | crontab -
 # Server time should be Asia/Kolkata (timedatectl set-timezone Asia/Kolkata); the app itself works in IST either way.
 SHELL=/bin/bash
 PATH=/usr/local/bin:/usr/bin:/bin
 
 # WhatsApp reminders into the To-send list (day-before 6 pm, morning-of, balance due, travel day) – idempotent
-*/30 * * * *  cd /srv/noor-travels && .venv/bin/python jobs.py >> /srv/noor-travels/logs/jobs.log 2>&1
+*/30 * * * *  cd /var/www/noor-travels && .venv/bin/python jobs.py >> /var/www/noor-travels/logs/jobs.log 2>&1
 
 # Nightly database + photos backup, kept 30 days
-30 2 * * *    /srv/noor-travels/deploy/backup.sh >> /srv/noor-travels/logs/backup.log 2>&1
+30 2 * * *    /var/www/noor-travels/deploy/backup.sh >> /var/www/noor-travels/logs/backup.log 2>&1
