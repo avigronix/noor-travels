@@ -6,13 +6,22 @@
   <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
     <div class="max-w-[1200px] mx-auto px-4 min-h-[68px] flex items-center gap-3">
       <a href="/" class="shrink-0" aria-label="{{ biz.name }} – home"><img src="{{ asset('img/logo-sm.webp') }}" alt="{{ biz.name }}" class="h-11 w-auto" width="132" height="44"></a>
-      <nav aria-label="Website" class="ml-auto min-w-0 overflow-x-auto [scrollbar-width:none]">
+      <nav aria-label="Website" class="ml-auto hidden md:block">
         <ul class="flex gap-0.5 text-[15px] whitespace-nowrap">
           {% for href, label in nav %}
           <li><a href="{{ href }}" class="inline-flex items-center min-h-11 px-3 rounded-lg {{ 'text-brand-red font-bold' if request.url.path == href else 'text-slate-800 font-medium hover:text-brand-navy' }}"{% if request.url.path == href %} aria-current="page"{% endif %}>{{ label }}</a></li>
           {% endfor %}
         </ul>
       </nav>
+      {# Phones: the same links in a ☰ menu (closes on outside tap – app.js data-menu) #}
+      <details data-menu class="relative ml-auto md:hidden">
+        <summary class="list-none [&::-webkit-details-marker]:hidden cursor-pointer grid place-items-center w-11 h-11 rounded-lg border border-slate-200 text-brand-navy" aria-label="Menu">{{ icon('menu') }}</summary>
+        <ul class="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-brand-navy/15 z-50">
+          {% for href, label in nav %}
+          <li><a href="{{ href }}" class="flex items-center min-h-11 px-3 rounded-xl {{ 'bg-red-50 text-brand-red font-bold' if request.url.path == href else 'text-slate-800 font-medium hover:bg-slate-50' }}"{% if request.url.path == href %} aria-current="page"{% endif %}>{{ label }}</a></li>
+          {% endfor %}
+        </ul>
+      </details>
       {# The only way into the software (FR-15.1) #}
       <a href="/login" class="shrink-0 h-11 inline-flex items-center px-4 rounded-lg bg-brand-navy text-white text-sm font-semibold hover:bg-brand-navy/90">Login</a>
     </div>
@@ -53,7 +62,7 @@
     <div class="border-t border-white/10">
       <div class="max-w-[1200px] mx-auto px-4 py-4 flex flex-wrap justify-between gap-2 text-xs text-blue-200">
         <span>© {{ today().year }} {{ biz.name }}, Kasia. GSTIN {{ biz.gstin or '[GSTIN]' }} · RA licence {{ biz.ra_licence or '[NUMBER]' }}</span>
-        <span>Website by Avigronix Technologies</span>
+        <span>Kuch photos: <a href="https://unsplash.com/?utm_source=noor_travels&amp;utm_medium=referral" target="_blank" rel="noopener" class="underline hover:text-white">Unsplash</a> · Website by Avigronix Technologies</span>
       </div>
     </div>
   </footer>
