@@ -2,7 +2,7 @@
    Design reference: docs/design/SiteHeader.dc.html, SiteFooter.dc.html, SitePhone.dc.html #}
 {% extends "layouts/base.html" %}
 {% block body %}
-  {% set nav = [("/", "Home"), ("/services", "Services"), ("/umrah", "Umrah"), ("/about", "About us"), ("/contact", "Contact")] %}
+  {% set nav = [("/", "Home"), ("/services", "Services"), ("/umrah", "Umrah"), ("/about", "Hamare baare me"), ("/contact", "Contact")] %}
   <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
     <div class="max-w-[1200px] mx-auto px-4 min-h-[68px] flex items-center gap-3">
       <a href="/" class="shrink-0" aria-label="{{ biz.name }} – home"><img src="{{ asset('img/logo-sm.webp') }}" alt="{{ biz.name }}" class="h-11 w-auto" width="132" height="44"></a>
@@ -25,29 +25,29 @@
     <div class="max-w-[1200px] mx-auto px-4 py-12 grid gap-8 grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] text-sm">
       <div>
         <span class="inline-block rounded-xl bg-white p-2"><img src="{{ asset('img/logo-sm.webp') }}" alt="{{ biz.name }}" class="h-10 w-auto" loading="lazy"></span>
-        <p class="mt-3 leading-relaxed">Gulf work visas, Umrah, family and tourist visas, GAMCA medical, skill test, emigration and air tickets – from one office in Kasia.</p>
+        <p class="mt-3 leading-relaxed">Gulf work visa, Umrah, family aur tourist visa, GAMCA medical, skill test, emigration aur air ticket – sab kuch Kasia ke ek hi office se.</p>
       </div>
       <div class="flex flex-col gap-1">
         <h2 class="text-xs font-bold tracking-widest text-white mb-1">SERVICES</h2>
         <a href="/services#work" class="py-1 hover:text-white">Saudi &amp; Gulf work visa</a>
         <a href="/umrah" class="py-1 hover:text-white">Umrah</a>
-        <a href="/services#family" class="py-1 hover:text-white">Family &amp; tourist visa</a>
-        <a href="/services#medical" class="py-1 hover:text-white">GAMCA medical &amp; skill test</a>
-        <a href="/services#tickets" class="py-1 hover:text-white">Air tickets</a>
+        <a href="/services#family" class="py-1 hover:text-white">Family aur tourist visa</a>
+        <a href="/services#medical" class="py-1 hover:text-white">GAMCA medical aur skill test</a>
+        <a href="/services#tickets" class="py-1 hover:text-white">Air ticket</a>
       </div>
       <div class="flex flex-col gap-1">
-        <h2 class="text-xs font-bold tracking-widest text-white mb-1">COMPANY</h2>
-        <a href="/about" class="py-1 hover:text-white">About us</a>
+        <h2 class="text-xs font-bold tracking-widest text-white mb-1">OFFICE</h2>
+        <a href="/about" class="py-1 hover:text-white">Hamare baare me</a>
         <a href="/contact" class="py-1 hover:text-white">Contact</a>
         <a href="/privacy" class="py-1 hover:text-white">Privacy policy</a>
         <a href="/terms" class="py-1 hover:text-white">Terms &amp; refund policy</a>
         <a href="/login" class="py-1 hover:text-white">Login</a>
       </div>
       <div class="flex flex-col gap-1">
-        <h2 class="text-xs font-bold tracking-widest text-white mb-1">VISIT OR CALL</h2>
+        <h2 class="text-xs font-bold tracking-widest text-white mb-1">OFFICE AAIYE YA CALL KIJIYE</h2>
         <span class="leading-relaxed">{{ biz.address }}</span>
         {% for p in biz.phones %}<a href="tel:+91{{ p | replace(' ', '') }}" class="py-1 font-semibold text-white">{{ p }}</a>{% endfor %}
-        <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="py-1 hover:text-white">Chat on WhatsApp</a>
+        <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="py-1 hover:text-white">WhatsApp par chat kijiye</a>
       </div>
     </div>
     <div class="border-t border-white/10">

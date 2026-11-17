@@ -3,35 +3,36 @@
 {% set f = form or {} %}
 <section id="enquiry" aria-label="Send an enquiry" class="scroll-mt-24 rounded-2xl bg-white border border-slate-200 p-5 sm:p-6 shadow-sm">
   <div class="mb-4">
-    <h2 class="font-display text-xl sm:text-2xl font-semibold text-brand-navy">Send us your enquiry</h2>
-    <p class="mt-1 text-sm text-slate-600">We call you back the same working day.</p>
+    <h2 class="font-display text-xl sm:text-2xl font-semibold text-brand-navy">Apni enquiry bhejiye</h2>
+    <p class="mt-1 text-sm text-slate-600">Working day me usi din hum aapko call karte hai.</p>
   </div>
   <form hx-post="/enquiry" hx-target="closest section" hx-swap="outerHTML" class="flex flex-col gap-3" novalidate>
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Your name *
-        <input name="name" value="{{ f.name or '' }}" required maxlength="120" placeholder="Full name" autocomplete="name"
+      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Aapka naam *
+        <input name="name" value="{{ f.name or '' }}" required maxlength="120" placeholder="Poora naam" autocomplete="name"
                class="h-11 px-3 rounded-lg border {{ 'border-red-400' if errors and errors.name else 'border-slate-300' }} font-normal outline-none focus:border-brand-blue">
       </label>
       <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Mobile number *
-        <input name="mobile" type="tel" value="{{ f.mobile or '' }}" required inputmode="numeric" maxlength="15" placeholder="10-digit mobile" autocomplete="tel"
+        <input name="mobile" type="tel" value="{{ f.mobile or '' }}" required inputmode="numeric" maxlength="15" placeholder="10 digit ka mobile number" autocomplete="tel"
                class="h-11 px-3 rounded-lg border {{ 'border-red-400' if errors and errors.mobile else 'border-slate-300' }} font-normal outline-none focus:border-brand-blue">
       </label>
-      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">I need help with
+      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Kis kaam me madad chahiye
         <select name="service" class="h-11 px-2 rounded-lg border border-slate-300 bg-white font-normal">
-          {% for s in ["Work visa (Saudi / Gulf)", "Umrah", "Family visit visa", "Tourist visa", "Air ticket", "GAMCA medical / skill test", "Something else"] %}
-          <option {{ 'selected' if f.service == s }}>{{ s }}</option>
+          {# value stays English – staff see it in Enquiries #}
+          {% for s, label in [("Work visa (Saudi / Gulf)", "Work visa (Saudi / Gulf)"), ("Umrah", "Umrah"), ("Family visit visa", "Family visit visa"), ("Tourist visa", "Tourist visa"), ("Air ticket", "Air ticket"), ("GAMCA medical / skill test", "GAMCA medical / skill test"), ("Something else", "Kuch aur")] %}
+          <option value="{{ s }}" {{ 'selected' if f.service == s }}>{{ label }}</option>
           {% endfor %}
         </select>
       </label>
     </div>
-    <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Message (optional)
-      <textarea name="message" rows="3" maxlength="1000" placeholder="Country, travel month, number of people…"
+    <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Message (zaroori nahi)
+      <textarea name="message" rows="3" maxlength="1000" placeholder="Kaun sa desh, kis mahine jaana hai, kitne log…"
                 class="px-3 py-2 rounded-lg border border-slate-300 font-normal outline-none focus:border-brand-blue">{{ f.message or '' }}</textarea>
     </label>
     {% if errors %}<p class="text-sm font-medium text-red-700" role="alert">{{ errors.values() | first }}</p>{% endif %}
     <div class="flex flex-wrap items-center gap-3">
-      <button class="h-11 px-6 rounded-lg bg-brand-red text-white font-semibold hover:bg-brand-red/90">Send enquiry</button>
-      <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="min-h-11 inline-flex items-center font-semibold text-green-700">Or WhatsApp us</a>
+      <button class="h-11 px-6 rounded-lg bg-brand-red text-white font-semibold hover:bg-brand-red/90">Enquiry bhejiye</button>
+      <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="min-h-11 inline-flex items-center font-semibold text-green-700">Ya WhatsApp kijiye</a>
     </div>
   </form>
 </section>

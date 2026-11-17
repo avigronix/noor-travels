@@ -63,9 +63,9 @@ def enquiry(
         form["mobile"] = form["mobile"][2:]
     errors = {}
     if not form["name"]:
-        errors["name"] = "Please enter your name."
+        errors["name"] = "Apna naam likhiye."
     if not re.fullmatch(r"[6-9]\d{9}", form["mobile"]):
-        errors["mobile"] = "Please enter a valid 10-digit mobile number."
+        errors["mobile"] = "Sahi 10 digit ka mobile number likhiye."
     if errors:
         return render(request, "website/_enquiry_form.html", {"form": form, "errors": errors})
 
