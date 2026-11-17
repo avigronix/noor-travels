@@ -1,0 +1,15 @@
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import page_head %}
+{% block page_title %}Enquiries{% endblock %}
+{% block content %}
+<div class="mb-5">{{ page_head("Website enquiries", "Call or WhatsApp, mark follow-up, or convert into a registration or ticket in one click.", "inbox") }}</div>
+<form id="filters" hx-get="/app/enquiries" hx-target="#rows" hx-push-url="true" hx-trigger="input changed delay:300ms from:#q, change" class="flex flex-wrap gap-2 mb-3">
+  <input id="q" type="search" name="q" value="{{ q }}" placeholder="Name or mobile" class="flex-1 min-w-[180px] h-11 px-3 rounded-lg border border-slate-300 bg-white">
+  <select name="status" class="h-11 px-2 rounded-lg border border-slate-300 bg-white text-sm">
+    <option value="open" {{ 'selected' if status == 'open' }}>Open ({{ counts.new + counts.follow_up }})</option>
+    {% for k, l in statuses %}<option value="{{ k }}" {{ 'selected' if status == k }}>{{ l }}</option>{% endfor %}
+    <option value="all" {{ 'selected' if status == 'all' }}>All</option>
+  </select>
+</form>
+<div id="rows">{% include "enquiries/_rows.html" %}</div>
+{% endblock %}

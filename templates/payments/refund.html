@@ -1,0 +1,38 @@
+{# Refund on cancellation (FR-14.7). Design: Payments.dc.html "Cancel file and refund". Owner approves. #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, select %}
+{% block page_title %}Refund #{{ f.serial_no }}{% endblock %}
+{% block content %}
+<p class="text-sm text-slate-500"><a href="/app/files/{{ f.id }}" class="text-brand-blue">#{{ f.serial_no }} {{ f.name }}</a> / Refund</p>
+<h1 class="mt-1 mb-4 page-title">Cancel file and refund</h1>
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.3fr_1fr] items-start">
+  <section class="card p-4 sm:p-6">
+    <p class="text-sm">Stage reached: <strong>{{ reached }}</strong> → {{ pct | round(0) | int }}% of service charge earned, as per the signed policy.</p>
+    <dl class="mt-4 grid grid-cols-[1fr_auto] gap-y-2 text-sm">
+      <dt>Received from candidate</dt><dd class="text-right font-semibold">{{ received | inr }}</dd>
+      <dt>Less: costs already paid to centres / agencies</dt><dd class="text-right font-semibold">− {{ costs | inr }}</dd>
+      <dt>Less: service charge earned ({{ pct | round(0) | int }}% of {{ f.service_charge | inr }} + GST)</dt><dd class="text-right font-semibold">− {{ earned | inr }}</dd>
+      <dt class="pt-2 border-t border-slate-200 font-semibold">Refund proposed</dt><dd class="pt-2 border-t border-slate-200 text-right font-display text-xl font-semibold text-brand-red">{{ proposed | inr }}</dd>
+    </dl>
+    {% if user.role == 'owner' %}
+    <form method="post" action="/app/payments/refund" class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <input type="hidden" name="file_id" value="{{ f.id }}">
+      {{ input("amount", "Refund amount (₹) – you can edit", proposed | int, attrs='inputmode="numeric"') }}
+      {{ input("reason", "Reason for cancellation", f.cancel_reason, required=true, placeholder="e.g. candidate withdrew") }}
+      {{ select("mode", "Paid by", modes, "bank") }}
+      {% set bk = [] %}{% for b in banks %}{% set _ = bk.append((b.id, b.name)) %}{% endfor %}
+      {{ select("bank_account_id", "From account", bk, "", blank="Select…") }}
+      {% if f.visa_id %}<label class="sm:col-span-2 flex items-center gap-3 min-h-11 text-sm"><input type="checkbox" name="release_visa" value="1" checked class="w-5 h-5"> Release the visa – keep it free for another candidate</label>{% endif %}
+      <div class="sm:col-span-2 flex justify-end"><button class="h-11 px-5 rounded-lg bg-brand-red text-white text-sm font-semibold" data-confirm="Approve this refund and close file #{{ f.serial_no }}?">Approve refund and close file</button></div>
+    </form>
+    {% else %}
+    <p class="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">Only the owner can approve a refund. Ask the owner to open this page.</p>
+    {% endif %}
+  </section>
+  <section class="card p-4">
+    <h2 class="font-semibold mb-2">Refunds on this file</h2>
+    {% for r in done_refunds %}<p class="py-2 border-t border-slate-100 text-sm">{{ r.created_at | dmy }} · <strong>{{ r.amount | inr }}</strong> · {{ r.stage_reached }}<span class="block text-slate-500">{{ r.reason }} – approved by {{ r.by_name }}</span></p>
+    {% else %}<p class="text-sm text-slate-500">None yet.</p>{% endfor %}
+  </section>
+</div>
+{% endblock %}

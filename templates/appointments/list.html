@@ -1,0 +1,42 @@
+{# Design: docs/design/Appointments.dc.html #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import select, page_head %}
+{% block page_title %}Appointments{% endblock %}
+{% block content %}
+<div class="mb-5">{{ page_head("Appointments", "Medical, VFS, skill test and travel dates. The evening before, each reminder appears in the To-send list.", "calendar") }}</div>
+
+<form id="filters" hx-get="/app/appointments" hx-target="#rows" hx-push-url="true" hx-trigger="change" class="flex flex-wrap items-center gap-2 mb-4">
+  <input type="hidden" name="start" value="{{ first }}">
+  <div class="flex rounded-lg border border-slate-300 bg-white overflow-hidden text-sm font-semibold" role="group" aria-label="Day">
+    {% for key, label in [("today", "Today"), ("tomorrow", "Tomorrow"), ("week", "Week")] %}
+    <label class="cursor-pointer min-h-11 px-4 inline-flex items-center has-[:checked]:bg-brand-navy has-[:checked]:text-white">
+      <input type="radio" name="day" value="{{ key }}" {{ 'checked' if day == key }} class="sr-only">{{ label }}</label>
+    {% endfor %}
+  </div>
+  <details class="relative" data-filters>
+    <summary class="list-none cursor-pointer h-11 inline-flex items-center gap-2 px-3 rounded-lg border border-slate-300 bg-white text-sm font-medium">
+      Filter by type{% if filters_on %}<span class="inline-grid place-items-center min-w-5 h-5 px-1 rounded-full bg-brand-red text-white text-xs">{{ filters_on }}</span>{% endif %}</summary>
+    <div class="absolute left-0 z-30 mt-2 w-72 card card-sm p-4 shadow-lg grid gap-3">
+      {{ select("type", "Type", types, type, blank="All") }}
+      {{ select("city", "City", cities, city, blank="All cities") }}
+    </div>
+  </details>
+</form>
+
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.6fr_1fr] items-start">
+  <div id="rows">{% include "appointments/_rows.html" %}</div>
+  <aside class="flex flex-col gap-4">
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">Missed or not updated</h2>
+      {% for m in missed %}
+      <a href="/app/files/{{ m.file_id }}" class="block py-2 border-t border-slate-100 text-sm text-brand-navy hover:underline">#{{ m.serial_no }} {{ m.name }} – {{ m.service | stage }} {{ m.on_date | dmy }}, result not entered</a>
+      {% else %}<p class="text-sm text-slate-500">Nothing missed.</p>{% endfor %}
+    </section>
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">Reminder message (preview)</h2>
+      <div class="rounded-2xl rounded-tl-sm bg-[#DCF8C6] p-3 text-sm">{{ preview }}</div>
+      <p class="mt-2 text-xs text-slate-500">Appears in the To-send list at 6:00 pm the day before (and the morning of) – tap Send on WhatsApp.</p>
+    </section>
+  </aside>
+</div>
+{% endblock %}

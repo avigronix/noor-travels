@@ -1,0 +1,33 @@
+{# Design: docs/design/Reports.dc.html. ?print=1 → print layout (Print → Save as PDF, FR-13.5). #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import page_head %}
+{% block page_title %}{{ title }} · Reports{% endblock %}
+{% block content %}
+<div class="print:hidden">
+  <div class="mb-5">{{ page_head("Reports", "Pick a report, choose the period, then export to Excel or PDF.", "chart") }}</div>
+  <div role="tablist" aria-label="Report" class="flex gap-1.5 overflow-x-auto [scrollbar-width:none] pb-2 mb-3">
+    {% for k, label in tabs %}
+    <a role="tab" href="/app/reports/{{ k }}?period={{ period }}&amp;visa_type={{ visa_type }}" aria-selected="{{ 'true' if name == k else 'false' }}"
+       class="shrink-0 min-h-11 inline-flex items-center px-3.5 rounded-full text-sm font-semibold {{ 'bg-brand-navy text-white' if name == k else 'bg-white border border-slate-300 text-slate-700' }}">{{ label }}</a>
+    {% endfor %}
+  </div>
+  <form id="filters" hx-get="/app/reports/{{ name }}" hx-target="#rows" hx-push-url="true" hx-trigger="change" class="flex flex-wrap items-end gap-2 mb-4">
+    <label class="flex flex-col gap-1 text-sm font-medium">Period
+      <select name="period" class="h-11 px-2 rounded-lg border border-slate-300 bg-white font-normal">
+        {% for k, l in [("6m", "Last 6 months"), ("month", "This month"), ("fy", "This financial year"), ("custom", "Custom…")] %}<option value="{{ k }}" {{ 'selected' if period == k }}>{{ l }}</option>{% endfor %}
+      </select></label>
+    <label class="flex flex-col gap-1 text-sm font-medium">From<input type="date" name="start" value="{{ start or d1 }}" class="h-11 px-2 rounded-lg border border-slate-300 bg-white font-normal"></label>
+    <label class="flex flex-col gap-1 text-sm font-medium">To<input type="date" name="end" value="{{ end or d2 }}" class="h-11 px-2 rounded-lg border border-slate-300 bg-white font-normal"></label>
+    <label class="flex flex-col gap-1 text-sm font-medium">Visa type
+      <select name="visa_type" class="h-11 px-2 rounded-lg border border-slate-300 bg-white font-normal"><option value="">All</option>
+        {% for k in ["work", "umrah", "family", "tourist"] %}<option value="{{ k }}" {{ 'selected' if visa_type == k }}>{{ k | title }}</option>{% endfor %}</select></label>
+    <span class="flex gap-2 ml-auto">
+      <a href="/app/reports/{{ name }}.csv?{{ qs }}" hx-boost="false" class="h-11 inline-flex items-center px-4 rounded-lg bg-green-700 text-white text-sm font-semibold">Excel</a>
+      <a href="/app/reports/{{ name }}?{{ qs }}&amp;print=1" hx-boost="false" target="_blank" class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 bg-white text-sm font-semibold">PDF</a>
+    </span>
+  </form>
+</div>
+<div class="hidden print:block mb-3"><img src="{{ asset('img/logo-md.webp') }}" alt="" class="h-10"><h1 class="mt-2 text-xl font-bold">{{ title }} · {{ d1 | dmy }} – {{ d2 | dmy }}</h1></div>
+<div id="rows">{% include "reports/_table.html" %}</div>
+{% if print_view %}<button type="button" data-print class="print:hidden mt-4 h-11 px-4 rounded-lg bg-brand-navy text-white text-sm font-semibold">Print / Save as PDF</button>{% endif %}
+{% endblock %}

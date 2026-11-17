@@ -1,0 +1,9 @@
+{# One flight leg (FR-7.2: e.g. IXR → BOM → RUH is two legs) #}
+<div data-leg class="rounded-xl border border-slate-200 p-3 grid gap-3 grid-cols-2 lg:grid-cols-5">
+  <label class="flex flex-col gap-1 text-sm font-medium">From *<input name="leg_from" value="{{ l.from_code or '' }}" placeholder="LKO" maxlength="4" class="h-11 px-3 rounded-lg border border-slate-300 font-normal uppercase"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">To *<input name="leg_to" value="{{ l.to_code or '' }}" placeholder="RUH" maxlength="4" class="h-11 px-3 rounded-lg border border-slate-300 font-normal uppercase"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Travel date *<input type="date" name="leg_date" value="{{ l.date or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Departure time<input type="time" name="leg_time" value="{{ l.time or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Flight no.<input name="leg_flight" value="{{ l.flight_no or '' }}" placeholder="6E 95" class="h-11 px-3 rounded-lg border border-slate-300 font-normal uppercase"></label>
+  {% if removable %}<button type="button" data-remove-row="[data-leg]" class="col-span-2 lg:col-span-5 justify-self-end min-h-11 px-3 text-sm font-semibold text-red-700">Remove flight</button>{% endif %}
+</div>

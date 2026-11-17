@@ -1,0 +1,23 @@
+{# Add a passport / documents / ticket movement (FR-6.1). 'Office' means the Kasia office. #}
+{% extends "partials/_modal.html" %}
+{% from "partials/_fields.html" import input, select %}
+{% block modal_title %}Passport / document movement{% endblock %}
+{% block modal_sub %}Passport is now: {{ 'In the office' if f.passport_location == 'Office' else f.passport_location }}{% endblock %}
+{% block modal_body %}
+<form hx-post="/app/files/{{ f.id }}/courier" hx-target="#stages" hx-swap="outerHTML" class="flex flex-col gap-3">
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    {{ select("item", "What moved", [("passport","Passport"),("documents","Documents"),("ticket","Ticket")], "passport") }}
+    {% set cour = [] %}{% for p in couriers %}{% set _ = cour.append((p.id, p.name)) %}{% endfor %}
+    {{ select("courier_id", "Courier", cour, "", blank="By hand / other") }}
+    {{ input("from_place", "From", 'Office' if f.passport_location == 'Office' else f.passport_location | replace('On the way to ', ''), required=true, attrs='list="places"') }}
+    {{ input("to_place", "To", "", required=true, placeholder="e.g. Mumbai agency / Office", attrs='list="places"') }}
+    {{ input("by_hand", "By hand (name)", "", placeholder="If no courier") }}
+    {{ input("tracking_no", "Tracking no.", "") }}
+    {{ input("sent_on", "Date sent", today, type="date") }}
+  </div>
+  <datalist id="places"><option>Office</option><option>Customer</option><option>Mumbai agency</option><option>Lucknow VFS</option><option>Patna VFS</option><option>Medical centre</option></datalist>
+  <label class="flex items-center gap-3 min-h-11 text-sm"><input type="checkbox" name="received_now" value="1" class="w-5 h-5"> Already received (hand-over done today)</label>
+  <p class="text-xs text-slate-500">Use “Office” for the Kasia office. Passport back at the office after visa done sets the PPT-R stamp.</p>
+  <div class="flex justify-end"><button class="h-11 px-5 rounded-lg bg-brand-blue text-white text-sm font-semibold">Save movement</button></div>
+</form>
+{% endblock %}

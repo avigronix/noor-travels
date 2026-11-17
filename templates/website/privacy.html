@@ -1,0 +1,19 @@
+{% extends "layouts/site.html" %}
+{% import "website/_macros.html" as m %}
+{% block title %}Privacy policy · {{ biz.name }}{% endblock %}
+{% block description %}How Noor Travels Services collects, uses and protects your passport and contact details.{% endblock %}
+{% block content %}
+<article class="max-w-3xl mx-auto px-4 py-12 flex flex-col gap-4 text-slate-700 leading-relaxed">
+  {{ m.kicker("PRIVACY POLICY") }}
+  <h1 class="font-display text-3xl font-bold text-brand-navy">How we use and keep your data</h1>
+  <p class="text-sm text-slate-500">Summary – the full text will be confirmed with {{ biz.name }} and its legal adviser.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">What we collect</h2>
+  <p>Your name, father's name, date of birth, address, mobile number, passport details, visa details and the payments you make – only what is needed to process your visa or ticket.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">How we use it</h2>
+  <p>To book your appointments, submit applications on the official portals, arrange your ticket, send you WhatsApp updates (only if you agree) and give you receipts. We do not sell or share your data for marketing.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">How we keep it safe</h2>
+  <p>Your records are kept in private storage that only our logged-in staff can open. Every change is logged. Backups are taken daily and kept for 30 days. We handle personal data in line with India's Digital Personal Data Protection Act, 2023.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">Your choices</h2>
+  <p>You can ask us to stop WhatsApp updates, or to see or correct your details, by calling {{ biz.phones | join(' or ') }} or visiting the office.</p>
+</article>
+{% endblock %}

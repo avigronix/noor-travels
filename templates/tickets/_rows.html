@@ -1,0 +1,53 @@
+{% from "partials/_fields.html" import pill %}
+{% set names = {"travel": "Travel", "supplier": "Supplier", "airline": "Airline", "status": "Status", "source": "Source", "pay": "Payment"} %}
+{% if chips %}
+<div class="flex flex-wrap gap-2 mb-3">
+  {% for k, val in chips.items() %}<button type="button" data-clear-filter="{{ k }}" class="inline-flex items-center gap-1 h-9 px-3 rounded-full bg-brand-blue/10 text-brand-navy text-sm">{{ names[k] }}: {{ val }} <span aria-hidden="true">×</span></button>{% endfor %}
+  <button type="button" data-clear-all class="h-9 px-3 text-sm font-semibold text-brand-blue">Clear all</button>
+</div>
+{% endif %}
+{% macro paid(r) -%}
+{% if r.status == 'cancelled' %}{{ pill('Cancelled') }}
+{% elif r.file_id and r.balance <= 0 %}{{ pill('Paid', 'green') }}
+{% elif r.balance <= 0 %}{{ pill('Paid' ~ (' · ' ~ r.paid_mode | upper if r.paid_mode else ''), 'green') }}
+{% else %}{{ pill((r.balance | inr) ~ ' due', 'brown') }}{% endif %}
+{%- endmacro %}
+{% if result.rows %}
+<div class="hidden md:block overflow-x-auto card card-sm">
+  <table class="w-full text-sm">
+    <thead class="thead"><tr>
+      <th class="px-4 py-3 font-medium">No.</th><th class="px-4 py-3 font-medium">Passenger</th><th class="px-4 py-3 font-medium">Travel</th>
+      <th class="px-4 py-3 font-medium">Route</th><th class="px-4 py-3 font-medium">Airline · PNR</th><th class="px-4 py-3 font-medium">Via</th>
+      <th class="px-4 py-3 font-medium text-right">Amount</th><th class="px-4 py-3 font-medium">Received</th></tr></thead>
+    <tbody>
+    {% for r in result.rows %}
+      <tr class="border-t border-slate-100 hover:bg-slate-50">
+        <td class="px-4 py-3 font-semibold"><a href="/app/tickets/{{ r.id }}" class="text-brand-navy">T-{{ r.ticket_no }}</a></td>
+        <td class="px-4 py-3"><a href="/app/customers/{{ r.customer_id }}" class="font-medium hover:underline">{{ r.name }}</a>{% if r.pax > 1 %} +{{ r.pax - 1 }}{% endif %}
+          <span class="block text-xs text-slate-500">{% if r.file_id %}{{ r.visa_type | title }} · <a href="/app/files/{{ r.file_id }}" class="text-brand-blue">file #{{ r.serial_no }}</a>{% else %}Walk-in{{ ' · ' ~ r.district if r.district }}{% endif %}</span></td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ r.travel_date | dmy }}</td>
+        <td class="px-4 py-3">{{ r.route or '—' }}</td>
+        <td class="px-4 py-3">{{ r.airline or '' }}{{ ' · ' if r.airline and r.pnr }}<span class="font-mono">{{ r.pnr or '' }}</span></td>
+        <td class="px-4 py-3 text-slate-500">{{ r.supplier or '—' }}</td>
+        <td class="px-4 py-3 text-right font-semibold">{{ r.selling_price | inr }}</td>
+        <td class="px-4 py-3">{{ paid(r) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+<ul class="md:hidden space-y-2">
+  {% for r in result.rows %}
+  <li><a href="/app/tickets/{{ r.id }}" class="block card card-sm p-4">
+    <div class="flex justify-between gap-2"><span><span class="font-semibold text-brand-navy">{{ r.name }}</span>
+      <span class="block text-xs text-slate-500">T-{{ r.ticket_no }} · {{ 'file #' ~ r.serial_no if r.file_id else 'Walk-in' }}</span></span>
+      <span class="font-semibold">{{ r.selling_price | inr }}</span></div>
+    <p class="mt-2 font-medium">{{ r.route or '—' }}</p>
+    <div class="mt-1 flex flex-wrap items-center justify-between gap-2 text-sm"><span>{{ r.travel_date | dmy }} <span class="font-mono text-slate-500">{{ r.pnr or '' }}</span></span>{{ paid(r) }}</div>
+  </a></li>
+  {% endfor %}
+</ul>
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+{% else %}
+<p class="empty-state">No tickets found.</p>
+{% endif %}

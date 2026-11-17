@@ -1,0 +1,18 @@
+{% from "partials/_fields.html" import pill %}
+<article id="enq-{{ e.id }}" class="card p-4 flex flex-col gap-2">
+  <div class="flex justify-between gap-2"><span><span class="font-semibold text-brand-navy">{{ e.name }}</span><span class="block text-sm text-slate-500">{{ e.mobile }} · {{ e.created_at | dmy(true) }}</span></span>
+    {{ pill(dict(statuses)[e.status], {"new": "red", "follow_up": "amber", "converted": "green"}.get(e.status, "slate")) }}</div>
+  <p class="text-sm"><strong>{{ e.service or 'General enquiry' }}</strong>{% if e.message %} – {{ e.message }}{% endif %}</p>
+  {% if e.note %}<p class="text-xs text-slate-500">Note: {{ e.note }}</p>{% endif %}
+  {% if e.customer_id %}<a href="/app/customers/{{ e.customer_id }}" class="text-sm text-brand-blue">Customer profile →</a>{% endif %}
+  <div class="flex flex-wrap gap-2 pt-1">
+    <a href="tel:{{ e.mobile }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">Call</a>
+    <a href="{{ wa_link(e.mobile, 'Assalamu alaikum ' ~ e.name.split(' ')[0] ~ ' ji, Noor Travels Services, Kasia se baat kar rahe hain. Aapki ' ~ (e.service or 'enquiry') ~ ' ke baare me.') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-sm font-semibold">WhatsApp</a>
+    {% if user.role != 'accountant' and e.status in ('new', 'follow_up') %}
+    <a href="/app/files/new?enquiry_id={{ e.id }}" class="h-10 inline-flex items-center px-3 rounded-lg bg-brand-red text-white text-sm font-semibold">→ Registration</a>
+    <a href="/app/tickets/new?enquiry_id={{ e.id }}" class="h-10 inline-flex items-center px-3 rounded-lg bg-brand-blue text-white text-sm font-semibold">→ Ticket</a>
+    {% if e.status == 'new' %}<button hx-post="/app/enquiries/{{ e.id }}/status" hx-vals='{"status": "follow_up"}' hx-target="#enq-{{ e.id }}" hx-swap="outerHTML" class="h-10 px-3 rounded-lg border border-slate-300 text-sm font-semibold">Follow-up</button>{% endif %}
+    <button hx-post="/app/enquiries/{{ e.id }}/status" hx-vals='{"status": "closed"}' hx-target="#enq-{{ e.id }}" hx-swap="outerHTML" class="h-10 px-3 rounded-lg text-sm font-semibold text-slate-500">Close</button>
+    {% endif %}
+  </div>
+</article>

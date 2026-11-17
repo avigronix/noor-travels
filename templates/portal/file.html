@@ -1,0 +1,88 @@
+{# Design: docs/design/CandidateStatus.dc.html. Read-only (FR-12.3): no cost price, margin or staff notes. #}
+{% extends "layouts/base.html" %}
+{% block title %}Meri file · {{ biz.name }}{% endblock %}
+{% block body %}
+<div lang="hi" class="flex-1 w-full max-w-md mx-auto bg-white min-h-screen">
+  <header class="bg-brand-navy text-white px-5 pt-4 pb-6 rounded-b-3xl">
+    <div class="flex items-center justify-between">
+      <span class="inline-block rounded-xl bg-white p-1.5"><img src="{{ asset('img/logo-sm.webp') }}" alt="{{ biz.name }}" class="h-8"></span>
+      <form method="post" action="/my/logout"><button class="min-h-11 px-3 text-sm font-semibold text-blue-100">Logout</button></form>
+    </div>
+    <p class="mt-4 text-blue-100">Assalamu alaikum,</p>
+    <h1 class="font-display text-2xl font-semibold">{{ c.name }}</h1>
+    {% if f %}<p class="text-sm text-blue-100">File #{{ f.serial_no }} · {{ f.country }} · {{ c.profession or (f.visa_type | title ~ ' visa') }}</p>{% endif %}
+    <p class="text-xs text-blue-200">Passport {{ c.passport_no | mask_passport }}</p>
+  </header>
+
+  <main class="px-4 py-5 flex flex-col gap-4">
+    {% if (files | length) + (tickets | length) > 1 %}
+    <nav class="flex gap-2 overflow-x-auto [scrollbar-width:none]" aria-label="Meri files">
+      {% for x in files %}<a href="/my/file?file={{ x.id }}" class="shrink-0 min-h-10 inline-flex items-center px-3 rounded-full text-sm font-semibold {{ 'bg-brand-navy text-white' if f and f.id == x.id else 'border border-slate-300' }}">File #{{ x.serial_no }}</a>{% endfor %}
+      {% for x in tickets %}<a href="/my/file?ticket={{ x.id }}" class="shrink-0 min-h-10 inline-flex items-center px-3 rounded-full text-sm font-semibold {{ 'bg-brand-navy text-white' if t and t.id == x.id else 'border border-slate-300' }}">Ticket {{ x.travel_date | dmy }}</a>{% endfor %}
+    </nav>
+    {% endif %}
+
+    {% if f %}
+      {% if next %}
+      <section class="rounded-2xl bg-amber-50 border border-amber-200 p-4">
+        <span class="text-[11px] font-bold tracking-wider text-amber-800">AGLA APPOINTMENT · NEXT</span>
+        <p class="mt-1 font-display text-lg font-semibold text-brand-navy">{{ SERVICES[next.service].label }} – {{ 'aaj' if next.on_date == today else next.on_date | dmy }}{% if next.at_time %} {{ next.at_time | hm }}{% endif %}</p>
+        <p class="text-sm text-slate-700">{{ [next.centre, next.city] | select | join(', ') or '—' }}{% if next.attempt_no > 1 %} · attempt {{ next.attempt_no }}{% endif %}</p>
+        <p class="mt-1 text-sm">Saath laayein: {{ docs }}</p>
+        {% if next.city or next.centre %}<a href="https://www.google.com/maps/search/?api=1&amp;query={{ ([next.centre, next.city] | select | join(' ')) | urlencode }}" target="_blank" rel="noopener" class="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-brand-blue">Map par dekhein</a>{% endif %}
+      </section>
+      {% elif flight %}
+      <section class="rounded-2xl bg-green-50 border border-green-200 p-4">
+        <span class="text-[11px] font-bold tracking-wider text-green-800">FLIGHT</span>
+        <p class="mt-1 font-display text-lg font-semibold">{{ flight.route }} – {{ flight.travel_date | dmy }}</p><p class="text-sm">PNR {{ flight.pnr or '—' }}</p>
+      </section>
+      {% endif %}
+
+      <section>
+        <div class="flex justify-between items-baseline"><h2 class="font-semibold">Aapki file kahan hai</h2><span class="text-sm text-slate-500">{{ done }} / {{ steps | length }}</span></div>
+        <div class="mt-2 h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full bg-green-600" style="width: {{ (done / steps | length * 100) | round | int }}%"></div></div>
+        <ol class="mt-3 flex flex-col">
+          {% for name, state, text in steps %}
+          <li class="flex justify-between gap-2 py-2.5 border-b border-slate-100 text-sm"><span class="{{ 'font-semibold' if state == 'now' }}">{{ name }}</span>
+            <span class="{{ 'text-green-700' if state == 'done' else 'text-amber-700 font-semibold' if state == 'now' else 'text-slate-400' }}">{{ text }}</span></li>
+          {% endfor %}
+        </ol>
+        <p class="mt-2 text-sm text-slate-600">Passport abhi: <strong>{{ 'Office (Kasia) mein' if location == 'Office' else location }}</strong></p>
+      </section>
+    {% elif t %}
+      <section class="rounded-2xl bg-green-50 border border-green-200 p-4">
+        <span class="text-[11px] font-bold tracking-wider text-green-800">TICKET</span>
+        <p class="mt-1 font-display text-lg font-semibold">{{ t.route or '—' }}</p>
+        <p class="text-sm">{{ t.travel_date | dmy }} · {{ t.airline or '' }} · PNR {{ t.pnr or '—' }}</p>
+      </section>
+    {% else %}
+      <p class="rounded-xl bg-slate-50 p-4 text-sm">Abhi koi file nahi mili. Office se sampark karein.</p>
+    {% endif %}
+
+    {% if money %}
+    <section class="rounded-2xl border border-slate-200 p-4">
+      <h2 class="font-semibold mb-2">Payment</h2>
+      <dl class="flex flex-col gap-1.5 text-sm">
+        <div class="flex justify-between"><dt>Package</dt><dd class="font-semibold">{{ (money.to_collect - (retest or 0)) | inr }}</dd></div>
+        {% if retest %}<div class="flex justify-between"><dt>Retest</dt><dd class="font-semibold">{{ retest | inr }}</dd></div>{% endif %}
+        <div class="flex justify-between"><dt>Jama kiya (paid)</dt><dd class="font-semibold text-green-700">{{ money.received | inr }}</dd></div>
+        <div class="flex justify-between border-t border-slate-100 pt-1.5"><dt>Baaki (balance)</dt><dd class="font-display text-lg font-semibold {{ 'text-brand-red' if money.balance > 0 else 'text-green-700' }}">{{ money.balance | inr }}</dd></div>
+      </dl>
+      {% if f and money.balance > 0 %}<p class="mt-2 text-xs text-slate-500">Stamping se pehle poora payment zaroori hai.</p>{% endif %}
+      {% if upi_link %}<a href="{{ upi_link }}" class="mt-3 h-12 grid place-items-center rounded-lg bg-brand-navy text-white font-semibold">UPI se pay karein</a>{% endif %}
+    </section>
+    <section>
+      <h2 class="font-semibold mb-2">Rasid (receipts)</h2>
+      {% for r in receipts %}<a href="{{ r.url }}" class="flex justify-between items-center min-h-11 px-3 border-b border-slate-100 text-sm"><span>{{ r.paid_on | dmy }} · {{ r.amount | inr }}</span><span class="font-semibold text-brand-blue">Dekhein</span></a>
+      {% else %}<p class="text-sm text-slate-500">Abhi koi rasid nahi.</p>{% endfor %}
+    </section>
+    {% endif %}
+
+    <section class="rounded-2xl bg-slate-50 p-4">
+      <h2 class="font-semibold mb-2">Koi sawal?</h2>
+      <a href="{{ wa_link(biz.whatsapp, 'Namaste, main ' ~ c.name ~ (', file #' ~ f.serial_no if f else '') ~ '. Mujhe jaankari chahiye.') }}" target="_blank" rel="noopener" class="h-12 grid place-items-center rounded-lg bg-green-600 text-white font-semibold">Office ko WhatsApp karein</a>
+      <a href="tel:+91{{ biz.phones[0] | replace(' ', '') }}" class="mt-2 h-11 grid place-items-center rounded-lg border border-slate-300 font-semibold">Call {{ biz.phones[0] }}</a>
+    </section>
+  </main>
+</div>
+{% endblock %}

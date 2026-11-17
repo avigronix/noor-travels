@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Enquiry form</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<section id="enquiry" aria-label="Send an enquiry" style="font-family: Inter, system-ui, sans-serif; color: #0F172A; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 20px; padding: clamp(18px, 4vw, 28px); box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+  <div>
+    <h2 style="margin: 0 0 6px; font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600">Send us your enquiry</h2>
+    <p style="margin: 0; font-size: 15px; color: #4B5563">We call you back the same working day. <span lang="hi" style="font-family: 'Noto Sans Devanagari', Inter, sans-serif">हम आपको उसी दिन कॉल करेंगे।</span></p>
+  </div>
+  <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="padding: 18px; border-radius: 12px; background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; font-size: 15px"><strong>Thank you, {{ name }}.</strong> Our office will call you on {{ mobile }} soon. For anything urgent, call 99844 14350.</div>
+  </sc-if>
+  <sc-if value="{{ form }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="eq-name" style="font-size: 14px; font-weight: 600">Your name *</label><input id="eq-name" value="{{ name }}" onChange="{{ setName }}" placeholder="Full name" style="height: 48px; border: 1px solid #D1D5DB; border-radius: 10px; padding: 0 14px; font-size: 16px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="eq-mob" style="font-size: 14px; font-weight: 600">Mobile number *</label><input id="eq-mob" type="tel" value="{{ mobile }}" onChange="{{ setMobile }}" placeholder="10-digit mobile" style="height: 48px; border: 1px solid #D1D5DB; border-radius: 10px; padding: 0 14px; font-size: 16px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="eq-svc" style="font-size: 14px; font-weight: 600">I need help with</label><select id="eq-svc" style="height: 48px; border: 1px solid #D1D5DB; border-radius: 10px; padding: 0 12px; font-size: 16px; font-family: inherit; background: #FFFFFF"><option>Work visa (Saudi / Gulf)</option><option>Umrah</option><option>Family visit visa</option><option>Tourist visa</option><option>Air ticket</option><option>GAMCA medical / skill test</option><option>Something else</option></select></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="eq-msg" style="font-size: 14px; font-weight: 600">Message (optional)</label><textarea id="eq-msg" rows="3" placeholder="Country, travel month, number of people…" style="border: 1px solid #D1D5DB; border-radius: 10px; padding: 12px 14px; font-size: 16px; font-family: inherit; resize: vertical"></textarea></div>
+      <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #B91C1C">{{ error }}</span></sc-if>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+        <button type="button" onClick="{{ submit }}" style="min-height: 50px; padding: 0 24px; border-radius: 999px; border: 0; background: #E8202A; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 16px; cursor: pointer">Send enquiry</button>
+        <a href="https://wa.me/919984414350" style="display: flex; align-items: center; min-height: 50px; padding: 0 20px; border-radius: 999px; border: 2px solid #16A34A; color: #15803D; font-weight: 700; font-size: 15px; text-decoration: none">Or WhatsApp us</a>
+      </div>
+    </div>
+  </sc-if>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":760,"height":460}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { name: '', mobile: '', sent: false, error: '' }; }
+  renderVals() {
+    const s = this.state;
+    return {
+      name: s.name, mobile: s.mobile, sent: s.sent, form: !s.sent,
+      hasError: !!s.error, error: s.error,
+      setName: e => this.setState({ name: e.target.value, error: '' }),
+      setMobile: e => this.setState({ mobile: e.target.value, error: '' }),
+      submit: () => {
+        const st = this.state;
+        if (!st.name.trim()) return this.setState({ error: 'Please enter your name.' });
+        if (!/^[6-9]\d{9}$/.test(st.mobile.replace(/\s/g, ''))) return this.setState({ error: 'Please enter a valid 10-digit mobile number.' });
+        this.setState({ sent: true, error: '' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

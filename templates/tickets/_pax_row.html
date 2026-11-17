@@ -1,0 +1,18 @@
+{# One passenger row (FR-7.2). Passport / mobile lookup links an existing customer (FR-7.1). #}
+{% set rid = range(100000, 999999) | random %}
+<div data-passenger class="rounded-xl border border-slate-200 p-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  <input type="hidden" name="pax_customer_id" value="{{ p.customer_id or '' }}">
+  <p data-pax-linked class="sm:col-span-2 lg:col-span-3 text-sm font-semibold text-brand-blue empty:hidden">{% if p.customer_id %}Linked to {{ p.name }} (existing customer){% endif %}</p>
+  <label class="flex flex-col gap-1 text-sm font-medium">Find customer by passport or mobile
+    <input name="pax_lookup" placeholder="e.g. K4512248 or 9721…" autocomplete="off" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"
+           hx-get="/app/files/lookup?for=ticket" hx-params="pax_lookup" hx-trigger="input changed delay:500ms" hx-target="#pax-lookup-{{ rid }}">
+  </label>
+  <div id="pax-lookup-{{ rid }}" class="sm:col-span-2 lg:col-span-3 empty:hidden"></div>
+  <label class="flex flex-col gap-1 text-sm font-medium">Name (as on passport) *<input name="pax_name" value="{{ p.name or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Passport no.<input name="pax_passport" value="{{ p.passport_no or p.passport or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal uppercase"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Passport expiry<input type="date" name="pax_expiry" value="{{ p.passport_expiry or p.expiry or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Date of birth<input type="date" name="pax_dob" value="{{ p.dob or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Mobile (WhatsApp) *<input type="tel" name="pax_mobile" value="{{ p.mobile or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+  <label class="flex flex-col gap-1 text-sm font-medium">Address<input name="pax_address" value="{{ p.address or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+  {% if removable %}<button type="button" data-remove-row="[data-passenger]" class="sm:col-span-2 lg:col-span-3 justify-self-end min-h-11 px-3 text-sm font-semibold text-red-700">Remove passenger</button>{% endif %}
+</div>

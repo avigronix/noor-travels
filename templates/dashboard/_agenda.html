@@ -1,0 +1,17 @@
+{% from "partials/_fields.html" import pill %}
+{% set tone = {"flight": "green", "courier": "brown", "medical": "blue", "vfs": "blue", "skill_test": "amber"} %}
+{% for a in agenda %}
+<div class="grid grid-cols-[3.75rem_1fr] sm:grid-cols-[4.5rem_1fr_auto] items-center gap-x-3 gap-y-1 py-2.5 border-t border-slate-100">
+  <span class="font-semibold text-sm">{{ (a.at | hm) or '—' }}</span>
+  <span class="min-w-0">
+    <a href="{{ '/app/files/' ~ a.file_id if a.file_id else '/app/customers/' ~ a.customer_id }}" class="font-medium hover:underline">{{ a.name }} <span class="text-slate-500 font-normal">{{ '#' ~ a.ref if a.ref and not a.ref.startswith('T-') else a.ref }}</span></a>
+    <span class="block text-sm text-slate-500 truncate">{{ (a.tag | stage) if a.tag in SERVICES else '' }}{{ ' · ' if a.tag in SERVICES and a.what }}{{ a.what }}</span>
+  </span>
+  <span class="col-start-2 sm:col-start-auto flex items-center gap-1.5">
+    {{ pill('Retest' if a.retest else (a.tag | stage if a.tag in SERVICES else a.tag | title), 'amber' if a.retest else tone.get(a.tag, 'slate')) }}
+    <a href="{{ wa_link(a.mobile, '') }}" target="_blank" rel="noopener" class="h-9 inline-flex items-center px-2.5 rounded-lg border border-green-600 text-green-700 text-xs font-semibold">WhatsApp</a>
+  </span>
+</div>
+{% else %}
+<p class="py-3 text-sm text-slate-500">Nothing scheduled for {{ day }}.</p>
+{% endfor %}

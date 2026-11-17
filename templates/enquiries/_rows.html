@@ -1,0 +1,4 @@
+{% if result.rows %}
+<div class="grid grid-cols-1 gap-3 md:grid-cols-2">{% for e in result.rows %}{% include "enquiries/_card.html" %}{% endfor %}</div>
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+{% else %}<p class="empty-state">No enquiries here.</p>{% endif %}

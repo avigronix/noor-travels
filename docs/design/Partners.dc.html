@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Centres and agencies</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="partners" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Centres & agencies</h1>
+        <p style="margin: 0; font-size: 14px; color: #475569">Everyone Noor Travels Services pays on a candidate's behalf, with their rates and what is still owed.</p>
+      </div>
+      <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">+ Add centre / agency</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Paid out this month</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">₹2,46,500</span></div>
+      <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #78350F">Still payable</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: #78350F">₹20,000</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Partners</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">6</span></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px">
+      <sc-for list="{{ partners }}" as="p" hint-placeholder-count="5">
+        <article style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+            <div>
+              <h2 style="margin: 0 0 4px; font-size: 16px; font-weight: 600">{{ p.name }}</h2>
+              <span style="font-size: 13px; color: #475569">{{ p.city }} · {{ p.contact }}</span>
+            </div>
+            <span style="{{ p.chip }}">{{ p.type }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 8px; background: #F8FAFC; font-size: 14px">
+            <sc-for list="{{ p.rates }}" as="r" hint-placeholder-count="1">
+              <span style="display: flex; justify-content: space-between; gap: 8px"><span>{{ r.what }}</span><strong>{{ r.amt }}</strong></span>
+            </sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 14px">
+            <span style="color: #475569">{{ p.files }} files this month</span>
+            <span style="{{ p.dueStyle }}">{{ p.due }}</span>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <button type="button" style="flex: 1 1 auto; min-height: 40px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Edit rates</button>
+            <button type="button" style="flex: 1 1 auto; min-height: 40px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Statement</button>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const chip = (bg, fg) => `flex: 0 0 auto; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: ${bg}; color: ${fg}; white-space: nowrap`;
+    const ok = 'color: #166534; font-weight: 600';
+    const due = 'color: #92400E; font-weight: 600';
+    return {
+      partners: [
+        { name: 'Approved medical centres', city: 'Lucknow · Patna', contact: '0522-XXXXXXX', type: 'Medical', chip: chip('#DBEAFE', '#1E40AF'), rates: [{ what: 'Medical (per attempt)', amt: '₹9,500' }], files: 9, due: 'Nothing due', dueStyle: ok },
+        { name: 'Skill test centre', city: 'Lucknow', contact: '98XXXXXX10', type: 'Skill test', chip: chip('#FEF3C7', '#92400E'), rates: [{ what: 'Driver test (per attempt)', amt: '₹10,000' }], files: 11, due: '₹10,000 due', dueStyle: due },
+        { name: 'Alif, Mumbai', city: 'Mumbai', contact: '98XXXXXX31', type: 'Stamping agency', chip: chip('#EDE9FE', '#5B21B6'), rates: [{ what: 'Visa stamping', amt: '₹5,000' }, { what: 'Employment contract', amt: '₹4,000' }, { what: 'Ticket (if booked by them)', amt: '₹22,000' }], files: 9, due: '₹9,000 due', dueStyle: due },
+        { name: 'Siddiqui Travel (SQT)', city: 'Mumbai', contact: '98XXXXXX77', type: 'Stamping agency', chip: chip('#EDE9FE', '#5B21B6'), rates: [{ what: 'Visa stamping', amt: '₹5,000' }, { what: 'Other service (STS)', amt: '₹7,000' }], files: 6, due: '₹10,000 due', dueStyle: due },
+        { name: 'VFS Global', city: 'Lucknow', contact: 'Online booking', type: 'Biometric', chip: chip('#F1F5F9', '#334155'), rates: [{ what: 'Fee as per VFS', amt: 'Actual' }], files: 8, due: 'Nothing due', dueStyle: ok },
+        { name: 'Akbar Travels', city: 'Online / agent login', contact: 'Agent account', type: 'Ticket supplier', chip: chip('#DCFCE7', '#166534'), rates: [{ what: 'Fare', amt: 'Actual' }], files: 46, due: 'Nothing due', dueStyle: ok }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

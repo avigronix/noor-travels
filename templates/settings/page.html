@@ -1,0 +1,157 @@
+{# Design: docs/design/Settings.dc.html – owner only #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, select, btn, page_head %}
+{% block page_title %}Settings{% endblock %}
+{% block content %}
+<div class="mb-4">{{ page_head("Settings", "Only the owner can change these. Every change is written to the activity log.", "settings") }}</div>
+{% if saved %}<p class="mb-3 rounded-lg bg-green-50 border border-green-200 px-3 py-2 text-sm text-green-900" role="status">✓ Saved.</p>{% endif %}
+{% if error %}<p class="mb-3 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-800" role="alert">{{ error }}</p>{% endif %}
+<nav aria-label="Settings sections" class="sticky top-[118px] sm:top-[64px] z-20 -mx-4 px-4 py-2 mb-4 bg-slate-50/95 flex gap-1.5 overflow-x-auto [scrollbar-width:none]">
+  {% for id, label in [("biz", "Business & licence"), ("tpl", "Country stages"), ("money", "GST, cap & refunds"), ("remind", "Reminders"), ("users", "Users & roles"), ("safe", "Backup & security")] %}
+  <a href="#{{ id }}" hx-boost="false" class="shrink-0 min-h-10 inline-flex items-center px-3 rounded-full bg-white border border-slate-300 text-sm font-semibold">{{ label }}</a>
+  {% endfor %}
+</nav>
+
+<div class="flex flex-col gap-4">
+<section id="biz" class="scroll-mt-40 card p-4 sm:p-6">
+  <h2 class="font-display text-lg font-semibold text-brand-navy mb-3">Business &amp; licence</h2>
+  <form method="post" action="/app/settings/business" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    {% for key, label in business_keys %}
+      {{ input(key, label, s.get(key, ''), type=('date' if key == 'ra_valid_till' else 'text'), hint=('Reminder 90 days before expiry' if key == 'ra_valid_till' else '')) }}
+    {% endfor %}
+    <div class="sm:col-span-2 lg:col-span-3 flex items-center justify-between gap-3">
+      <span class="flex items-center gap-3 text-sm text-slate-500"><img src="{{ asset('img/logo-sm.webp') }}" alt="" class="h-10"> Logo used on receipts and the customer portal. Office name, address and phones: {{ biz.address }} · {{ biz.phones | join(' / ') }}</span>
+      {{ btn("Save", "navy") }}
+    </div>
+  </form>
+</section>
+
+<section id="tpl" class="scroll-mt-40 card p-4 sm:p-6">
+  <h2 class="font-display text-lg font-semibold text-brand-navy mb-2">Country stages</h2>
+  <div class="flex flex-wrap gap-2 mb-3">
+    {% for c in countries %}<a href="/app/settings?country={{ c }}#tpl" class="min-h-10 inline-flex items-center px-3 rounded-full text-sm font-semibold {{ 'bg-brand-navy text-white' if c == country else 'bg-white border border-slate-300' }}">{{ c }}</a>{% endfor %}
+    <form method="post" action="/app/settings/stages/country" class="flex gap-2"><input name="name" required minlength="2" placeholder="+ Country (e.g. Kuwait)" class="h-10 w-44 px-3 rounded-full border border-slate-300 text-sm"><button class="h-10 px-3 rounded-full border border-brand-blue text-brand-blue text-sm font-semibold">Add</button></form>
+  </div>
+  <p class="text-sm text-slate-600 mb-3">Change the order, which services are pre-ticked and the default cost. Changes apply to new files.</p>
+  <form method="post" action="/app/settings/stages">
+    <input type="hidden" name="country" value="{{ country }}">
+    <div class="overflow-x-auto rounded-xl border border-slate-200">
+      <table class="w-full text-sm">
+        <thead class="thead"><tr><th class="px-3 py-2 font-medium">Visa type</th><th class="px-3 py-2 font-medium">#</th><th class="px-3 py-2 font-medium">Stage</th>
+          <th class="px-3 py-2 font-medium">Needs first</th><th class="px-3 py-2 font-medium">Pre-ticked</th><th class="px-3 py-2 font-medium">Default cost (₹)</th></tr></thead>
+        <tbody>
+        {% for st in stages %}
+          <tr class="border-t border-slate-100">
+            <td class="px-3 py-2">{{ st.visa_type | title }}</td>
+            <td class="px-3 py-2"><input name="order.{{ st.id }}" value="{{ st.sort_order }}" inputmode="numeric" class="h-10 w-14 px-2 rounded-lg border border-slate-300"></td>
+            <td class="px-3 py-2 font-medium">{{ SERVICES[st.service].label if st.service in SERVICES else st.service }}</td>
+            <td class="px-3 py-2 text-slate-500">{{ (SERVICES[st.service].needs | default([]) | map('stage') | join(', ')) if st.service in SERVICES else '' }}</td>
+            <td class="px-3 py-2"><input type="checkbox" name="on.{{ st.id }}" value="1" {{ 'checked' if st.default_on }} class="w-5 h-5"></td>
+            <td class="px-3 py-2"><input name="charge.{{ st.id }}" value="{{ st.default_charge | int if st.default_charge else '' }}" inputmode="numeric" class="h-10 w-28 px-2 rounded-lg border border-slate-300"></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3 flex flex-wrap items-end gap-2">
+      <label class="flex flex-col gap-1 text-sm">+ Add stage to<select name="add_visa_type" class="h-11 px-2 rounded-lg border border-slate-300"><option value="">—</option>{% for k, l, h in VISA_TYPES %}<option value="{{ k }}">{{ l }}</option>{% endfor %}</select></label>
+      <label class="flex flex-col gap-1 text-sm">Stage<select name="add_service" class="h-11 px-2 rounded-lg border border-slate-300"><option value="">—</option>{% for k in ORDER %}<option value="{{ k }}">{{ SERVICES[k].label }}</option>{% endfor %}</select></label>
+      <label class="flex flex-col gap-1 text-sm">Default cost<input name="add_charge" inputmode="numeric" class="h-11 w-28 px-2 rounded-lg border border-slate-300"></label>
+      <span class="ml-auto">{{ btn("Save stages", "navy") }}</span>
+    </div>
+  </form>
+</section>
+
+<section id="money" class="scroll-mt-40 card p-4 sm:p-6">
+  <h2 class="font-display text-lg font-semibold text-brand-navy mb-3">GST, service charge cap &amp; refunds</h2>
+  <form method="post" action="/app/settings/money" class="flex flex-col gap-4">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      {% for key, label in money_keys %}{{ input(key, label, s.get(key, ''), attrs=('' if key == 'receipt_prefix' else 'inputmode="numeric"')) }}{% endfor %}
+    </div>
+    <div>
+      <h3 class="font-semibold mb-2">Service charge earned if a file is cancelled (% after the stage is done)</h3>
+      <div class="grid gap-2 grid-cols-1 sm:grid-cols-3 lg:grid-cols-5">
+        {% for k in ["registration"] + ORDER %}{% if k in shares or k == 'registration' %}
+        <label class="flex items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm">{{ 'Registration' if k == 'registration' else SERVICES[k].label }}
+          <input name="share.{{ k }}" value="{{ shares.get(k, 0) | int }}" inputmode="numeric" class="h-10 w-16 px-2 rounded-lg border border-slate-300 text-right"></label>
+        {% endif %}{% endfor %}
+      </div>
+      <p class="mt-2 text-xs text-slate-500">Costs already paid to centres and agencies are never refunded. Refund is processed within 15 days.</p>
+    </div>
+    <div class="flex justify-end">{{ btn("Save", "navy") }}</div>
+  </form>
+  <h3 class="font-semibold mt-5 mb-2">Bank accounts (shown on receipts)</h3>
+  <form method="post" action="/app/settings/banks" class="flex flex-col gap-2">
+    {% for b in banks %}
+    <div class="grid gap-2 grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr_auto] items-center">
+      <input name="name.{{ b.id }}" value="{{ b.name }}" class="h-11 px-3 rounded-lg border border-slate-300" aria-label="Bank name">
+      <input name="acc.{{ b.id }}" value="{{ b.account_no or '' }}" placeholder="Account no." class="h-11 px-3 rounded-lg border border-slate-300">
+      <input name="ifsc.{{ b.id }}" value="{{ b.ifsc or '' }}" placeholder="IFSC" class="h-11 px-3 rounded-lg border border-slate-300">
+      <label class="flex items-center gap-2 text-sm min-h-11"><input type="checkbox" name="active.{{ b.id }}" value="1" {{ 'checked' if b.is_active }} class="w-5 h-5"> Active</label>
+    </div>
+    {% endfor %}
+    <div class="grid gap-2 grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr_auto] items-center">
+      <input name="new_name" placeholder="+ New account name" class="h-11 px-3 rounded-lg border border-dashed border-slate-300">
+      <input name="new_acc" placeholder="Account no." class="h-11 px-3 rounded-lg border border-dashed border-slate-300">
+      <input name="new_ifsc" placeholder="IFSC" class="h-11 px-3 rounded-lg border border-dashed border-slate-300">
+      {{ btn("Save banks", "navy") }}
+    </div>
+  </form>
+</section>
+
+<section id="remind" class="scroll-mt-40 card p-4 sm:p-6">
+  <div class="flex flex-wrap justify-between gap-2 mb-2"><h2 class="font-display text-lg font-semibold text-brand-navy">Messaging defaults</h2>
+    <a href="/app/messages?tab=rules" class="text-sm font-semibold text-brand-blue">Manage rules &amp; templates in Messages →</a></div>
+  <dl class="grid grid-cols-1 gap-2 sm:grid-cols-2 text-sm">
+    <div class="rounded-lg bg-slate-50 px-3 py-2"><dt class="text-slate-500">Office WhatsApp number</dt><dd class="font-semibold">{{ biz.whatsapp }} <span class="font-normal text-slate-500">(OFFICE_WHATSAPP in .env)</span></dd></div>
+    <div class="rounded-lg bg-slate-50 px-3 py-2"><dt class="text-slate-500">Channel</dt><dd class="font-semibold">WhatsApp – free click-to-send (wa.me). No paid API, SMS or OTP.</dd></div>
+    <div class="rounded-lg bg-slate-50 px-3 py-2"><dt class="text-slate-500">Quiet hours</dt><dd class="font-semibold">9:00 pm – 7:00 am (except travel-day checklist)</dd></div>
+    <div class="rounded-lg bg-slate-50 px-3 py-2"><dt class="text-slate-500">Day-before reminders</dt><dd class="font-semibold">Appear at 6:00 pm (jobs.py, every 30 min)</dd></div>
+  </dl>
+</section>
+
+<section id="users" class="scroll-mt-40 card p-4 sm:p-6">
+  <div class="flex flex-wrap justify-between gap-2 mb-3"><h2 class="font-display text-lg font-semibold text-brand-navy">Users &amp; roles</h2>
+    <span class="text-sm text-slate-500">{{ staff_used }} of {{ max_staff }} staff seats used</span></div>
+  <div class="flex flex-col gap-2">
+    {% for u in users %}
+    <details class="rounded-xl border border-slate-200 {{ 'opacity-60' if not u.is_active }}">
+      <summary class="cursor-pointer list-none min-h-12 px-4 py-2 grid grid-cols-[1fr_auto] sm:grid-cols-[1.2fr_1fr_auto_auto] items-center gap-2 text-sm">
+        <span><strong>{{ u.name }}</strong> <span class="text-slate-500">@{{ u.username }}</span></span>
+        <span class="hidden sm:inline text-slate-500">{{ u.mobile or '' }} · last login {{ u.last_login_at | dmy if u.last_login_at else 'never' }}</span>
+        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold">{{ 'Reports only' if u.role == 'accountant' else u.role | title }}</span>
+        <span class="text-xs font-semibold {{ 'text-green-700' if u.is_active else 'text-slate-500' }}">{{ 'Active' if u.is_active else 'Inactive' }}</span>
+      </summary>
+      <form method="post" action="/app/settings/users" class="grid grid-cols-1 gap-3 sm:grid-cols-3 px-4 pb-4">
+        <input type="hidden" name="uid" value="{{ u.id }}">
+        {{ input("name", "Name", u.name, required=true) }}{{ input("username", "Username", u.username, required=true) }}{{ input("mobile", "Mobile", u.mobile) }}
+        {{ select("role", "Role", [("owner", "Owner"), ("staff", "Staff"), ("accountant", "Accountant (reports only)")], u.role) }}
+        {{ input("password", "Reset password (min 8)", "", type="password", attrs='autocomplete="new-password" minlength="8"') }}
+        <label class="flex items-center gap-3 min-h-11 text-sm self-end"><input type="checkbox" name="is_active" value="1" {{ 'checked' if u.is_active }} class="w-5 h-5"> Active (deactivate instead of delete)</label>
+        <div class="sm:col-span-3 flex justify-end gap-2">
+          {% if u.locked_until %}<button formaction="/app/settings/users/{{ u.id }}/unlock" class="h-11 px-4 rounded-lg border border-slate-300 text-sm font-semibold">Unlock login</button>{% endif %}
+          {{ btn("Save user", "navy") }}</div>
+      </form>
+    </details>
+    {% endfor %}
+  </div>
+  <h3 class="font-semibold mt-5 mb-2">Add a user</h3>
+  <form method="post" action="/app/settings/users" class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    {{ input("name", "Name", "", required=true) }}{{ input("username", "Username", "", required=true) }}{{ input("mobile", "Mobile", "") }}
+    {{ select("role", "Role", [("staff", "Staff"), ("accountant", "Accountant (reports only)")], "staff") }}
+    {{ input("password", "Password (min 8)", "", type="password", required=true, attrs='autocomplete="new-password" minlength="8"') }}
+    <div class="self-end">{{ btn("Add user", "primary") }}</div>
+  </form>
+</section>
+
+<section id="safe" class="scroll-mt-40 card p-4 sm:p-6">
+  <h2 class="font-display text-lg font-semibold text-brand-navy mb-2">Backup &amp; security</h2>
+  <ul class="text-sm text-slate-700 list-disc pl-5 flex flex-col gap-1">
+    <li>Daily database + photo backup at 2:30 am, kept for 30 days (deploy/backup.sh).</li>
+    <li>Staff logins lock for 30 minutes after 5 wrong passwords; customer portal the same.</li>
+    <li>Photos are stored outside the website folder and shown only to logged-in staff.</li>
+    <li>Every create, edit, payment and stage change is in the audit log; payments are never deleted.</li>
+  </ul>
+</section>
+</div>
+{% endblock %}

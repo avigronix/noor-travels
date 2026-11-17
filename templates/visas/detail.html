@@ -1,0 +1,55 @@
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import pill, select, input %}
+{% block page_title %}Visa {{ visa.visa_no }}{% endblock %}
+{% block content %}
+<p class="text-sm text-slate-500"><a href="/app/visas" class="text-brand-blue">Visas</a> / {{ visa.visa_no }}</p>
+<h1 class="mt-1 mb-4 page-title">Visa <span class="font-mono">{{ visa.visa_no }}</span>
+  {% if visa.file_id %}{{ pill('#' ~ visa.serial_no ~ ' ' ~ visa.customer_name, 'blue') }}{% else %}{{ pill('Free', 'green') }}{% endif %}</h1>
+
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
+  <section class="card p-4">
+    <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+      <dt class="text-slate-500">Sponsor</dt><dd>{{ visa.sponsor_name or '—' }} · {{ visa.sponsor_no or '' }}</dd>
+      <dt class="text-slate-500">Country</dt><dd>{{ visa.country }}</dd>
+      <dt class="text-slate-500">Profession</dt><dd>{{ visa.profession or '—' }}</dd>
+      <dt class="text-slate-500">Visa date</dt><dd>{{ visa.visa_date_hijri or '—' }} AH{% if visa.visa_date %} (≈ {{ visa.visa_date | dmy }}){% endif %}</dd>
+      <dt class="text-slate-500">Same sponsor</dt><dd>{% for o in others %}<a href="/app/visas/{{ o.id }}" class="mr-2 font-mono text-brand-blue">{{ o.visa_no }}</a>{% else %}—{% endfor %}</dd>
+    </dl>
+    {% if visa.photo_path %}<a href="/app/uploads/{{ visa.photo_path }}" target="_blank" rel="noopener" hx-boost="false"><img src="/app/uploads/{{ visa.photo_path }}" alt="Visa photo" class="mt-4 max-h-80 rounded-xl border border-slate-200"></a>{% endif %}
+  </section>
+
+  <div class="flex flex-col gap-4">
+    {% if user.role != 'accountant' %}
+    {% if visa.file_id %}
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">Release this visa</h2>
+      <p class="text-sm text-slate-600 mb-3">Candidate dropped out? Release the visa so it can be given to another candidate. The history stays on the visa.</p>
+      <form method="post" action="/app/visas/{{ visa.id }}/release" class="flex flex-col gap-2">
+        {{ input("reason", "Reason", "", required=true, placeholder="e.g. Candidate cancelled") }}
+        <button class="h-11 rounded-lg border border-red-300 text-red-700 font-semibold" data-confirm="Release visa {{ visa.visa_no }} from #{{ visa.serial_no }}?">Release visa</button>
+      </form>
+    </section>
+    {% else %}
+    <section class="card p-4">
+      <h2 class="font-semibold mb-3">Give visa {{ visa.visa_no }} to a candidate</h2>
+      <form method="post" action="/app/visas/{{ visa.id }}/attach" class="flex flex-col gap-3">
+        {% set ff = [] %}{% for f in free_files %}{% set _ = ff.append((f.id, '#' ~ f.serial_no ~ ' ' ~ f.name)) %}{% endfor %}
+        {{ select("file_id", "New candidate", ff, "", required=true, blank="Select a file without visa…") }}
+        {{ input("reason", "Reason", "Previous candidate cancelled" if history else "Attached", required=true) }}
+        <button class="h-11 rounded-lg bg-brand-blue text-white font-semibold">Attach visa</button>
+      </form>
+    </section>
+    {% endif %}
+    {% endif %}
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">History</h2>
+      <ul class="flex flex-col gap-2 text-sm">
+        {% for a in history %}
+        <li class="border-t border-slate-100 pt-2"><a href="/app/files/{{ a.file_id }}" class="font-semibold text-brand-navy">#{{ a.serial_no }} {{ a.name }}</a>
+          <span class="block text-slate-500">Attached {{ a.assigned_on | dmy }}{% if a.by_name %} by {{ a.by_name }}{% endif %}{% if a.released_on %} · released {{ a.released_on | dmy }}{% endif %}{% if a.reason %} – {{ a.reason }}{% endif %}</span></li>
+        {% else %}<li class="text-slate-500">Not attached to any file yet.</li>{% endfor %}
+      </ul>
+    </section>
+  </div>
+</div>
+{% endblock %}

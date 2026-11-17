@@ -1,0 +1,27 @@
+{% from "partials/_fields.html" import pill %}
+{% set tones = {"payment_received": "green", "stage_failed": "red", "balance_due": "red", "appointment_reminder": "amber", "travel_day": "amber"} %}
+{% if result.rows %}
+<div class="flex flex-col gap-3">
+  {% for m in result.rows %}
+  <article id="msg-{{ m.id }}" class="min-w-0 card p-4">
+    <div class="flex flex-wrap items-start justify-between gap-2">
+      <div><a href="/app/customers/{{ m.customer_id }}" class="font-semibold text-brand-navy hover:underline">{{ m.name }}</a>
+        {% if m.serial_no %}· <a href="/app/files/{{ m.file_id }}" class="text-brand-blue">#{{ m.serial_no }}</a>{% elif m.ticket_no %}· <a href="/app/tickets/{{ m.booking_id }}" class="text-brand-blue">T-{{ m.ticket_no }}</a>{% endif %}
+        <span class="block text-xs text-slate-500">{{ m.mobile }} · {{ 'due ' ~ (m.due_at | dmy(true)) if m.status == 'to_send' else (m.status ~ ' ' ~ (m.done_at | dmy(true)) ~ (' by ' ~ m.done_by_name if m.done_by_name else '')) }}</span></div>
+      {{ pill(m.title or m.trigger, tones.get(m.trigger, 'blue')) }}
+    </div>
+    <div class="mt-2 rounded-2xl rounded-tl-sm bg-[#DCF8C6] px-3 py-2 text-sm whitespace-pre-line [overflow-wrap:anywhere]">{{ m.body }}</div>
+    {% if m.status == 'to_send' and user.role != 'accountant' %}
+    <div class="mt-3 flex flex-wrap gap-2">
+      <a href="{{ wa_link(m.mobile, m.body) }}" target="_blank" rel="noopener" data-wa-open="{{ m.id }}" class="h-11 inline-flex items-center px-4 rounded-lg bg-green-600 text-white text-sm font-semibold">Send on WhatsApp</a>
+      <button hx-post="/app/messages/{{ m.id }}/sent" hx-target="#msg-{{ m.id }}" hx-swap="outerHTML" class="h-11 px-4 rounded-lg border border-slate-300 text-sm font-semibold">Mark sent</button>
+      <button hx-post="/app/messages/{{ m.id }}/skip" hx-target="#msg-{{ m.id }}" hx-swap="outerHTML" class="h-11 px-4 rounded-lg text-sm font-semibold text-slate-500">Skip</button>
+    </div>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+{% else %}
+<p class="empty-state">{{ 'All messages sent. New ones appear here after every save.' if tab == 'queue' else 'Nothing here.' }}</p>
+{% endif %}

@@ -1,0 +1,10 @@
+{% if v.file_id %}
+<a href="/app/files/{{ v.file_id }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold text-brand-blue">Open file</a>
+{% elif user.role != 'accountant' and attach %}
+<form method="post" action="/app/visas/{{ v.id }}/attach" class="inline">
+  <input type="hidden" name="file_id" value="{{ attach }}"><input type="hidden" name="reason" value="{{ 'Reassigned after release' if v.was_released else 'Attached' }}">
+  <button class="h-10 px-3 rounded-lg bg-brand-blue text-white text-sm font-semibold">Attach to #{{ target.serial_no }}</button>
+</form>
+{% else %}
+<a href="/app/visas/{{ v.id }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">{{ 'Reassign' if v.was_released else 'Attach' }}</a>
+{% endif %}

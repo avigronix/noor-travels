@@ -1,0 +1,14 @@
+{% if result.rows %}
+<ul class="flex flex-col gap-2">
+  {% for r in result.rows %}
+  <li class="card card-sm p-4 flex flex-wrap items-center justify-between gap-3">
+    <a href="/app/partners/referrers/{{ r.id }}" class="min-w-0"><span class="font-semibold text-brand-navy">{{ r.name }}</span>
+      <span class="block text-sm text-slate-500">{{ [r.mobile, r.place] | select | join(' · ') or '—' }}</span></a>
+    <span class="text-sm text-slate-600">{{ r.files_month }} this month · {{ r.files_active }} active · {{ r.files_total }} total</span>
+    {% if r.mobile %}<span class="flex gap-1.5"><a href="tel:{{ r.mobile }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm">Call</a>
+      <a href="{{ wa_link(r.mobile, '') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-sm">WhatsApp</a></span>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+{% else %}<p class="empty-state">No reference persons yet.</p>{% endif %}

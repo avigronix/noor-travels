@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – New registration</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="new" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1000px; margin: 0 auto; padding: 24px 20px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div>
+      <p style="margin: 0 0 4px; font-size: 14px; color: #475569"><a href="Candidates.dc.html">All files</a> / {{ crumb }}</p>
+      <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">{{ heading }}</h1>
+      <p style="margin: 0; font-size: 14px; color: #475569">{{ subline }} Only ticket? Use <a href="Tickets.dc.html">Tickets</a> instead.</p>
+    </div>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 600">1. Customer & passport</h2>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div aria-hidden="true" style="width: 52px; height: 52px; border-radius: 26px; background: #DBEAFE; color: #0A2E57; display: flex; align-items: center; justify-content: center; font-weight: 700">{{ initials }}</div>
+          <button type="button" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px dashed #94A3B8; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Add profile photo (optional)</button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="fn" style="font-size: 14px; font-weight: 500">Full name (as on passport) *</label><input id="fn" value="{{ cname }}" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="fa" style="font-size: 14px; font-weight: 500">Father's name *</label><input id="fa" value="Abdul Majid" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="dob" style="font-size: 14px; font-weight: 500">Date of birth *</label><input id="dob" type="date" value="1997-02-14" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="mob" style="font-size: 14px; font-weight: 500">Mobile (WhatsApp) *</label><input id="mob" type="tel" value="90XXXXXX18" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="ppn" style="font-size: 14px; font-weight: 500">Passport number *</label><input id="ppn" value="T58XXX31" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"><span style="font-size: 12px; color: #166534">{{ ppNote }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="ppe" style="font-size: 14px; font-weight: 500">Passport expiry *</label><input id="ppe" type="date" value="2033-05-20" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; grid-column: 1 / -1"><label for="addr" style="font-size: 14px; font-weight: 500">Address (village, post) *</label><input id="addr" value="Vill. Madhopur, Post Turkaulia" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="dist" style="font-size: 14px; font-weight: 500">District *</label><input id="dist" value="East Champaran" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="st" style="font-size: 14px; font-weight: 500">State *</label><select id="st" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Bihar</option><option>Uttar Pradesh</option><option>Jharkhand</option></select></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="pin" style="font-size: 14px; font-weight: 500">PIN *</label><input id="pin" value="845425" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="ecr" style="font-size: 14px; font-weight: 500">Passport type *</label><select id="ecr" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>ECNR</option><option>ECR</option></select></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; padding: 14px; border-radius: 10px; background: #F8FAFC; border: 1px solid #E2E8F0">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="ref" style="font-size: 14px; font-weight: 500">Reference person</label><select id="ref" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Imran Bhai (Bihar)</option><option>Shakeel Bhai (Saudi)</option><option>+ Add new reference</option><option>No reference</option></select></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="refm" style="font-size: 14px; font-weight: 500">Reference mobile</label><input id="refm" value="70XXXXXX55" readonly style="height: 44px; border: 1px solid #E2E8F0; background: #FFFFFF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 600">2. Visa type & services</h2>
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-size: 14px; font-weight: 600; margin-bottom: 8px">Visa type *</legend>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px">
+          <sc-for list="{{ types }}" as="t" hint-placeholder-count="4">
+            <label style="{{ t.style }}"><input type="radio" name="vt" checked="{{ t.checked }}" onChange="{{ t.pick }}" style="width: 18px; height: 18px; accent-color: #0070B8"><span><span style="display: block; font-weight: 600">{{ t.label }}</span><span style="display: block; font-size: 12px; color: #475569; font-weight: 400">{{ t.hint }}</span></span></label>
+          </sc-for>
+        </div>
+      </fieldset>
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-size: 14px; font-weight: 600; margin-bottom: 8px">Services this customer is taking</legend>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px">
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="6">
+            <label style="{{ c.style }}"><input type="checkbox" checked="{{ c.checked }}" disabled="{{ c.locked }}" onChange="{{ c.toggle }}" style="width: 20px; height: 20px; accent-color: #0070B8"><span>{{ c.label }}<sc-if value="{{ c.locked }}" hint-placeholder-val="{{ false }}"><span style="display: block; font-size: 12px; font-weight: 500; color: #166534">Done · locked</span></sc-if></span></label>
+          </sc-for>
+        </div>
+        <span style="font-size: 13px; color: #475569">All Process also adds visa stamping, employment contract and emigration. Untick a service to remove its section.</span>
+      </fieldset>
+      <sc-if value="{{ confirmAll }}" hint-placeholder-val="{{ false }}">
+        <div role="alertdialog" aria-label="Remove all services" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 10px; background: #FEF2F2; border: 1px solid #FECACA; color: #7F1D1D; font-size: 14px">
+          <span><strong>Remove all services?</strong> Details already filled in these sections will be deleted.</span>
+          <span style="display: flex; gap: 8px"><button type="button" onClick="{{ cancelConfirm }}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Keep</button><button type="button" onClick="{{ removeAll }}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 0; background: #B91C1C; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Remove all</button></span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasUndo }}" hint-placeholder-val="{{ false }}">
+        <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 10px; background: #0A2E57; color: #FFFFFF; font-size: 14px">
+          <span>{{ undoText }}</span>
+          <button type="button" onClick="{{ undo }}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #93C5FD; background: transparent; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Undo</button>
+        </div>
+      </sc-if>
+    </section>
+
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="4">
+      <section aria-label="{{ s.title }}" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; display: flex">
+        <div style="flex: 1 1 auto; min-width: 0; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px">
+            <div>
+              <h3 style="margin: 0 0 2px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="{{ s.bar }}"></span>{{ s.title }}</h3>
+              <span style="font-size: 13px; color: #475569">{{ s.note }}</span>
+            </div>
+            <sc-if value="{{ s.locked }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 999px; background: #DCFCE7; color: #166534">Stage done · locked</span></sc-if><sc-if value="{{ s.unlocked }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ s.reset }}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px; color: #334155">Reset</button></sc-if>
+          </div>
+          <sc-if value="{{ s.confirming }}" hint-placeholder-val="{{ false }}">
+            <div role="alertdialog" aria-label="{{ s.confirmText }}" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 10px; background: #FEF2F2; border: 1px solid #FECACA; color: #7F1D1D; font-size: 14px">
+              <span><strong>{{ s.confirmText }}</strong> The details in this section will be deleted.</span>
+              <span style="display: flex; gap: 8px"><button type="button" onClick="{{ cancelConfirm }}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Keep</button><button type="button" onClick="{{ s.confirmYes }}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 0; background: #B91C1C; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">{{ s.confirmLabel }}</button></span>
+            </div>
+          </sc-if>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px">
+            <sc-for list="{{ s.fields }}" as="f" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <label for="{{ f.uid }}" style="font-size: 14px; font-weight: 500">{{ f.label }}</label>
+                <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                  <select id="{{ f.uid }}" value="{{ f.value }}" onChange="{{ f.onChange }}" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF">
+                    <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
+                  </select>
+                </sc-if>
+                <sc-if value="{{ f.isInput }}" hint-placeholder-val="{{ true }}">
+                  <input id="{{ f.uid }}" type="{{ f.type }}" value="{{ f.value }}" placeholder="{{ f.ph }}" onChange="{{ f.onChange }}" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit; min-width: 0">
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+    </sc-for>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 600">3. Package & advance</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="sc" style="font-size: 14px; font-weight: 500">Service charge (₹)</label><input id="sc" value="30,000" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"><span style="font-size: 12px; color: #166534">Within limit of ₹30,000 + GST</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="pt" style="font-size: 14px; font-weight: 500">Costs of ticked services (auto)</label><input id="pt" value="{{ costText }}" readonly style="height: 44px; border: 1px solid #E2E8F0; background: #F8FAFC; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="adv" style="font-size: 14px; font-weight: 500">Advance received today (₹)</label><input id="adv" value="22,000" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="into" style="font-size: 14px; font-weight: 500">Received into</label><select id="into" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>ICICI Bank, Kasia</option><option>HDFC Bank, Kasia</option><option>Cash</option></select></div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 10px; background: #EFF6FF; border: 1px solid #BFDBFE">
+        <span style="font-size: 14px; color: #0A2E57">Total package (service charge + GST + costs)</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: #0A2E57">{{ totalText }}</span>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 600">4. Refund policy & consent</h2>
+      <div style="border-radius: 10px; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 14px 16px; font-size: 14px; line-height: 1.6; color: #334155"><strong style="color: #0F172A">If the file is cancelled:</strong> money already paid to centres, agencies or airlines is not refundable. The service charge already earned up to the stage reached is kept; the rest is refunded within 15 days.</div>
+      <label style="display: flex; align-items: flex-start; gap: 10px; min-height: 44px; font-size: 14px"><input type="checkbox" checked style="width: 20px; height: 20px; margin-top: 2px; accent-color: #0070B8">Policy read out to the customer in Hindi; customer agrees and signs.</label>
+      <label style="display: flex; align-items: flex-start; gap: 10px; min-height: 44px; font-size: 14px"><input type="checkbox" checked style="width: 20px; height: 20px; margin-top: 2px; accent-color: #0070B8">Customer agrees to get updates and reminders on WhatsApp at this number.</label>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px">
+      <button type="button" style="min-height: 48px; padding: 0 20px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px">Save as draft</button>
+      <a href="FileDetail.dc.html" style="display: flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 8px; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 15px; text-decoration: none">{{ submitLabel }}</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["new","edit"],"default":"new"},"$preview":{"width":1280,"height":3000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.core = ['medical', 'skill', 'mofa', 'vfs', 'stamping', 'contract', 'emigration', 'ticket'];
+    this.defaults = {
+      Work: this.core.slice(),
+      Umrah: ['umrah', 'ticket'],
+      Family: ['family', 'mofa', 'vfs', 'ticket'],
+      Tourist: ['vfs', 'ticket']
+    };
+    this.state = {
+      type: 'Work',
+      on: this.core.slice(),
+      data: {
+        medical: { centre: 'Approved centre', city: 'Patna', slip: '', date: '2026-11-20', time: '09:00', result: 'Pending', cost: '9500' },
+        skill: { centre: '', city: 'Lucknow', trade: 'Loader / unloader', date: '', time: '', result: 'Pending', cost: '10000' },
+        stamping: { agency: 'Alif, Mumbai', sent: '', courier: '', cost: '5000' },
+        contract: { agency: 'Alif, Mumbai', date: '', cost: '4000' },
+        ticket: { from: 'DEL', to: 'DMM', date: '', airline: '6E IndiGo', supplier: 'Akbar Travels', pnr: '', cost: '22000', sell: '' }
+      },
+      confirm: null,
+      undo: null
+    };
+    this.defs = {
+      umrah: { title: 'Umrah package', note: 'Booked through a Saudi-licensed Umrah agent', color: '#12A89D', fields: [
+        ['agent', 'Umrah agent', 'text', 'Agent name'], ['pkg', 'Package', 'text', 'e.g. 15 days economy'], ['hotel', 'Hotels (Makkah / Madinah)', 'text', ''], ['dep', 'Departure date', 'date', ''], ['ret', 'Return date', 'date', ''], ['cost', 'Package cost (₹)', 'number', '']] },
+      family: { title: 'Family visit details', note: 'Sponsor issues the MOFA reference slip in Saudi Arabia', color: '#12A89D', fields: [
+        ['sponsor', 'Sponsor name', 'text', ''], ['iqama', 'Sponsor Iqama no.', 'text', ''], ['rel', 'Relationship', ['', 'Wife', 'Son', 'Daughter', 'Father', 'Mother', 'Other']], ['slip', 'MOFA reference slip no.', 'text', '']] },
+      medical: { title: 'GAMCA medical', note: 'Wafid (GAMCA) approved centre · ₹9,500 per attempt', color: '#12A89D', fields: [
+        ['centre', 'Medical centre', ['', 'Approved centre', 'Al Arouba', 'Shivvir', 'Other']], ['city', 'City', ['', 'Lucknow', 'Patna', 'Delhi', 'Mumbai']], ['slip', 'Wafid slip no.', 'text', ''], ['date', 'Date', 'date', ''], ['time', 'Time', 'time', ''], ['result', 'Result', ['Pending', 'Fit', 'Unfit']], ['cost', 'Cost (₹)', 'number', '']] },
+      skill: { title: 'Skill test', note: 'Skill Verification Program test in India', color: '#F37021', fields: [
+        ['centre', 'Test centre', 'text', 'e.g. Hala'], ['city', 'City', ['', 'Lucknow', 'Patna', 'Delhi', 'Mumbai']], ['trade', 'Trade', 'text', ''], ['date', 'Date', 'date', ''], ['time', 'Time', 'time', ''], ['result', 'Result', ['Pending', 'Pass', 'Fail']], ['cost', 'Cost (₹)', 'number', '']] },
+      mofa: { title: 'MOFA', note: 'Mail for MOFA and VFS reference', color: '#0070B8', fields: [
+        ['mail', 'Mail for MOFA date', 'date', ''], ['app', 'MOFA application no.', 'text', ''], ['vfsref', 'VFS reference no.', 'text', 'e.g. 8028XXXXX']] },
+      vfs: { title: 'VFS appointment', note: 'Tasheer / VFS biometric', color: '#0070B8', fields: [
+        ['city', 'City', ['', 'Lucknow', 'Patna', 'Delhi', 'Mumbai']], ['date', 'Date', 'date', ''], ['time', 'Time', 'time', ''], ['ref', 'Appointment no.', 'text', '']] },
+      stamping: { title: 'Visa stamping', note: 'Through Mumbai agency · passport goes by courier', color: '#0A2E57', fields: [
+        ['agency', 'Mumbai agency', ['', 'Alif, Mumbai', 'Siddiqui Travel (SQT), Mumbai']], ['sent', 'Documents sent on', 'date', ''], ['courier', 'Courier & tracking no.', 'text', ''], ['cost', 'Charge (₹)', 'number', '']] },
+      contract: { title: 'Employment contract', note: 'Agreement through the Mumbai agency', color: '#0A2E57', fields: [
+        ['agency', 'Agency', ['', 'Alif, Mumbai', 'Siddiqui Travel (SQT), Mumbai']], ['date', 'Date', 'date', ''], ['cost', 'Charge (₹)', 'number', '']] },
+      emigration: { title: 'Emigration', note: 'eMigrate clearance – needed for ECR passports only', color: '#2E9E47', fields: [
+        ['app', 'eMigrate application no.', 'text', ''], ['date', 'Clearance date', 'date', '']] },
+      ticket: { title: 'Ticket', note: 'Booked through Akbar Travels or the airline', color: '#E8202A', fields: [
+        ['from', 'From', 'text', 'LKO'], ['to', 'To', 'text', 'RUH'], ['date', 'Travel date', 'date', ''], ['airline', 'Airline', 'text', ''], ['supplier', 'Booked through', ['Akbar Travels', 'Airline website', 'Other']], ['pnr', 'PNR', 'text', ''], ['cost', 'Cost price (₹)', 'number', ''], ['sell', 'Selling price (₹)', 'number', '']] }
+    };
+    this.order = ['umrah', 'family', 'medical', 'skill', 'mofa', 'vfs', 'stamping', 'contract', 'emigration', 'ticket'];
+  }
+
+  hasData(k) {
+    const d = this.state.data[k] || {};
+    return Object.keys(d).some(f => d[f] !== '' && d[f] != null);
+  }
+
+  removeKey(k) {
+    const s = this.state;
+    const data = { ...s.data };
+    const saved = data[k];
+    delete data[k];
+    this.setState({ on: s.on.filter(x => x !== k), data, confirm: null, undo: { key: k, data: saved } });
+    clearTimeout(this.undoTimer);
+    this.undoTimer = setTimeout(() => this.setState({ undo: null }), 10000);
+  }
+
+  componentWillUnmount() { clearTimeout(this.undoTimer); }
+
+  renderVals() {
+    const s = this.state;
+    const labels = { medical: 'GAMCA Medical', skill: 'Skill Test', mofa: 'MOFA', vfs: 'VFS Appointment', ticket: 'Ticket' };
+    const edit = (this.props.mode ?? 'new') === 'edit';
+    const locked = edit ? ['medical', 'mofa', 'vfs'] : [];
+    const allOn = this.core.every(k => s.on.includes(k));
+    const chkStyle = on => `display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: ${on ? '2px solid #0070B8' : '1px solid #CBD5E1'}; background: ${on ? '#EFF6FF' : '#FFFFFF'}`;
+
+    const toggle = k => () => {
+      const st = this.state;
+      if (st.on.includes(k)) {
+        if (this.hasData(k)) this.setState({ confirm: { kind: 'remove', key: k } });
+        else this.removeKey(k);
+      } else {
+        this.setState({ on: st.on.concat(k), confirm: null });
+      }
+    };
+    const toggleAll = () => {
+      const st = this.state;
+      if (this.core.every(k => st.on.includes(k))) {
+        if (this.core.some(k => this.hasData(k))) this.setState({ confirm: { kind: 'all' } });
+        else this.setState({ on: st.on.filter(k => !this.core.includes(k)) });
+      } else {
+        this.setState({ on: Array.from(new Set(st.on.concat(this.core))), confirm: null });
+      }
+    };
+
+    const checks = [{ label: 'All Process', checked: allOn, locked: false, toggle: edit && allOn ? () => {} : toggleAll, style: chkStyle(allOn) }].concat(
+      ['medical', 'skill', 'mofa', 'vfs', 'ticket'].map(k => {
+        const on = s.on.includes(k);
+        const lk = locked.includes(k);
+        return { label: labels[k], checked: on, locked: lk, toggle: lk ? () => {} : toggle(k), style: chkStyle(on) };
+      })
+    );
+
+    const typeHints = { Work: 'Job visa – full process', Umrah: 'Pilgrimage package', Family: 'Visit family in KSA', Tourist: 'Tourist visit' };
+    const types = ['Work', 'Umrah', 'Family', 'Tourist'].map(t => ({
+      label: t, hint: typeHints[t], checked: s.type === t,
+      style: `display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 8px 14px; border-radius: 10px; font-size: 15px; cursor: pointer; border: ${s.type === t ? '2px solid #E8202A' : '1px solid #CBD5E1'}; background: ${s.type === t ? '#FEF2F2' : '#FFFFFF'}`,
+      pick: () => {
+        const keep = this.defaults[t];
+        const data = {};
+        Object.keys(this.state.data).forEach(k => { if (keep.includes(k)) data[k] = this.state.data[k]; });
+        this.setState({ type: t, on: keep.slice(), data, confirm: null, undo: null });
+      }
+    }));
+
+    const sections = this.order.filter(k => s.on.includes(k)).map(k => {
+      const def = this.defs[k];
+      const d = s.data[k] || {};
+      const c = s.confirm && s.confirm.key === k ? s.confirm : null;
+      return {
+        title: def.title,
+        note: def.note,
+        locked: locked.includes(k),
+        unlocked: !locked.includes(k),
+        bar: `display: inline-block; width: 12px; height: 12px; border-radius: 6px; background: ${def.color}`,
+        confirming: !!c,
+        confirmText: c ? (c.kind === 'reset' ? `Reset ${def.title}?` : `Remove ${def.title}?`) : '',
+        confirmLabel: c && c.kind === 'reset' ? 'Reset' : 'Remove',
+        confirmYes: () => {
+          if (c && c.kind === 'reset') {
+            const data = { ...this.state.data, [k]: {} };
+            this.setState({ data, confirm: null });
+          } else {
+            this.removeKey(k);
+          }
+        },
+        reset: () => { if (this.hasData(k)) this.setState({ confirm: { kind: 'reset', key: k } }); },
+        fields: def.fields.map(([id, label, type, ph]) => {
+          const isSelect = Array.isArray(type);
+          return {
+            uid: `${k}-${id}`, label, ph: ph || '', type: isSelect ? '' : type,
+            isSelect, isInput: !isSelect,
+            options: isSelect ? type.map(o => ({ v: o, t: o === '' ? 'Select…' : o })) : [],
+            value: d[id] ?? '',
+            onChange: e => {
+              const v = e.target.value;
+              const cur = this.state.data;
+              this.setState({ data: { ...cur, [k]: { ...(cur[k] || {}), [id]: v } } });
+            }
+          };
+        })
+      };
+    });
+
+    const cost = ['medical', 'skill', 'stamping', 'contract', 'ticket', 'umrah'].filter(k => s.on.includes(k))
+      .reduce((sum, k) => sum + (Number((s.data[k] || {}).cost) || 0), 0);
+    const fmt = n => '₹' + n.toLocaleString('en-IN');
+    const service = s.type === 'Work' ? 30000 : 0;
+    const total = service + Math.round(service * 0.18) + cost;
+    const u = s.undo;
+
+    return {
+      types, checks, sections,
+      crumb: edit ? '#4486 / Edit profile' : 'New registration',
+      heading: edit ? 'Edit profile – Arif Ansari #4486' : 'New registration',
+      subline: edit ? 'Same form as registration. Services with a completed stage are locked.' : 'File number #4496 is given automatically. Fields with * are required.',
+      cname: edit ? 'Arif Ansari' : 'Arshad Khan',
+      initials: edit ? 'AA' : 'AK',
+      ppNote: edit ? 'Linked to customer profile – 1 file, 2 tickets' : 'New customer – no match in files or tickets',
+      submitLabel: edit ? 'Save changes' : 'Create file #4496 and send receipt',
+      confirmAll: !!(s.confirm && s.confirm.kind === 'all'),
+      removeAll: () => {
+        const data = { ...this.state.data };
+        this.core.forEach(k => delete data[k]);
+        this.setState({ on: this.state.on.filter(k => !this.core.includes(k)), data, confirm: null });
+      },
+      cancelConfirm: () => this.setState({ confirm: null }),
+      hasUndo: !!u,
+      undoText: u ? `${this.defs[u.key].title} removed.` : '',
+      undo: () => {
+        const st = this.state;
+        if (!st.undo) return;
+        const k = st.undo.key;
+        this.setState({ on: st.on.concat(k), data: { ...st.data, [k]: st.undo.data || {} }, undo: null });
+      },
+      costText: fmt(cost),
+      totalText: fmt(total)
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Top navigation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<header style="position: relative; z-index: 40; background: #FFFFFF; color: #0F172A; font-family: Inter, system-ui, sans-serif; border-bottom: 1px solid #E2E8F0">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 10px 16px 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; box-sizing: border-box">
+    <a href="Dashboard.dc.html" aria-label="Noor Travels Services – dashboard" style="display: flex; align-items: center; min-height: 44px; order: 1">
+      <img src="../../static/img/logo.png" alt="Noor Travels Services" style="height: 42px; width: auto; display: block">
+    </a>
+    <div style="order: 2; flex: 1 1 260px; max-width: 560px; position: relative">
+      <div style="{{ boxStyle }}">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto; color: #475569"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label for="gsearch" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search customers, files and tickets</label>
+        <input id="gsearch" type="search" role="combobox" aria-expanded="{{ openText }}" aria-controls="gsearch-results" autocomplete="off" value="{{ q }}" onChange="{{ setQ }}" onFocus="{{ focus }}" onBlur="{{ blur }}" placeholder="Search passport, mobile, name, file, PNR…" style="flex: 1 1 auto; min-width: 0; height: 42px; border: 0; outline: none; background: transparent; font-size: 15px; font-family: inherit; color: #0F172A">
+        <sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ clear }}" aria-label="Clear search" style="flex: 0 0 auto; width: 32px; height: 32px; border-radius: 16px; border: 0; background: #E2E8F0; color: #334155; font-size: 16px; line-height: 1; font-family: inherit; cursor: pointer">×</button></sc-if>
+      </div>
+      <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+        <div id="gsearch-results" role="listbox" aria-label="Search results" style="position: absolute; top: calc(100% + 6px); left: 0; width: max(100%, min(560px, calc(100vw - 32px))); z-index: 50; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; box-sizing: border-box; overflow: hidden">
+          <div style="max-height: 440px; overflow-y: auto; padding: 6px 0">
+            <sc-if value="{{ empty }}" hint-placeholder-val="{{ true }}">
+              <div style="padding: 8px 16px 6px; display: flex; flex-direction: column; gap: 8px">
+                <span style="font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #64748B">TRY</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                  <sc-for list="{{ tries }}" as="t" hint-placeholder-count="5"><button type="button" onMouseDown="{{ t.pick }}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #E2E8F0; background: #F8FAFC; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer">{{ t.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+              <div style="padding: 2px 0 6px">
+                <span style="display: block; padding: 6px 16px; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #64748B">{{ g.title }}</span>
+                <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+                  <a href="{{ r.href }}" role="option" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 16px; text-decoration: none; color: #0F172A">
+                    <span style="{{ r.icon }}">{{ r.badge }}</span>
+                    <span style="flex: 1 1 auto; min-width: 0">
+                      <span style="display: block; font-weight: 600; font-size: 14px">{{ r.title }}</span>
+                      <span style="display: block; font-size: 12px; color: #475569; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">{{ r.sub }}</span>
+                    </span>
+                    <span style="{{ r.chip }}">{{ r.tag }}</span>
+                  </a>
+                </sc-for>
+              </div>
+            </sc-for>
+            <sc-if value="{{ none }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 16px; font-size: 14px; color: #475569">No match for "{{ q }}". <a href="NewFile.dc.html" style="color: #0070B8; font-weight: 600">New registration</a> or <a href="Tickets.dc.html" style="color: #0070B8; font-weight: 600">new ticket</a>?</div>
+            </sc-if>
+          </div>
+          <div style="padding: 8px 16px; border-top: 1px solid #E2E8F0; background: #F8FAFC; font-size: 12px; color: #475569">Partial numbers work – e.g. last 4 digits of passport or mobile</div>
+        </div>
+      </sc-if>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px; margin-left: auto; order: 3">
+      <a href="Messages.dc.html" aria-label="WhatsApp messages to send: 4" style="position: relative; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #15803D"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.7-5A8.5 8.5 0 1 1 8 19.4z"/></svg><span style="position: absolute; top: 6px; right: 6px; min-width: 16px; height: 16px; border-radius: 8px; background: #16A34A; color: #FFFFFF; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center">4</span></a>
+      <a href="Appointments.dc.html" aria-label="Alerts, 3 new" style="position: relative; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #334155"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span style="position: absolute; top: 6px; right: 6px; min-width: 16px; height: 16px; border-radius: 8px; background: #E8202A; color: #FFFFFF; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center">3</span></a>
+      <a href="Settings.dc.html" aria-label="Noor Alam, owner – settings" style="display: flex; align-items: center; gap: 8px; color: #0F172A; text-decoration: none; min-height: 44px">
+        <span style="width: 34px; height: 34px; border-radius: 17px; background: #0070B8; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">NA</span>
+      </a>
+    </div>
+    <nav aria-label="Main" style="flex: 1 1 100%; order: 4; display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px">
+      <sc-for list="{{ items }}" as="item" hint-placeholder-count="11">
+        <a href="{{ item.href }}" style="{{ item.style }}">{{ item.label }}</a>
+      </sc-for>
+    </nav>
+  </div>
+  <div aria-hidden="true" style="display: flex; height: 4px"><span style="flex: 45 1 0; background: #E8202A"></span><span style="flex: 40 1 0; background: #0070B8"></span><span style="flex: 15 1 0; background: #F7A21B"></span></div>
+
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["dashboard","files","new","tickets","visas","appointments","messages","payments","partners","reports","settings"],"default":"dashboard"},"$preview":{"width":1280,"height":140}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { open: false, q: '' }; }
+  componentWillUnmount() { clearTimeout(this.blurT); }
+  renderVals() {
+    const active = this.props.active ?? 'dashboard';
+    const base = 'flex: 0 0 auto; display: flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 8px; font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap; ';
+    const on = base + 'background: #0070B8; color: #FFFFFF; font-weight: 600;';
+    const off = base + 'color: #1E293B;';
+    const list = [
+      ['dashboard', 'Dashboard', 'Dashboard.dc.html'], ['files', 'All files', 'Candidates.dc.html'], ['new', '+ New registration', 'NewFile.dc.html'],
+      ['tickets', 'Tickets', 'Tickets.dc.html'], ['visas', 'Visas', 'Visas.dc.html'], ['appointments', 'Appointments', 'Appointments.dc.html'],
+      ['messages', 'Messages', 'Messages.dc.html'], ['payments', 'Payments', 'Payments.dc.html'], ['partners', 'Centres & agencies', 'Partners.dc.html'],
+      ['reports', 'Reports', 'Reports.dc.html'], ['settings', 'Settings', 'Settings.dc.html']
+    ];
+    const people = [
+      { name: 'Arif Ansari', pp: 'K4512248', mob: '9721004545', ref: 'Imran Bhai', files: [['4486', 'Work · Saudi', 'Skill test']], tickets: [['T-3311', 'DMM → LKO', 'Mar 2025', '6E · M2Q7XA']] },
+      { name: 'Mohd. Salman', pp: 'P8827720', mob: '9180067707', ref: '', files: [['4491', 'Work · Saudi', 'Medical']], tickets: [] },
+      { name: 'Shahid Ali', pp: 'R3021054', mob: '9935001054', ref: 'Shakeel Bhai', files: [['4489', 'Work · Saudi', 'VFS']], tickets: [] },
+      { name: 'Naushad Alam', pp: 'M7716610', mob: '9670016610', ref: '', files: [['4488', 'Work · Saudi', 'Stamping']], tickets: [] },
+      { name: 'Rakesh Yadav', pp: 'T5545532', mob: '9839005532', ref: '', files: [['4483', 'Work · Saudi', 'Emigration']], tickets: [['T-3440', 'LKO → RUH', '20 Nov', '6E · H7D2LP']] },
+      { name: 'Sameer Alam', pp: 'L6609920', mob: '8858009920', ref: 'Imran Bhai', files: [['4493', 'Umrah', 'Visa']], tickets: [['T-3448', 'LKO → HAIL', '18 Nov', 'QJ7TRA']] },
+      { name: 'Irfan Ansari', pp: 'P4127701', mob: '9956012701', ref: '', files: [], tickets: [['T-3452', 'DMM → LKO', '02 Dec', '6E · KX4P2M']] },
+      { name: 'Shabana Parveen', pp: 'N2093318', mob: '9415023318', ref: '', files: [], tickets: [['T-3449', 'LKO → HAIL', '18 Nov', 'QJ7TRA']] }
+    ];
+    const q = this.state.q.trim().toLowerCase();
+    const icon = (bg, fg) => `flex: 0 0 36px; width: 36px; height: 36px; border-radius: 18px; background: ${bg}; color: ${fg}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700`;
+    const chip = (bg, fg) => `flex: 0 0 auto; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: ${bg}; color: ${fg}; white-space: nowrap`;
+    const ini = n => n.replace('Mohd. ', 'M ').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const hit = p => [p.name, p.pp, p.mob, p.ref].concat(p.files.map(f => '#' + f[0] + ' ' + f[0])).concat(p.tickets.map(t => t[0] + ' ' + t[3])).join(' ').toLowerCase().includes(q);
+    const matched = q ? people.filter(hit) : people.slice(0, 3);
+    const custRows = matched.map(p => ({ href: 'Customer.dc.html', icon: icon('#DBEAFE', '#0A2E57'), badge: ini(p.name), title: p.name, sub: `Passport ${p.pp} · ${p.mob.slice(0, 2)}XXXXXX${p.mob.slice(-2)}${p.ref ? ' · Ref ' + p.ref : ''}`, tag: `${p.files.length} file · ${p.tickets.length} ticket`, chip: chip('#F1F5F9', '#334155') }));
+    const fileRows = q ? matched.flatMap(p => p.files.map(f => ({ href: 'FileDetail.dc.html', icon: icon('#FEF2F2', '#B91C1C'), badge: 'F', title: `#${f[0]} · ${p.name}`, sub: f[1], tag: f[2], chip: chip('#FEF3C7', '#92400E') }))) : [];
+    const tRows = q ? matched.flatMap(p => p.tickets.map(t => ({ href: 'Tickets.dc.html', icon: icon('#FFF4E0', '#5A3818'), badge: 'T', title: `${t[0]} · ${p.name}`, sub: `${t[1]} · ${t[2]} · PNR ${t[3]}`, tag: 'Ticket', chip: chip('#DCFCE7', '#166534') }))) : [];
+    const groups = [['Customers', custRows], ['Visa files', fileRows], ['Tickets', tRows]].filter(g => g[1].length).map(([title, rows]) => ({ title: q ? title.toUpperCase() : 'RECENTLY OPENED', rows }));
+    const tries = ['K4512248', '9721', 'Arif', '#4493', 'QJ7TRA'].map(label => ({ label, pick: e => { e.preventDefault(); this.setState({ q: label, open: true }); } }));
+    return {
+      items: list.map(([k, label, href]) => ({ label, href, style: k === active ? on : off })),
+      open: this.state.open, openText: this.state.open ? 'true' : 'false',
+      focus: () => { clearTimeout(this.blurT); this.setState({ open: true }); },
+      blur: () => { this.blurT = setTimeout(() => this.setState({ open: false }), 180); },
+      clear: () => this.setState({ q: '' }),
+      hasQ: !!this.state.q,
+      boxStyle: `display: flex; align-items: center; gap: 8px; padding: 0 8px 0 12px; border-radius: 10px; border: ${this.state.open ? '2px solid #0070B8' : '1px solid #CBD5E1'}; background: ${this.state.open ? '#FFFFFF' : '#F8FAFC'}; box-sizing: border-box; min-height: 46px`,
+      q: this.state.q, setQ: e => this.setState({ q: e.target.value, open: true }),
+      empty: !q, none: !!q && groups.length === 0,
+      groups, tries
+    };
+  }
+}
+</script>
+</body>
+</html>

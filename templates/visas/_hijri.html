@@ -1,0 +1,5 @@
+<label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Gregorian (auto – you can correct it)
+  <input name="visa_date" type="date" value="{{ g or '' }}" class="h-11 px-3 rounded-lg border border-slate-300 bg-white font-normal">
+  {% if typed and not g %}<span class="text-xs text-amber-700">Write it as DD-MM-YYYY, e.g. 14-05-1448</span>
+  {% elif g %}<span class="text-xs font-normal text-slate-500">≈ {{ g | dmy }} (Umm al-Qura may differ by a day)</span>{% endif %}
+</label>

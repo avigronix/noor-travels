@@ -1,0 +1,16 @@
+{# Staff app layout: sidebar (laptop) / tab bar (phone) → main → footer. Every /app page extends this. #}
+{% extends "layouts/base.html" %}
+{% block title %}{% block page_title %}Dashboard{% endblock %} · {{ biz.short }}{% endblock %}
+
+{% block body %}
+  {% include "partials/navbar.html" %}
+  <div class="flex min-h-screen flex-1 flex-col sb-offset">
+    {# the header lives in navbar.html (sticky); main content follows #}
+    <main id="main" class="mx-auto w-full max-w-[1280px] flex-1 px-4 pt-5 pb-28 sm:pt-6 lg:px-6 lg:pb-10">
+      {% block content %}{% endblock %}
+    </main>
+    {% include "partials/footer.html" %}
+  </div>
+  {# Pop-ups (stage details, courier, payments) are loaded here by HTMX #}
+  <div id="modal"></div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{# Design reference: docs/design/SiteUmrah.dc.html #}
+{% extends "layouts/site.html" %}
+{% import "website/_macros.html" as m %}
+{% block title %}Umrah packages from Kasia, Kushinagar · {{ biz.name }}{% endblock %}
+{% block description %}Umrah visa through a Saudi-licensed partner, flights, hotels in Makkah and Madinah and transport – arranged by Noor Travels Services, Kasia.{% endblock %}
+{% block content %}
+<section class="bg-gradient-to-br from-[#FBF6EF] to-[#F5F8FC] border-b border-slate-200">
+  <div class="max-w-[1200px] mx-auto px-4 py-12 sm:py-16 flex flex-col gap-3">
+    <span class="text-xs font-bold tracking-[0.12em] text-brand-brown">UMRAH</span>
+    <h1 class="font-display text-[clamp(2rem,6vw,3rem)] font-bold leading-[1.1] text-brand-navy max-w-3xl">Umrah, planned with care from Kasia</h1>
+    <p class="max-w-2xl text-lg text-slate-600 leading-relaxed">From India, the Umrah visa is issued through a travel agent licensed by the Saudi Ministry of Hajj and Umrah. We arrange it through our licensed partner, together with your flights, hotels and transport.</p>
+    <div class="flex flex-wrap gap-3 pt-2">
+      <a href="{{ wa_link(biz.whatsapp, 'Namaste, mujhe Umrah package ki jaankari chahiye.') }}" target="_blank" rel="noopener" class="h-12 inline-flex items-center px-5 rounded-lg bg-green-600 text-white font-semibold">Ask for a package on WhatsApp</a>
+      <a href="tel:+91{{ biz.phones[1] | replace(' ', '') }}" class="h-12 inline-flex items-center px-5 rounded-lg bg-brand-navy text-white font-semibold">Call {{ biz.phones[1] }}</a>
+    </div>
+  </div>
+</section>
+
+<section aria-label="What a package includes" class="max-w-[1200px] mx-auto px-4 py-14 flex flex-col gap-6">
+  <h2 class="font-display text-[clamp(1.6rem,4vw,2.25rem)] font-semibold text-brand-navy">What your package can include</h2>
+  <div class="grid gap-3 grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))]">
+    {{ m.value_card("Umrah visa", "Through our Saudi-licensed Umrah partner.") }}
+    {{ m.value_card("Flights", "From Lucknow, Delhi or your nearest airport.") }}
+    {{ m.value_card("Hotels", "In Makkah and Madinah, to suit your budget.") }}
+    {{ m.value_card("Transport", "Airport transfers and travel between the two cities.") }}
+  </div>
+</section>
+
+<section aria-label="How booking works" class="bg-[#F5F8FC] border-y border-slate-200">
+  <div class="max-w-[1200px] mx-auto px-4 py-14 grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_1fr]">
+    <div>
+      <h2 class="font-display text-[clamp(1.6rem,4vw,2.25rem)] font-semibold text-brand-navy">How booking works</h2>
+      <ol class="mt-5 flex flex-col gap-3">
+        {% for s in ["Tell us your travel month, number of people and budget.",
+                     "We share the package options and the full price in writing.",
+                     "Give us your passports and photos; we apply for the visa.",
+                     "You get the visa, tickets and hotel details on WhatsApp.",
+                     "A travel-day checklist the morning you leave."] %}
+        <li class="flex gap-3 items-start"><span class="shrink-0 grid place-items-center w-8 h-8 rounded-full bg-brand-orange text-brand-navy font-bold">{{ loop.index }}</span><span class="pt-1 text-slate-700">{{ s }}</span></li>
+        {% endfor %}
+      </ol>
+    </div>
+    <div class="rounded-2xl bg-white border border-slate-200 p-5 self-start">
+      <h3 class="font-semibold text-brand-navy">Keep ready</h3>
+      <ul class="mt-3 flex flex-col gap-2 text-sm text-slate-700">
+        {% for d in ["Passport valid for at least 6 months", "Passport-size photos with a white background",
+                     "Any vaccination the Saudi health rules ask for that season", "Mobile number on WhatsApp"] %}
+        <li class="flex gap-2"><span class="text-green-600 font-bold" aria-hidden="true">✓</span>{{ d }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="max-w-[1200px] mx-auto px-4 py-14">{% include "website/_enquiry_form.html" %}</div>
+{% endblock %}

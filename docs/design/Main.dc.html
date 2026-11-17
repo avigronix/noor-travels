@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Staff login</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; font-family: Inter, system-ui, sans-serif; color: #0F172A; background: #F4F6F8">
+  <section style="flex: 1 1 420px; background: #0A2E57; color: #EFF6FF; padding: 48px 40px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; box-sizing: border-box">
+    <div style="align-self: flex-start; background: #FFFFFF; border-radius: 12px; padding: 12px 16px"><img src="../../static/img/logo.png" alt="Noor Travels Services" style="height: 64px; width: auto; display: block"></div>
+    <div style="display: flex; flex-direction: column; gap: 20px; max-width: 460px">
+      <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 6vw, 40px); line-height: 1.15; font-weight: 600">Every Gulf visa file, from passport to flight, in one place.</h1>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 15px; color: #DBEAFE">
+        <li style="display: flex; gap: 10px; align-items: flex-start"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Track medical, MOFA, VFS, skill test, stamping, emigration and ticket</li>
+        <li style="display: flex; gap: 10px; align-items: flex-start"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Package, instalments, GST receipts and refunds per candidate</li>
+        <li style="display: flex; gap: 10px; align-items: flex-start"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Appointment reminders to candidates on WhatsApp</li>
+      </ul>
+    </div>
+    <div style="font-size: 13px; color: #BFDBFE">Kasia, Kushinagar · 99844 14350 / 88819 51234 · Software by Avigronix Technologies</div>
+  </section>
+  <section style="flex: 1 1 420px; display: flex; align-items: center; justify-content: center; padding: 48px 24px; box-sizing: border-box">
+    <form style="width: 100%; max-width: 400px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+      <div>
+        <h2 style="margin: 0 0 6px; font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600">Staff login</h2>
+        <p style="margin: 0; font-size: 14px; color: #475569">Owner and office staff sign in here.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="mobile" style="font-size: 14px; font-weight: 500">Mobile number</label>
+        <input id="mobile" type="tel" placeholder="10-digit mobile" style="height: 46px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="pw" style="font-size: 14px; font-weight: 500">Password</label>
+        <input id="pw" type="password" placeholder="Password" style="height: 46px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit">
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 14px">
+        <label style="display: flex; align-items: center; gap: 8px; min-height: 44px"><input type="checkbox" style="width: 18px; height: 18px">Keep me signed in</label>
+        <a href="#" style="font-weight: 500">Forgot password?</a>
+      </div>
+      <a href="Dashboard.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 8px; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 15px; text-decoration: none">Sign in</a>
+      <p style="margin: 0; font-size: 13px; color: #475569; text-align: center">Candidate? <a href="CandidateLogin.dc.html" style="font-weight: 500">Check your file status</a></p>
+    </form>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

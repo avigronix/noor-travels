@@ -1,0 +1,36 @@
+{% from "partials/_fields.html" import pill %}
+<div class="flex items-center gap-2 mb-3">
+  {% if day == 'week' %}
+  <a href="/app/appointments?day=week&amp;start={{ prev }}&amp;type={{ type }}&amp;city={{ city }}" hx-get="/app/appointments?day=week&amp;start={{ prev }}&amp;type={{ type }}&amp;city={{ city }}" hx-target="#rows" hx-push-url="true" aria-label="Previous week" class="grid place-items-center w-11 h-11 rounded-lg border border-slate-300 bg-white text-lg">‹</a>
+  {% endif %}
+  <span class="font-semibold">{{ first | dmy }}{% if last != first %} – {{ last | dmy }}{% endif %}</span>
+  {% if day == 'week' %}
+  <a href="/app/appointments?day=week&amp;start={{ next }}&amp;type={{ type }}&amp;city={{ city }}" hx-get="/app/appointments?day=week&amp;start={{ next }}&amp;type={{ type }}&amp;city={{ city }}" hx-target="#rows" hx-push-url="true" aria-label="Next week" class="grid place-items-center w-11 h-11 rounded-lg border border-slate-300 bg-white text-lg">›</a>
+  {% endif %}
+</div>
+{% for d in days %}
+<section class="mb-4 card">
+  <h2 class="px-4 pt-3 pb-2 font-semibold text-brand-navy">{{ 'Today · ' if d.date == today else 'Tomorrow · ' if d.date == tomorrow else '' }}{{ d.date.strftime('%a %d %b') }}</h2>
+  {% for a in d.entries %}
+  <div class="flex flex-wrap items-center gap-3 px-4 py-3 border-t border-slate-100">
+    <span class="w-20 shrink-0 font-semibold">{{ (a.at_time | hm) or '—' }}</span>
+    <div class="flex-1 min-w-[180px]">
+      {% if a.file_id %}<a href="/app/files/{{ a.file_id }}" class="font-semibold text-brand-navy hover:underline">{{ a.name }} · #{{ a.serial_no }}</a>
+      {% else %}<a href="/app/customers/{{ a.customer_id }}" class="font-semibold text-brand-navy hover:underline">{{ a.name }}</a>{% endif %}
+      <span class="block text-sm text-slate-500">{{ [a.centre, a.place] | select | join(', ') or '—' }}{% if a.attempt_no and a.attempt_no > 1 %} · attempt {{ a.attempt_no }}{% endif %}{% if a.ticket_no %} · T-{{ a.ticket_no }}{% endif %}</span>
+    </div>
+    {{ pill(a.type | stage if a.type != 'flight' else 'Flight', 'blue' if a.type != 'flight' else 'amber') }}
+    {% if a.status in ('done', 'failed') %}{{ pill(a.status | title, 'green' if a.status == 'done' else 'red') }}
+    {% else %}<span class="text-xs text-slate-500">{{ 'Reminder ' ~ a.reminder if a.reminder else 'Reminder at 6 pm the day before' }}</span>{% endif %}
+    <span class="flex gap-1.5">
+      <a href="tel:{{ a.mobile }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-medium">Call</a>
+      <a href="{{ wa_link(a.mobile, 'Namaste ' ~ a.name.split(' ')[0] ~ ' ji, yaad dilate hain: ' ~ (a.type | stage if a.type != 'flight' else 'flight') ~ ' ' ~ (a.on_date | dmy) ~ ' ' ~ (a.at_time | hm) ~ ', ' ~ ([a.centre, a.place] | select | join(', ')) ~ '. Saath laayein: ' ~ docs.get(a.type, 'passport, ticket') ~ '. – Noor Travels Services') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-sm font-medium">WhatsApp</a>
+      {% if a.kind == 'stage' and a.status == 'scheduled' %}<a href="/app/files/{{ a.file_id }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold text-brand-blue">Mark result</a>{% endif %}
+    </span>
+  </div>
+  {% endfor %}
+</section>
+{% else %}
+<p class="empty-state">No appointments or flights in this period.</p>
+{% endfor %}
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}

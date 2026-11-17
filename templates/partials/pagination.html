@@ -1,0 +1,31 @@
+{# Usage: {% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+   Links keep every current filter and only change ?page= (HTMX swaps just the list, URL is pushed). #}
+{% if r.total %}
+{% set p, n = r.page, r.pages %}
+{% set nums = ([1] + range([p - 1, 2] | max, [p + 1, n - 1] | min + 1) | list + ([n] if n > 1 else [])) | unique | list %}
+<nav class="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm" aria-label="Pages">
+  <p class="text-slate-500">Showing <strong class="text-slate-700">{{ (p - 1) * r.per_page + 1 }}–{{ [p * r.per_page, r.total] | min }}</strong> of <strong class="text-slate-700">{{ r.total }}</strong></p>
+  {% if n > 1 %}
+  <div class="flex items-center gap-1">
+    {% macro pg(num, label=None, aria=None, disabled=false, current=false) -%}
+      {% if disabled %}
+      <span class="grid place-items-center min-w-11 h-11 px-2 rounded-xl text-slate-300" aria-hidden="true">{{ label or num }}</span>
+      {% elif current %}
+      <span aria-current="page" class="grid place-items-center min-w-11 h-11 px-2 rounded-xl bg-brand-navy font-semibold text-white">{{ num }}</span>
+      {% else %}
+      <a href="{{ page_url(request, num) }}" hx-get="{{ page_url(request, num) }}" hx-target="{{ target }}" hx-push-url="true" {% if aria %}aria-label="{{ aria }}"{% endif %}
+         class="grid place-items-center min-w-11 h-11 px-2 rounded-xl border border-slate-200 bg-white font-medium text-slate-700 hover:border-brand-blue hover:text-brand-blue">{{ label or num }}</a>
+      {% endif %}
+    {%- endmacro %}
+    {{ pg(p - 1, icon('chevron-left', 'icon-sm'), 'Previous page', disabled=not r.has_prev) }}
+    {% set last = namespace(v=0) %}
+    {% for num in nums %}
+      {% if num - last.v > 1 %}<span class="hidden sm:grid place-items-center w-6 text-slate-400">…</span>{% endif %}
+      <span class="{{ '' if num == p else 'hidden sm:contents' }}">{{ pg(num, current=(num == p)) }}</span>
+      {% set last.v = num %}
+    {% endfor %}
+    {{ pg(p + 1, icon('chevron-right', 'icon-sm'), 'Next page', disabled=not r.has_next) }}
+  </div>
+  {% endif %}
+</nav>
+{% endif %}

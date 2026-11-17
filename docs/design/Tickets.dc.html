@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Ticket desk</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="tickets" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Ticket desk</h1>
+        <p style="margin: 0; font-size: 14px; color: #475569">Every air ticket in one list – walk-in customers and tickets inside visa files.</p>
+      </div>
+      <button type="button" onClick="{{ toggleForm }}" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 0; background: #E8202A; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">{{ formBtn }}</button>
+    </div>
+
+    <section aria-label="This month" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Tickets this month</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">46</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Sales</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">₹10,84,600</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Margin (owner)</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: #166534">₹46,000</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Flying this week</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">7</span></div>
+      <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #78350F">Balance due</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: #78350F">₹18,300</span></div>
+    </section>
+
+    <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+      <section style="background: #FFFFFF; border: 2px solid #0070B8; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 600">New ticket · T-3453</h2>
+          <span style="font-size: 13px; color: #475569">Customer already registered? Search by name, passport or mobile.</span>
+        </div>
+        <h3 style="margin: 0; font-size: 15px; font-weight: 600">Passengers</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end">
+          <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px"><label for="look" style="font-size: 14px; font-weight: 600">Find customer by passport or mobile</label><input id="look" value="{{ look }}" onChange="{{ setLook }}" placeholder="e.g. K4512248 or 9721…" style="height: 44px; border: 2px solid #0070B8; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        </div>
+        <sc-if value="{{ found }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #F0FDF4; border: 1px solid #BBF7D0; font-size: 14px">
+            <span><strong>Existing customer found:</strong> <a href="Customer.dc.html" style="font-weight: 700">Arif Ansari</a> · passport K4512248 · 1 visa file (#4486) · 1 earlier ticket</span>
+            <button type="button" onClick="{{ useIt }}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 0; background: #16A34A; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 13px">{{ useLabel }}</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ linked }}" hint-placeholder-val="{{ false }}">
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px"><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #0070B8">Also add this ticket to visa file #4486 (fills its Ticket stage)</label>
+        </sc-if>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; padding: 14px; border-radius: 10px; background: #F8FAFC; border: 1px solid #E2E8F0">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="pn" style="font-size: 14px; font-weight: 500">Name (as on passport) *</label><input id="pn" value="Irfan Ansari" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="pp" style="font-size: 14px; font-weight: 500">Passport no. *</label><input id="pp" value="P41XXX27" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="pe" style="font-size: 14px; font-weight: 500">Passport expiry *</label><input id="pe" type="date" value="2033-03-18" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="pd" style="font-size: 14px; font-weight: 500">Date of birth *</label><input id="pd" type="date" value="1995-04-12" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="pm" style="font-size: 14px; font-weight: 500">Mobile (WhatsApp) *</label><input id="pm" value="99XXXXXX12" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="pa" style="font-size: 14px; font-weight: 500">Address</label><input id="pa" value="Vill. Rampur, Post Kasia, Kushinagar" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        </div>
+        <button type="button" style="align-self: flex-start; min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px dashed #94A3B8; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">+ Add passenger</button>
+
+        <h3 style="margin: 0; font-size: 15px; font-weight: 600">Flight</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="f1" style="font-size: 14px; font-weight: 500">From *</label><input id="f1" value="DMM" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="t1" style="font-size: 14px; font-weight: 500">To *</label><input id="t1" value="LKO" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="d1" style="font-size: 14px; font-weight: 500">Travel date *</label><input id="d1" type="date" value="2026-12-02" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="al" style="font-size: 14px; font-weight: 500">Airline</label><input id="al" value="6E IndiGo" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="via" style="font-size: 14px; font-weight: 500">Booked through</label><select id="via" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Akbar Travels</option><option>Airline website</option><option>Other</option></select></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="pnr" style="font-size: 14px; font-weight: 500">PNR *</label><input id="pnr" value="KX4P2M" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit; text-transform: uppercase"></div>
+        </div>
+        <button type="button" style="align-self: flex-start; min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px dashed #94A3B8; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">+ Add connecting flight / return</button>
+
+        <h3 style="margin: 0; font-size: 15px; font-weight: 600">Money</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="cp" style="font-size: 14px; font-weight: 500">Cost price (₹) *</label><input id="cp" type="number" value="{{ cost }}" onChange="{{ setCost }}" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="sp" style="font-size: 14px; font-weight: 500">Selling price (₹) *</label><input id="sp" type="number" value="{{ sell }}" onChange="{{ setSell }}" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 500">Margin (owner)</span><span style="{{ marginStyle }}">{{ margin }}</span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="rc" style="font-size: 14px; font-weight: 500">Received now (₹)</label><input id="rc" type="number" value="14200" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="ri" style="font-size: 14px; font-weight: 500">Received into</label><select id="ri" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Cash</option><option>ICICI Bank, Kasia</option><option>HDFC Bank, Kasia</option><option>UPI</option></select></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between">
+          <span style="display: flex; flex-wrap: wrap; gap: 14px">
+            <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px"><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #0070B8">Send flight details (PNR, date, times) on WhatsApp</label>
+            <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px"><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #0070B8">Travel-day reminder</label>
+          </span>
+          <span style="display: flex; gap: 8px; flex-wrap: wrap">
+            <button type="button" onClick="{{ toggleForm }}" style="min-height: 44px; padding: 0 18px; border-radius: 8px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">Save ticket</button>
+          </span>
+        </div>
+      </section>
+    </sc-if>
+
+    <section aria-label="Search and filters" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; gap: 8px; align-items: center">
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 46px; border: 1px solid #CBD5E1; border-radius: 10px; box-sizing: border-box">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" aria-label="Search tickets" placeholder="Name, PNR, passport or mobile" style="flex: 1 1 auto; min-width: 0; height: 42px; border: 0; outline: none; font-size: 15px; font-family: inherit; background: transparent">
+        </div>
+        <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ toggleFilters }}" aria-expanded="{{ filtersOpenText }}" aria-label="Filters" style="{{ filterBtn }}">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+            <sc-if value="{{ hasActive }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: #E8202A; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">1</span></sc-if>
+          </button>
+        </sc-if>
+      </div>
+      <sc-if value="{{ chipsRow }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex"><button type="button" onClick="{{ clearF }}" style="display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #BFDBFE; background: #EFF6FF; color: #0A2E57; font-family: inherit; font-size: 13px; font-weight: 600">{{ curF }} <span aria-hidden="true">×</span></button></div>
+      </sc-if>
+      <sc-if value="{{ showFilters }}" hint-placeholder-val="{{ true }}">
+        <div role="group" aria-label="Filter" style="display: flex; gap: 6px; overflow-x: auto; flex-wrap: wrap">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+            <button type="button" onClick="{{ t.pick }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+    </section>
+
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow-x: auto">
+      <table style="width: 100%; min-width: 980px; border-collapse: collapse; font-size: 14px">
+        <thead><tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px"><th style="padding: 12px 14px; font-weight: 600">No.</th><th style="padding: 12px 14px; font-weight: 600">Passenger</th><th style="padding: 12px 14px; font-weight: 600">Travel</th><th style="padding: 12px 14px; font-weight: 600">Route</th><th style="padding: 12px 14px; font-weight: 600">Airline · PNR</th><th style="padding: 12px 14px; font-weight: 600">Via</th><th style="padding: 12px 14px; font-weight: 600; text-align: right">Amount</th><th style="padding: 12px 14px; font-weight: 600">Received</th></tr></thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+            <tr style="border-top: 1px solid #EEF2F6">
+              <td style="padding: 12px 14px; font-weight: 700; white-space: nowrap">{{ r.no }}</td>
+              <td style="padding: 12px 14px"><a href="Customer.dc.html" style="display: block; font-weight: 600; color: #0F172A">{{ r.name }}</a><span style="display: block; font-size: 13px; color: #475569">{{ r.sub }}</span></td>
+              <td style="padding: 12px 14px; white-space: nowrap">{{ r.date }}</td>
+              <td style="padding: 12px 14px; font-weight: 600; white-space: nowrap">{{ r.route }}</td>
+              <td style="padding: 12px 14px; white-space: nowrap">{{ r.pnr }}</td>
+              <td style="padding: 12px 14px; color: #475569">{{ r.via }}</td>
+              <td style="padding: 12px 14px; text-align: right; font-weight: 600; white-space: nowrap">{{ r.amount }}</td>
+              <td style="padding: 12px 14px"><span style="{{ r.chip }}">{{ r.paid }}</span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    </sc-if>
+    <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+          <article style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start">
+              <div style="min-width: 0"><a href="Customer.dc.html" style="display: block; font-weight: 700; font-size: 16px; color: #0F172A; text-decoration: none">{{ r.name }}</a><span style="font-size: 13px; color: #475569">{{ r.no }} · {{ r.sub }}</span></div>
+              <span style="font-weight: 700; font-size: 15px; white-space: nowrap">{{ r.amount }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: #F8FAFC">
+              <span style="flex: 1 1 auto; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px; color: #0A2E57">{{ r.route }}</span>
+              <span style="font-size: 13px; color: #334155; text-align: right">{{ r.date }}<span style="display: block; color: #64748B">{{ r.pnr }}</span></span>
+            </div>
+            <span style="{{ r.chip }}; align-self: flex-start">{{ r.paid }}</span>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+    <p style="margin: 0; font-size: 13px; color: #475569">Sample data for the design. Rows with a file number come from visa files; the rest are walk-in bookings.</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1800}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { form: true, f: 'All', cost: '13200', sell: '14200', look: 'K4512248', used: false, narrow: false, open: false }; }
+  componentDidMount() {
+    this.mq = window.matchMedia('(max-width: 720px)');
+    this.onMq = () => this.setState({ narrow: this.mq.matches, form: this.mq.matches ? false : this.state.form });
+    this.onMq();
+    this.mq.addEventListener('change', this.onMq);
+  }
+  componentWillUnmount() { if (this.mq) this.mq.removeEventListener('change', this.onMq); }
+  renderVals() {
+    const s = this.state;
+    const chip = (bg, fg) => `display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: ${bg}; color: ${fg}; white-space: nowrap`;
+    const all = [
+      { no: 'T-3452', name: 'Irfan Ansari', sub: 'Walk-in · Kushinagar', date: '02 Dec', route: 'DMM → LKO', pnr: '6E · KX4P2M', via: 'Akbar Travels', amount: '₹14,200', paid: 'Paid · cash', k: 'paid', week: false, file: false },
+      { no: 'T-3451', name: 'Nasreen Bano', sub: 'Walk-in · Kushinagar', date: '02 Dec', route: 'DMM → LKO', pnr: '6E · KX4P2M', via: 'Akbar Travels', amount: '₹14,200', paid: 'Paid · ICICI', k: 'paid', week: false, file: false },
+      { no: 'T-3450', name: 'Rashid Husain', sub: 'Walk-in · Kushinagar', date: '19 Nov', route: 'DMM → LKO', pnr: '6E · KX4P2M', via: 'Akbar Travels', amount: '₹14,200', paid: '₹4,200 due', k: 'due', week: true, file: false },
+      { no: 'T-3449', name: 'Shabana Parveen', sub: 'Walk-in · Kushinagar', date: '18 Nov', route: 'LKO → HAIL', pnr: 'QJ7TRA', via: 'Akbar Travels', amount: '₹32,500', paid: 'Paid · ICICI', k: 'paid', week: true, file: false },
+      { no: 'T-3448', name: 'Sameer Alam', sub: 'Umrah · file #4493', date: '18 Nov', route: 'LKO → HAIL', pnr: 'QJ7TRA', via: 'Akbar Travels', amount: '₹32,500', paid: '₹14,100 due', k: 'due', week: true, file: true },
+      { no: 'T-3447', name: 'Imtiyaz Ahmad', sub: 'Work visa · file #4492', date: '27 Nov', route: 'DEL → DMM', pnr: '6E · ZP9W2L', via: 'Akbar Travels', amount: '₹22,000', paid: 'In package', k: 'pkg', week: false, file: true },
+      { no: 'T-3446', name: 'Ravi Kumar', sub: 'Work visa · file #4486', date: '13 Nov', route: 'IXR → BOM → RUH', pnr: '6E · B3N8QD', via: 'Akbar Travels', amount: '₹22,000', paid: 'In package', k: 'pkg', week: false, file: true }
+    ];
+    const chips = { paid: chip('#DCFCE7', '#166534'), due: chip('#FEF3C7', '#92400E'), pkg: chip('#DBEAFE', '#1E40AF') };
+    const filt = { All: () => true, 'Flying this week': r => r.week, 'Balance due': r => r.k === 'due', 'From visa files': r => r.file };
+    const on = 'flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #0070B8; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 13px; font-family: inherit; cursor: pointer';
+    const off = 'flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; font-weight: 500; font-size: 13px; font-family: inherit; cursor: pointer';
+    const m = (Number(s.sell) || 0) - (Number(s.cost) || 0);
+    return {
+      look: s.look, setLook: e => this.setState({ look: e.target.value, used: false }),
+      found: /4512248|9721/.test(s.look) && s.look.length >= 4,
+      linked: s.used,
+      useLabel: s.used ? '✓ Linked' : 'Use this customer',
+      useIt: () => this.setState({ used: true }),
+      showForm: s.form,
+      formBtn: s.form ? 'Close form' : '+ New ticket',
+      toggleForm: () => this.setState({ form: !this.state.form }),
+      cost: s.cost, sell: s.sell,
+      setCost: e => this.setState({ cost: e.target.value }),
+      setSell: e => this.setState({ sell: e.target.value }),
+      margin: '₹' + m.toLocaleString('en-IN'),
+      marginStyle: `height: 44px; display: flex; align-items: center; padding: 0 12px; border-radius: 8px; font-size: 18px; font-weight: 700; background: ${m >= 0 ? '#F0FDF4' : '#FEF2F2'}; color: ${m >= 0 ? '#166534' : '#991B1B'}`,
+      narrow: s.narrow, wide: !s.narrow,
+      showFilters: s.narrow ? s.open : true,
+      toggleFilters: () => this.setState({ open: !this.state.open }),
+      filtersOpenText: (s.narrow ? s.open : true) ? 'true' : 'false',
+      filterBtn: `position: relative; flex: 0 0 auto; width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; ${s.open ? 'border: 0; background: #0070B8; color: #FFFFFF;' : 'border: 1px solid #CBD5E1; background: #FFFFFF; color: #0A2E57;'}`,
+      hasActive: s.f !== 'All', chipsRow: s.narrow && !s.open && s.f !== 'All', curF: s.f,
+      clearF: () => this.setState({ f: 'All' }),
+      tabs: Object.keys(filt).map(k => ({ label: k, style: k === s.f ? on : off, pick: () => this.setState({ f: k }) })),
+      rows: all.filter(filt[s.f]).map(r => ({ ...r, chip: chips[r.k] }))
+    };
+  }
+}
+</script>
+</body>
+</html>

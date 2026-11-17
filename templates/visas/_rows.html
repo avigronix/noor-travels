@@ -1,0 +1,33 @@
+{% from "partials/_fields.html" import pill %}
+{% if result.rows %}
+<div class="hidden md:block overflow-x-auto card card-sm">
+  <table class="w-full text-sm">
+    <thead class="thead"><tr><th class="px-4 py-3 font-medium">Visa no.</th><th class="px-4 py-3 font-medium">Sponsor</th>
+      <th class="px-4 py-3 font-medium">Job · date</th><th class="px-4 py-3 font-medium">Status</th><th class="px-4 py-3"><span class="sr-only">Action</span></th></tr></thead>
+    <tbody>
+    {% for v in result.rows %}
+      <tr class="border-t border-slate-100">
+        <td class="px-4 py-3 font-mono font-semibold"><a href="/app/visas/{{ v.id }}" class="text-brand-navy hover:underline">{{ v.visa_no }}</a></td>
+        <td class="px-4 py-3"><span class="block">{{ v.sponsor_name or '—' }} · {{ v.sponsor_no or '' }}</span><span class="text-xs text-slate-500">{{ v.country }}</span></td>
+        <td class="px-4 py-3"><span class="block">{{ v.profession or '—' }}</span><span class="text-xs text-slate-500">{{ (v.visa_date_hijri ~ ' AH') if v.visa_date_hijri else (v.visa_date | dmy) }}</span></td>
+        <td class="px-4 py-3">{% if v.file_id %}{{ pill('#' ~ v.serial_no ~ ' ' ~ v.customer_name, 'blue') }}{% elif v.was_released %}{{ pill('Released – free', 'amber') }}{% else %}{{ pill('Free', 'green') }}{% endif %}</td>
+        <td class="px-4 py-3 text-right">{% include "visas/_action.html" %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+<ul class="md:hidden space-y-2">
+  {% for v in result.rows %}
+  <li class="card card-sm p-4">
+    <div class="flex justify-between gap-2"><a href="/app/visas/{{ v.id }}" class="font-mono font-semibold text-brand-navy">{{ v.visa_no }}</a>
+      {% if v.file_id %}{{ pill('#' ~ v.serial_no, 'blue') }}{% elif v.was_released %}{{ pill('Released', 'amber') }}{% else %}{{ pill('Free', 'green') }}{% endif %}</div>
+    <p class="text-sm text-slate-500">{{ v.profession or '' }} · {{ v.sponsor_name or '' }} · {{ v.country }}</p>
+    <div class="mt-2">{% include "visas/_action.html" %}</div>
+  </li>
+  {% endfor %}
+</ul>
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+{% else %}
+<p class="empty-state">No visas yet.</p>
+{% endif %}

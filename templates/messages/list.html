@@ -1,0 +1,55 @@
+{# Design: docs/design/Messages.dc.html #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import page_head %}
+{% block page_title %}Messages{% endblock %}
+{% block content %}
+<div class="mb-5">{{ page_head("WhatsApp messages", "The app writes every message. Tap <strong>Send on WhatsApp</strong> – it opens with the number and text ready – then press Send. Free, no paid service.", "whatsapp") }}</div>
+<section aria-label="Today" class="grid gap-3 grid-cols-3 mb-4">
+  {% for label, val, t in [("To send now", stats.due, "queue"), ("Sent today", stats.sent_today, "sent"), ("Scheduled reminders", stats.later, "later")] %}
+  <a href="/app/messages?tab={{ t }}" class="card card-sm p-3"><p class="text-xs text-slate-500">{{ label }}</p><p class="page-title">{{ val }}</p></a>
+  {% endfor %}
+</section>
+{% set tabs = [("queue", "To send"), ("later", "Scheduled"), ("sent", "Sent"), ("skipped", "Skipped"), ("all", "History")] %}
+{% if user.role == 'owner' %}{% set tabs = tabs + [("rules", "Rules"), ("templates", "Wording")] %}{% endif %}
+<nav role="tablist" aria-label="Message views" class="flex gap-1 overflow-x-auto [scrollbar-width:none] border-b border-slate-200 mb-4">
+  {% for key, label in tabs %}
+  <a role="tab" href="/app/messages?tab={{ key }}{{ '&file_id=' ~ file_id if file_id }}" aria-selected="{{ 'true' if tab == key else 'false' }}"
+     class="shrink-0 min-h-11 inline-flex items-center px-4 border-b-2 font-semibold {{ 'border-brand-red text-brand-navy' if tab == key else 'border-transparent text-slate-500' }}">{{ label }}</a>
+  {% endfor %}
+</nav>
+
+{% if tab == 'rules' %}
+<p class="text-sm text-slate-600 mb-3">Choose which messages the app prepares. Nothing is prepared 9 pm – 7 am except travel-day checklists.</p>
+<div class="card divide-y divide-slate-100">{% for t in templates %}{% include "messages/_rule.html" %}{% endfor %}</div>
+{% elif tab == 'templates' %}
+<form method="post" action="/app/messages/language" class="mb-3 flex flex-wrap items-center gap-2 text-sm">
+  <span>Messages go out in:</span>
+  {% for k, l in [("hi", "Hindi (Roman)"), ("hi_dev", "हिंदी"), ("en", "English")] %}<button name="lang" value="{{ k }}" class="h-10 px-3 rounded-lg border border-slate-300 bg-white font-semibold">{{ l }}</button>{% endfor %}
+</form>
+<ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+  {% for t in templates %}
+  <li><a href="/app/messages/templates/{{ t.trigger }}" class="block card card-sm p-4 hover:border-brand-blue">
+    <span class="font-semibold text-brand-navy">{{ t.title }}</span><span class="block text-sm text-slate-500 line-clamp-2">{{ t.body_hi or t.body_en }}</span></a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.7fr_1fr] items-start">
+  <div>
+    <form id="filters" hx-get="/app/messages" hx-target="#rows" hx-push-url="true" hx-trigger="input changed delay:300ms from:#q" class="mb-3">
+      <input type="hidden" name="tab" value="{{ tab }}"><input type="hidden" name="file_id" value="{{ file_id }}">
+      <input id="q" type="search" name="q" value="{{ q }}" placeholder="Customer name or mobile" class="w-full h-11 px-3 rounded-lg border border-slate-300 bg-white">
+    </form>
+    <div id="rows">{% include "messages/_rows.html" %}</div>
+  </div>
+  {% if user.role != 'accountant' %}
+  <aside class="card p-4">
+    <h2 class="font-semibold mb-2">Prepare group messages</h2>
+    <p class="text-sm text-slate-500 mb-3">One message per customer is added to the list – send them one by one.</p>
+    <form method="post" action="/app/messages/group" class="flex flex-col gap-2">
+      {% for k, label in groups %}<button name="group" value="{{ k }}" class="min-h-11 px-3 rounded-lg border border-slate-300 text-left text-sm font-semibold hover:bg-slate-50">{{ label }}</button>{% endfor %}
+    </form>
+  </aside>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

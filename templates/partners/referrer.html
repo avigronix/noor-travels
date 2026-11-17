@@ -1,0 +1,27 @@
+{% extends "layouts/app.html" %}
+{% block page_title %}{{ r.name }}{% endblock %}
+{% block content %}
+<p class="text-sm text-slate-500"><a href="/app/partners?tab=referrers" class="text-brand-blue">Referrers</a> / {{ r.name }}</p>
+<h1 class="mt-1 page-title">{{ r.name }}</h1>
+<p class="text-sm text-slate-600 mb-4">{{ [r.mobile, r.place] | select | join(' · ') }}{% if r.notes %} – {{ r.notes }}{% endif %}</p>
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_2fr] items-start">
+  <section class="card p-4">
+    <h2 class="font-semibold mb-2">Files brought, by month</h2>
+    {% for m in months %}
+    <div class="flex items-center gap-3 py-1.5 text-sm"><span class="w-20 shrink-0">{{ m.month.strftime('%b %Y') }}</span>
+      <span class="h-3 rounded bg-brand-blue" style="width: {{ [m.n * 12, 100] | min }}%"></span><strong>{{ m.n }}</strong></div>
+    {% else %}<p class="text-sm text-slate-500">No files yet.</p>{% endfor %}
+    {% if user.role != 'accountant' %}
+    <details class="mt-4 border-t border-slate-100 pt-3"><summary class="cursor-pointer min-h-11 flex items-center text-sm font-semibold">Edit contact</summary>
+      <form method="post" action="/app/partners/referrers/save" class="flex flex-col gap-2">
+        <input type="hidden" name="rid" value="{{ r.id }}">
+        {% for name, label in [("name", "Name"), ("mobile", "Mobile"), ("place", "Place"), ("notes", "Notes")] %}
+        <label class="flex flex-col gap-1 text-sm">{{ label }}<input name="{{ name }}" value="{{ r[name] or '' }}" class="h-11 px-3 rounded-lg border border-slate-300"></label>
+        {% endfor %}
+        <button class="h-11 rounded-lg bg-brand-navy text-white font-semibold">Save</button>
+      </form></details>
+    {% endif %}
+  </section>
+  <div id="rows">{% include "partners/_ref_files.html" %}</div>
+</div>
+{% endblock %}

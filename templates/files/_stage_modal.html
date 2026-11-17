@@ -1,0 +1,44 @@
+{# Stage pop-up (FR-4.4, 4.5): mode=mark (details missing / earlier stage not done), edit, retest. #}
+{% extends "partials/_modal.html" %}
+{% from "partials/_fields.html" import input, select %}
+{% block modal_title %}{% if mode == 'mark' %}Mark “{{ spec.label }}” done{% elif mode == 'retest' %}{{ spec.label }} – book retest{% else %}{{ spec.label }} – details{% endif %}{% endblock %}
+{% block modal_sub %}{% if mode == 'mark' %}Some details are not filled yet. Fill them now, or mark done and fill later.{% elif mode == 'retest' %}Enter the new date – it is saved as a new attempt. Earlier attempts stay in the history.{% else %}Change the details of this stage. A new date is saved as a re-appointment.{% endif %}{% endblock %}
+{% block modal_body %}
+{% if errors._ %}<p class="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800" role="alert">{{ errors._ }}</p>{% endif %}
+{% if waiting and mode == 'mark' %}
+<div class="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900"><strong>Heads up:</strong> {{ waiting | join(', ') }} {{ 'is' if waiting | length == 1 else 'are' }} not marked done yet. You can still mark this stage done.</div>
+{% endif %}
+<form hx-post="/app/files/{{ file_id }}/services/{{ fs.id }}/{{ 'done' if mode == 'mark' else 'details' }}" hx-target="#stages" hx-swap="outerHTML"
+      class="flex flex-col gap-3">
+  <input type="hidden" name="from_modal" value="1">
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    {% for fk, flabel, kind, ph in spec.fields %}
+      {% set val = '' if (mode == 'retest' and fk in ('date', 'time', 'result')) else fs.data.get(fk, '') %}
+      {% set warn = mode == 'mark' and fk in missing %}
+      {% if kind is string %}
+        {{ input(fs.service ~ "." ~ fk, flabel, val, type=kind, placeholder=ph, cls=('[&_input]:border-brand-orange' if warn else ''),
+                 attrs=('inputmode="numeric"' if kind == 'number' else '')) }}
+      {% else %}
+        {{ select(fs.service ~ "." ~ fk, flabel, kind, val, cls=('[&_select]:border-brand-orange' if warn else '')) }}
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if spec.fail and mode == 'mark' %}<p class="text-xs text-slate-500">Result “{{ spec.fail }}” saves this attempt as failed and adds the retest charge (FR-4.7).</p>{% endif %}
+  <p class="text-sm text-slate-600">✓ A WhatsApp update for the customer is prepared – you send it with one tap.</p>
+  <div class="sticky -bottom-4 -mx-5 mt-1 flex flex-col-reverse gap-2 border-t border-slate-100 bg-white px-5 py-3 sm:flex-row sm:justify-end">
+    {% if mode == 'mark' %}
+    <button type="submit" name="later" value="1" class="h-11 px-4 rounded-lg border border-slate-300 text-sm font-semibold">Mark done, fill later</button>
+    {% endif %}
+    <button type="submit" class="h-11 px-4 rounded-lg bg-green-600 text-white text-sm font-semibold">{{ 'Save & mark done' if mode == 'mark' else 'Save details' }}</button>
+  </div>
+</form>
+{% if mode == 'edit' and fs.status not in ('done', 'cancelled') %}
+<details class="mt-4 border-t border-slate-100 pt-3">
+  <summary class="cursor-pointer min-h-11 flex items-center text-sm font-semibold text-red-700">Cancel this service…</summary>
+  <form hx-post="/app/files/{{ file_id }}/services/{{ fs.id }}/cancel" hx-target="#stages" hx-swap="outerHTML" class="flex flex-col gap-2">
+    <label class="text-sm">Reason (stays in the activity log)<input name="reason" required minlength="3" class="mt-1 w-full h-11 px-3 rounded-lg border border-slate-300"></label>
+    <button class="h-11 rounded-lg border border-red-300 text-red-700 font-semibold">Cancel {{ spec.label }}</button>
+  </form>
+</details>
+{% endif %}
+{% endblock %}

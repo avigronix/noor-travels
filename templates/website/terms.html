@@ -1,0 +1,19 @@
+{% extends "layouts/site.html" %}
+{% import "website/_macros.html" as m %}
+{% block title %}Terms & refund policy · {{ biz.name }}{% endblock %}
+{% block description %}Service terms and refund policy summary of Noor Travels Services, Kasia.{% endblock %}
+{% block content %}
+<article class="max-w-3xl mx-auto px-4 py-12 flex flex-col gap-4 text-slate-700 leading-relaxed">
+  {{ m.kicker("TERMS & REFUND POLICY") }}
+  <h1 class="font-display text-3xl font-bold text-brand-navy">Service terms</h1>
+  <p class="text-sm text-slate-500">Summary – the signed policy you receive at registration is the one that applies.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">Our service</h2>
+  <p>We help you with the services you choose at registration. Visa decisions, medical results, test results and appointment dates are made by the embassies, centres and authorities, not by us.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">Charges and receipts</h2>
+  <p>Your package is written down at registration as our service charge plus costs paid to centres, agencies and airlines. You get a receipt for every payment. Our service charge for work visas stays within the limit set by the Emigration Rules. A failed medical or skill test needs a new attempt, which has its own centre fee.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">Refund on cancellation</h2>
+  <p>If you cancel, the refund is: amount received − costs already paid to centres, agencies or airlines − the part of the service charge earned up to the stage reached. The owner approves each refund and you get a written calculation.</p>
+  <h2 class="font-display text-xl font-semibold text-brand-navy pt-2">Your passport</h2>
+  <p>Every hand-over and courier of your passport is recorded. Please collect it when we tell you it is back in the office.</p>
+</article>
+{% endblock %}

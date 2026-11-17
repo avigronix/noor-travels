@@ -1,0 +1,94 @@
+{# Design: docs/design/FileDetail.dc.html (laptop) + MobileFile.dc.html (phone). #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import pill, stage_pill %}
+{% block page_title %}#{{ f.serial_no }} {{ c.name }}{% endblock %}
+{% block content %}
+{% set can_write = user.role != 'accountant' %}
+<p class="text-sm text-slate-500"><a href="/app/files" class="text-brand-blue">All files</a> / #{{ f.serial_no }}</p>
+
+<div class="mt-2 mb-4 flex flex-wrap items-start justify-between gap-4">
+  <div class="flex items-start gap-3 min-w-0">
+    <div class="shrink-0 grid place-items-center w-14 h-14 rounded-full bg-brand-navy text-white font-bold overflow-hidden">
+      {% if c.photo %}<img src="/app/uploads/{{ c.photo }}" alt="{{ c.name }}" class="w-full h-full object-cover">{% else %}{{ (c.name.split(' ') | map('first') | join(''))[:2] | upper }}{% endif %}
+    </div>
+    <div class="min-w-0">
+      <h1 class="page-title"><a href="/app/customers/{{ c.id }}" class="hover:underline">{{ c.name }}</a> <span class="text-slate-400">#{{ f.serial_no }}</span></h1>
+      <a href="/app/customers/{{ c.id }}" class="text-sm text-brand-blue">Customer profile · all files &amp; tickets →</a>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        {{ pill(f.country) }}{% if c.profession %}{{ pill(c.profession) }}{% endif %}{% if c.ecr %}{{ pill(c.ecr, 'amber' if c.ecr == 'ECR' else 'slate') }}{% endif %}
+        {{ pill(f.visa_type | title ~ ' visa', 'blue') }}{% if c.ref_name %}{{ pill('Ref: ' ~ c.ref_name) }}{% endif %}
+        {{ stage_pill(f.current_stage) }}
+        {% if f.status != 'active' %}{{ pill(f.status | title, 'red' if f.status == 'cancelled' else 'green') }}{% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <a href="{{ wa_link(c.mobile, '') }}" target="_blank" rel="noopener" class="h-11 inline-flex items-center px-4 rounded-lg bg-green-600 text-white text-sm font-semibold">WhatsApp</a>
+    {% if can_write %}
+    <a href="/app/files/{{ f.id }}/edit" class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 bg-white text-sm font-semibold">Edit profile &amp; services</a>
+    <a href="/app/payments/new?file_id={{ f.id }}" class="h-11 inline-flex items-center px-4 rounded-lg bg-brand-red text-white text-sm font-semibold">Record payment</a>
+    {% endif %}
+    <button type="button" data-print class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 bg-white text-sm font-semibold">Print file</button>
+  </div>
+</div>
+
+{% include "files/_money.html" %}
+
+<div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1.5fr_1fr] items-start">
+  {% include "files/_stages.html" %}
+
+  <aside class="flex flex-col gap-4">
+    {% include "files/_courier.html" %}
+
+    <section class="card p-4">
+      <div class="flex items-center justify-between mb-3"><h2 class="font-semibold">Customer &amp; passport</h2>
+        {% if can_write %}<a href="/app/files/{{ f.id }}/edit" class="text-sm text-brand-blue">Edit profile</a>{% endif %}</div>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+        <dt class="text-slate-500">Father's name</dt><dd>{{ c.father_name or '—' }}</dd>
+        <dt class="text-slate-500">Date of birth</dt><dd>{{ c.dob | dmy }}</dd>
+        <dt class="text-slate-500">Mobile</dt><dd><a href="tel:{{ c.mobile }}" class="text-brand-blue">{{ c.mobile }}</a></dd>
+        <dt class="text-slate-500">Passport</dt><dd class="font-mono">{{ c.passport_no or '—' }} · exp. {{ c.passport_expiry | dmy }}</dd>
+        <dt class="text-slate-500">Address</dt><dd>{{ [c.address, c.district, c.state, c.pin] | select | join(', ') or '—' }}</dd>
+        <dt class="text-slate-500">Handled by</dt><dd>{{ f.staff_name or '—' }}</dd>
+        <dt class="text-slate-500">Reference</dt><dd>{{ c.ref_name or '—' }}{% if c.ref_mobile %} · {{ c.ref_mobile }}{% endif %}</dd>
+      </dl>
+    </section>
+
+    <section class="card p-4">
+      <div class="flex items-center justify-between mb-3"><h2 class="font-semibold">Visa</h2>
+        {% if can_write %}<a href="/app/visas?attach={{ f.id }}" class="text-sm text-brand-blue">{{ 'Change' if f.visa_id else 'Attach visa' }}</a>{% endif %}</div>
+      {% if f.visa_id %}
+      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+        <dt class="text-slate-500">Visa no.</dt><dd class="font-mono"><a href="/app/visas/{{ f.visa_id }}" class="text-brand-blue">{{ f.visa_no }}</a></dd>
+        <dt class="text-slate-500">Sponsor</dt><dd>{{ f.sponsor_name or '—' }}{% if f.sponsor_no %} · {{ f.sponsor_no }}{% endif %}</dd>
+        <dt class="text-slate-500">Visa date</dt><dd>{{ f.visa_date_hijri or '—' }} AH{% if f.visa_date %} (≈ {{ f.visa_date | dmy }}){% endif %}</dd>
+        <dt class="text-slate-500">Profession</dt><dd>{{ f.visa_profession or '—' }}</dd>
+      </dl>
+      {% if f.visa_photo %}<a href="/app/uploads/{{ f.visa_photo }}" target="_blank" rel="noopener" hx-boost="false" class="mt-3 inline-flex h-10 items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">View visa photo</a>{% endif %}
+      {% else %}<p class="text-sm text-slate-500">No visa attached yet.</p>{% endif %}
+    </section>
+
+    {% include "files/_messages.html" %}
+
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">Activity log</h2>
+      <ul class="flex flex-col gap-2 text-sm">
+        {% for a in log %}
+        <li><strong>{{ a.user_name or 'System' }}</strong> {{ a.action | replace('_', ' ') }}{% if a.details.service %} · {{ a.details.service | stage }}{% endif %}{% if a.details.reason %} – “{{ a.details.reason }}”{% endif %}{% if a.details.amount %} · {{ a.details.amount | inr }}{% endif %}
+          <span class="text-slate-500">· {{ a.created_at | dmy(true) }}</span></li>
+        {% else %}<li class="text-slate-500">Nothing yet.</li>{% endfor %}
+      </ul>
+    </section>
+
+    {% if user.role == 'owner' and f.status == 'active' %}
+    <details class="rounded-2xl border border-red-200 bg-white p-4">
+      <summary class="cursor-pointer min-h-11 flex items-center font-semibold text-red-700">Cancel this file…</summary>
+      <form method="post" action="/app/files/{{ f.id }}/cancel" class="mt-2 flex flex-col gap-2">
+        <label class="text-sm">Reason (stays in the log)<input name="reason" required minlength="3" class="mt-1 w-full h-11 px-3 rounded-lg border border-slate-300"></label>
+        <button class="h-11 rounded-lg bg-red-600 text-white font-semibold" data-confirm="Cancel file #{{ f.serial_no }}? Next you will see the refund calculation.">Cancel file &amp; work out refund</button>
+      </form>
+    </details>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

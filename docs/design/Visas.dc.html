@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Visas and sponsors</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="visas" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Visas & sponsors</h1>
+        <p style="margin: 0; font-size: 14px; color: #475569">Every visa that comes from the Gulf is entered here, then attached to a candidate file.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <section style="flex: 1 1 360px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 600">Add a visa</h2>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="vn" style="font-size: 14px; font-weight: 500">Visa number *</label><input id="vn" value="19085XXXXX" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="sp" style="font-size: 14px; font-weight: 500">Sponsor ID *</label><input id="sp" value="10742XXXXX" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="spt" style="font-size: 14px; font-weight: 500">Sponsor type</label><select id="spt" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Individual (private)</option><option>Company</option></select></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="spn" style="font-size: 14px; font-weight: 500">Sponsor name</label><input id="spn" placeholder="As on visa copy" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="hj" style="font-size: 14px; font-weight: 500">Visa date (Hijri) *</label><input id="hj" value="14-05-1448" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="gr" style="font-size: 14px; font-weight: 500">Gregorian (auto)</label><input id="gr" value="≈ 25 Oct 2026" readonly style="height: 44px; border: 1px solid #E2E8F0; background: #F8FAFC; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="vc" style="font-size: 14px; font-weight: 500">Country *</label><select id="vc" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Saudi Arabia</option><option>Kuwait</option><option>UAE</option><option>Qatar</option></select></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="vp" style="font-size: 14px; font-weight: 500">Profession *</label><input id="vp" value="House Driver" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="att" style="font-size: 14px; font-weight: 500">Attach to file</label><select id="att" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>#4496 Faizan Ahmad (no visa yet)</option><option>Keep free for now</option></select></div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px dashed #94A3B8; border-radius: 10px; padding: 10px 12px; font-size: 14px; color: #334155"><span><strong>Visa photo</strong><span style="display: block; font-size: 12px; color: #475569">One photo of the visa – camera or gallery</span></span><button type="button" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Add photo</button></div>
+        <button type="button" style="min-height: 48px; border-radius: 8px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px">Save visa</button>
+      </section>
+
+      <section style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Visas in hand</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">41</span></div>
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Attached</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">38</span></div>
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Free to give</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: #0070B8">3</span></div>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow-x: auto">
+          <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px">
+            <thead><tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px"><th style="padding: 12px 16px; font-weight: 600">Visa no.</th><th style="padding: 12px 16px; font-weight: 600">Sponsor</th><th style="padding: 12px 16px; font-weight: 600">Job · date</th><th style="padding: 12px 16px; font-weight: 600">Status</th><th style="padding: 12px 16px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Action</span></th></tr></thead>
+            <tbody>
+              <sc-for list="{{ visas }}" as="v" hint-placeholder-count="6">
+                <tr style="border-top: 1px solid #EEF2F6">
+                  <td style="padding: 12px 16px; font-weight: 600">{{ v.no }}</td>
+                  <td style="padding: 12px 16px"><span style="display: block">{{ v.sponsor }}</span><span style="display: block; font-size: 13px; color: #475569">{{ v.country }}</span></td>
+                  <td style="padding: 12px 16px"><span style="display: block">{{ v.job }}</span><span style="display: block; font-size: 13px; color: #475569">{{ v.date }}</span></td>
+                  <td style="padding: 12px 16px"><span style="{{ v.chip }}">{{ v.status }}</span></td>
+                  <td style="padding: 8px 16px"><button type="button" onClick="{{ v.pick }}" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px; white-space: nowrap">{{ v.action }}</button></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+        <sc-if value="{{ showReassign }}" hint-placeholder-val="{{ true }}">
+          <div style="background: #FFFFFF; border: 2px solid #0070B8; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 600">Give visa 19087XXXXX to another candidate</h3>
+            <p style="margin: 0; font-size: 14px; color: #334155">Released from #4479 Javed Ansari on 05 Nov 2026 – candidate dropped out (refund done). The history stays on the visa.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 6px"><label for="to" style="font-size: 14px; font-weight: 500">New candidate *</label><select id="to" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>#4496 Faizan Ahmad</option><option>#4497 Danish Khan</option></select></div>
+              <div style="display: flex; flex-direction: column; gap: 6px"><label for="why" style="font-size: 14px; font-weight: 500">Reason *</label><input id="why" value="Previous candidate cancelled" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end">
+              <button type="button" onClick="{{ closeReassign }}" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">Cancel</button>
+              <button type="button" onClick="{{ closeReassign }}" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">Attach visa</button>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1260}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { reassign: true }; }
+  renderVals() {
+    const chip = (bg, fg) => `display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: ${bg}; color: ${fg}; white-space: nowrap`;
+    const open = () => this.setState({ reassign: true });
+    const visas = [
+      { no: '19085XXXXX', sponsor: 'Individual · 10742XXXXX', country: 'Saudi Arabia', job: 'House Driver', date: '14-05-1448 AH', status: '#4486 Arif Ansari', chip: chip('#DBEAFE', '#1E40AF'), action: 'Open file' },
+      { no: '19087XXXXX', sponsor: 'Individual · 10811XXXXX', country: 'Saudi Arabia', job: 'House Driver', date: '02-05-1448 AH', status: 'Released – free', chip: chip('#FEF3C7', '#92400E'), action: 'Reassign', pick: open },
+      { no: '19091XXXXX', sponsor: 'Company · 70033XXXXX', country: 'Saudi Arabia', job: 'Heavy Driver', date: '20-05-1448 AH', status: 'Free', chip: chip('#DCFCE7', '#166534'), action: 'Attach', pick: open },
+      { no: '19092XXXXX', sponsor: 'Company · 70033XXXXX', country: 'Saudi Arabia', job: 'Heavy Driver', date: '20-05-1448 AH', status: '#4489 Shahid Ali', chip: chip('#DBEAFE', '#1E40AF'), action: 'Open file' },
+      { no: 'KW-55XXXX', sponsor: 'Company', country: 'Kuwait', job: 'Cook', date: '28 Oct 2026', status: '#4484 Pintu Gupta', chip: chip('#DBEAFE', '#1E40AF'), action: 'Open file' },
+      { no: 'QA-81XXXX', sponsor: 'Company', country: 'Qatar', job: 'Labour', date: '18 Oct 2026', status: 'Free', chip: chip('#DCFCE7', '#166534'), action: 'Attach', pick: open }
+    ];
+    return { visas, showReassign: this.state.reassign, closeReassign: () => this.setState({ reassign: false }) };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{# Design: docs/design/Partners.dc.html – centres & agencies + referrers tab #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import page_head %}
+{% block page_title %}Centres & agencies{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+  {{ page_head('Reference persons' if tab == 'referrers' else 'Centres & agencies', 'Contacts who bring customers – for follow-up only, no commission is tracked.' if tab == 'referrers' else "Everyone Noor Travels Services pays on a candidate's behalf, with their rates and what is still owed.", "building") }}
+  {% if tab == 'parties' and user.role == 'owner' %}<a href="/app/partners/new" class="h-11 inline-flex items-center px-4 rounded-lg bg-brand-red text-white text-sm font-semibold">+ Add centre / agency</a>{% endif %}
+</div>
+<nav class="flex gap-1 mb-4 border-b border-slate-200" aria-label="Tabs">
+  <a href="/app/partners" class="min-h-11 inline-flex items-center px-4 border-b-2 font-semibold {{ 'border-brand-red text-brand-navy' if tab == 'parties' else 'border-transparent text-slate-500' }}">Centres &amp; agencies</a>
+  <a href="/app/partners?tab=referrers" class="min-h-11 inline-flex items-center px-4 border-b-2 font-semibold {{ 'border-brand-red text-brand-navy' if tab == 'referrers' else 'border-transparent text-slate-500' }}">Referrers</a>
+</nav>
+
+{% if tab == 'parties' %}
+<section class="grid gap-3 grid-cols-3 mb-4">
+  {% for label, val in [("Paid out this month", stats.paid_month | inr), ("Still payable", stats.payable | inr), ("Partners", stats.partners)] %}
+  <div class="card card-sm p-3"><p class="text-xs text-slate-500">{{ label }}</p><p class="font-display text-xl font-semibold text-brand-navy">{{ val }}</p></div>
+  {% endfor %}
+</section>
+<form id="filters" hx-get="/app/partners" hx-target="#rows" hx-push-url="true" hx-trigger="input changed delay:300ms from:#q, change" class="flex flex-wrap gap-2 mb-3">
+  <input id="q" type="search" name="q" value="{{ q }}" placeholder="Name or city" class="flex-1 min-w-[180px] h-11 px-3 rounded-lg border border-slate-300 bg-white">
+  <select name="kind" class="h-11 px-2 rounded-lg border border-slate-300 bg-white text-sm"><option value="">All types</option>
+    {% for k, label in kinds %}<option value="{{ k }}" {{ 'selected' if kind == k }}>{{ label }}</option>{% endfor %}</select>
+</form>
+<div id="rows">{% include "partners/_rows.html" %}</div>
+{% else %}
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.6fr_1fr] items-start">
+  <div>
+    <form id="filters" hx-get="/app/partners" hx-target="#rows" hx-push-url="true" hx-trigger="input changed delay:300ms from:#q" class="mb-3">
+      <input type="hidden" name="tab" value="referrers">
+      <input id="q" type="search" name="q" value="{{ q }}" placeholder="Name, mobile or place" class="w-full h-11 px-3 rounded-lg border border-slate-300 bg-white">
+    </form>
+    <div id="rows">{% include "partners/_ref_rows.html" %}</div>
+  </div>
+  {% if user.role != 'accountant' %}
+  <section class="card p-4">
+    <h2 class="font-semibold mb-3">Add reference person</h2>
+    <form method="post" action="/app/partners/referrers/save" class="flex flex-col gap-3">
+      <label class="flex flex-col gap-1 text-sm font-medium">Name *<input name="name" required minlength="2" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+      <label class="flex flex-col gap-1 text-sm font-medium">Mobile<input name="mobile" type="tel" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+      <label class="flex flex-col gap-1 text-sm font-medium">Place<input name="place" placeholder="e.g. Riyadh, Saudi / Siwan" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+      <label class="flex flex-col gap-1 text-sm font-medium">Notes<textarea name="notes" rows="2" class="px-3 py-2 rounded-lg border border-slate-300 font-normal"></textarea></label>
+      <button class="h-11 rounded-lg bg-brand-navy text-white font-semibold">Save</button>
+    </form>
+  </section>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

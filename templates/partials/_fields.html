@@ -1,0 +1,75 @@
+{# Form field macros – one column on phones, h-11 tap targets, inline errors (CLAUDE rules 7). #}
+
+{% macro input(name, label, value="", error=None, type="text", required=false, placeholder="", attrs="", hint="", cls="") -%}
+<label class="flex flex-col gap-1 min-w-0 text-sm font-medium text-slate-700 {{ cls }}">
+  <span>{{ label }}{% if required %} <span class="text-brand-red">*</span>{% endif %}</span>
+  <input name="{{ name }}" type="{{ type }}" value="{{ value if value is not none else '' }}" placeholder="{{ placeholder }}"
+         {% if required %}required{% endif %} {{ attrs | safe }}
+         class="h-11 w-full min-w-0 px-3 rounded-lg border bg-white font-normal text-[15px] outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 {{ 'border-red-400 bg-red-50/40' if error else 'border-slate-300' }}">
+  {% if error %}<span class="text-xs font-medium text-red-700">{{ error }}</span>{% elif hint %}<span class="text-xs font-normal text-slate-500">{{ hint }}</span>{% endif %}
+</label>
+{%- endmacro %}
+
+{% macro select(name, label, options, value="", error=None, required=false, attrs="", cls="", blank=None) -%}
+{# options: list of values, or (value, text) pairs #}
+<label class="flex flex-col gap-1 min-w-0 text-sm font-medium text-slate-700 {{ cls }}">
+  <span>{{ label }}{% if required %} <span class="text-brand-red">*</span>{% endif %}</span>
+  <select name="{{ name }}" {{ attrs | safe }} {% if required %}required{% endif %}
+          class="h-11 w-full min-w-0 px-2 rounded-lg border bg-white font-normal text-[15px] {{ 'border-red-400' if error else 'border-slate-300' }}">
+    {% if blank is not none %}<option value="">{{ blank }}</option>{% endif %}
+    {% for o in options %}
+      {% set ov, ot = (o if o is not string else (o, o or 'Select…')) %}
+      <option value="{{ ov }}" {{ 'selected' if (value | string) == (ov | string) }}>{{ ot }}</option>
+    {% endfor %}
+  </select>
+  {% if error %}<span class="text-xs font-medium text-red-700">{{ error }}</span>{% endif %}
+</label>
+{%- endmacro %}
+
+{% macro textarea(name, label, value="", rows=3, placeholder="", cls="") -%}
+<label class="flex flex-col gap-1 text-sm font-medium text-slate-700 {{ cls }}">
+  <span>{{ label }}</span>
+  <textarea name="{{ name }}" rows="{{ rows }}" placeholder="{{ placeholder }}"
+            class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white font-normal text-[15px] outline-none focus:border-brand-blue">{{ value or '' }}</textarea>
+</label>
+{%- endmacro %}
+
+{% macro btn(label, kind="primary", type="submit", attrs="", cls="") -%}
+{% set styles = {
+  "primary": "bg-brand-red text-white hover:bg-brand-red/90",
+  "blue": "bg-brand-blue text-white hover:bg-brand-blue/90",
+  "navy": "bg-brand-navy text-white hover:bg-brand-navy/90",
+  "green": "bg-green-600 text-white hover:bg-green-700",
+  "ghost": "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50",
+  "danger": "border border-red-300 bg-white text-red-700 hover:bg-red-50",
+} %}
+<button type="{{ type }}" {{ attrs | safe }} class="h-11 inline-flex items-center justify-center gap-2 px-4 rounded-lg text-sm font-semibold {{ styles[kind] }} {{ cls }}">{{ label }}</button>
+{%- endmacro %}
+
+{% macro pill(text, tone="slate") -%}
+{% set tones = {
+  "slate": "bg-slate-100 text-slate-600", "blue": "bg-blue-100 text-blue-800", "amber": "bg-amber-100 text-amber-800",
+  "red": "bg-red-100 text-red-800", "green": "bg-green-100 text-green-800", "brown": "bg-[#FFF8EC] text-brand-brown",
+} %}
+<span class="pill {{ tones[tone] }}">{{ text }}</span>
+{%- endmacro %}
+
+{% macro stage_pill(stage) -%}
+{% set tone = {"ready": "green", "departed": "green", "cancelled": "red", "registration": "slate"}.get(stage, "blue") %}
+{{ pill(stage | stage, tone) }}
+{%- endmacro %}
+
+{% macro wa_button(mobile, text, label="Send on WhatsApp", small=false, attrs="") -%}
+<a href="{{ wa_link(mobile, text) }}" target="_blank" rel="noopener" {{ attrs | safe }}
+   class="{{ 'h-9 px-3 text-xs' if small else 'h-11 px-4 text-sm' }} inline-flex items-center justify-center gap-1.5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700">{{ label }}</a>
+{%- endmacro %}
+
+{% macro page_head(title, sub="", ic=None, count=None) -%}
+<div class="flex min-w-0 items-start gap-3">
+  {% if ic %}<span class="hidden sm:grid place-items-center w-11 h-11 shrink-0 rounded-xl bg-white text-brand-navy ring-1 ring-slate-200 shadow-[var(--shadow-card)]">{{ icon(ic) }}</span>{% endif %}
+  <div class="min-w-0">
+    <h1 class="page-title">{{ title }}{% if count is not none %} <span class="ml-1 inline-grid place-items-center min-w-7 h-7 px-2 align-middle rounded-full bg-slate-200/70 font-sans text-sm font-semibold text-slate-600">{{ count }}</span>{% endif %}</h1>
+    {% if sub %}<p class="mt-0.5 text-sm text-slate-500">{{ sub | safe }}</p>{% endif %}
+  </div>
+</div>
+{%- endmacro %}

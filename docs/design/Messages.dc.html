@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Messages and reminders</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="messages" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Messages & reminders</h1>
+      <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.5">The app writes every message. Tap <strong>Send on WhatsApp</strong> – WhatsApp opens with the text ready – then press Send. Free, no paid service.</p>
+    </div>
+
+    <section aria-label="Today" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+      <div style="background: #FFF8EC; border: 1px solid #F7A21B; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #5A3818">To send now</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: #5A3818">{{ dueCount }}</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Sent today</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: #166534">{{ sentCount }}</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px"><span style="display: block; font-size: 13px; color: #475569">Reminders for tomorrow</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600">2</span></div>
+    </section>
+
+    <div role="tablist" aria-label="Message views" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <button type="button" role="tab" onClick="{{ t.pick }}" style="{{ t.style }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ isQueue }}" hint-placeholder-val="{{ true }}">
+      <section aria-label="To send" style="display: flex; flex-direction: column; gap: 12px">
+        <sc-if value="{{ allDone }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 20px; border-radius: 12px; background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; font-weight: 600; text-align: center">All messages sent. New ones appear here after every save.</div>
+        </sc-if>
+        <sc-for list="{{ queue }}" as="q" hint-placeholder-count="4">
+          <article style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px">
+              <div style="min-width: 0">
+                <a href="Customer.dc.html" style="display: block; font-weight: 700; font-size: 15px; color: #0F172A; text-decoration: none">{{ q.name }}</a>
+                <span style="font-size: 13px; color: #475569">{{ q.mobile }} · {{ q.when }}</span>
+              </div>
+              <span style="{{ q.chip }}">{{ q.kind }}</span>
+            </div>
+            <div style="background: #E7F5EC; border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.55; white-space: pre-line">{{ q.text }}</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <a href="{{ q.wa }}" onClick="{{ q.opened }}" target="_blank" rel="noopener" style="flex: 1 1 200px; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 16px; border-radius: 10px; background: #16A34A; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.7-5A8.5 8.5 0 1 1 8 19.4z"/></svg>Send on WhatsApp</a>
+              <button type="button" onClick="{{ q.markSent }}" style="{{ q.markStyle }}">{{ q.markLabel }}</button>
+              <button type="button" onClick="{{ q.skip }}" style="flex: 0 1 auto; min-height: 48px; padding: 0 16px; border-radius: 10px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #475569; font-family: inherit; font-weight: 600; font-size: 14px">Skip</button>
+            </div>
+          </article>
+        </sc-for>
+        <p style="margin: 0; font-size: 13px; color: #475569">In the design the WhatsApp button opens WhatsApp with the text only; in the real app the customer's number is filled in too.</p>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isLog }}" hint-placeholder-val="{{ false }}">
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow-x: auto">
+        <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px">
+          <thead><tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px"><th style="padding: 12px 14px; font-weight: 600">When</th><th style="padding: 12px 14px; font-weight: 600">Customer</th><th style="padding: 12px 14px; font-weight: 600">Message</th><th style="padding: 12px 14px; font-weight: 600">Status</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ log }}" as="l" hint-placeholder-count="6">
+              <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 12px 14px; white-space: nowrap; color: #334155">{{ l.time }}</td><td style="padding: 12px 14px; font-weight: 600">{{ l.name }}</td><td style="padding: 12px 14px">{{ l.what }}</td><td style="padding: 12px 14px"><span style="{{ l.chip }}">{{ l.status }}</span></td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isRules }}" hint-placeholder-val="{{ false }}">
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column">
+        <p style="margin: 0 0 8px; font-size: 13px; color: #475569">Choose which messages the app prepares. Nothing is prepared 9 pm – 7 am except travel-day checklists.</p>
+        <sc-for list="{{ rules }}" as="r" hint-placeholder-count="12">
+          <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #EEF2F6">
+            <button type="button" role="switch" aria-checked="{{ r.onText }}" aria-label="{{ r.name }}" onClick="{{ r.toggle }}" style="{{ r.track }}"><span style="{{ r.knob }}"></span></button>
+            <span style="flex: 1 1 auto; min-width: 0">
+              <span style="display: block; font-weight: 600; font-size: 14px">{{ r.name }}</span>
+              <span style="display: block; font-size: 13px; color: #475569">{{ r.when }}</span>
+            </span>
+          </div>
+        </sc-for>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isTpl }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+        <section style="flex: 999 1 480px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="tsel" style="font-size: 14px; font-weight: 600">Message</label><select id="tsel" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Stage marked done</option><option>Appointment reminder</option><option>Payment received</option><option>Balance due</option><option>Ticket booked</option></select></div>
+          <div role="tablist" aria-label="Language" style="display: flex; gap: 6px; overflow-x: auto">
+            <button type="button" role="tab" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #0070B8; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 13px; font-family: inherit">Hindi (Roman)</button>
+            <button type="button" role="tab" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-size: 13px; font-family: inherit">हिंदी</button>
+            <button type="button" role="tab" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-size: 13px; font-family: inherit">English</button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="body" style="font-size: 14px; font-weight: 600">Text</label><textarea id="body" rows="6" style="border: 1px solid #CBD5E1; border-radius: 8px; padding: 12px; font-size: 15px; line-height: 1.5; font-family: inherit; resize: vertical">Assalamu alaikum {name} ji,
+Aapka {stage} ho gaya hai – {result}.
+Agla kadam: {next_step}.
+Koi sawal ho to isi number par reply karein.
+– Noor Travels Services, Kasia</textarea></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+            <span style="font-size: 13px; color: #475569">Insert:</span>
+            <button type="button" style="min-height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #CBD5E1; background: #F8FAFC; font-family: inherit; font-size: 13px">{name}</button>
+            <button type="button" style="min-height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #CBD5E1; background: #F8FAFC; font-family: inherit; font-size: 13px">{stage}</button>
+            <button type="button" style="min-height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #CBD5E1; background: #F8FAFC; font-family: inherit; font-size: 13px">{next_step}</button>
+            <button type="button" style="min-height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #CBD5E1; background: #F8FAFC; font-family: inherit; font-size: 13px">{date}</button>
+            <button type="button" style="min-height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #CBD5E1; background: #F8FAFC; font-family: inherit; font-size: 13px">{balance}</button>
+          </div>
+          <button type="button" style="align-self: flex-start; min-height: 44px; padding: 0 18px; border-radius: 8px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">Save text</button>
+        </section>
+        <aside style="flex: 1 1 280px; min-width: 0; background: #E7F0EC; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box">
+          <span style="font-size: 13px; font-weight: 600; color: #334155">Preview</span>
+          <div style="align-self: flex-start; max-width: 95%; background: #FFFFFF; border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.55">Assalamu alaikum Arif ji,<br>Aapka <strong>VFS appointment</strong> ho gaya hai – done.<br>Agla kadam: <strong>skill test, 11 Nov 9:30 am, Lucknow</strong>.<br>Koi sawal ho to isi number par reply karein.<br>– Noor Travels Services, Kasia</div>
+        </aside>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1700}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'queue', done: {}, opened: {}, off: {} };
+  }
+  renderVals() {
+    const s = this.state;
+    const chip = (bg, fg) => `flex: 0 0 auto; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: ${bg}; color: ${fg}; white-space: nowrap`;
+    const items = [
+      { id: 'a', name: 'Rakesh Yadav · #4483', mobile: '98XXXXXX20', when: 'Reminder · due now', kind: 'Reminder', chip: chip('#FEF3C7', '#92400E'), text: 'Assalamu alaikum Rakesh ji,\nKal 12 Nov subah 10:00 baje aapka emigration clearance hai.\nSaath laayein: passport.\n– Noor Travels Services, Kasia' },
+      { id: 'b', name: 'Mohd. Salman · #4491', mobile: '91XXXXXX07', when: 'Payment saved 9:41 am', kind: 'Payment', chip: chip('#DCFCE7', '#166534'), text: 'Mohd. Salman ji, ₹25,000 mil gaye (UPI). Baaki: ₹45,000.\nRasid: [website]/r/NT0151\n– Noor Travels Services' },
+      { id: 'c', name: 'Arif Ansari · #4486', mobile: '97XXXXXX45', when: 'Stage marked done 11:20 am', kind: 'Stage done', chip: chip('#DBEAFE', '#1E40AF'), text: 'Assalamu alaikum Arif ji,\nAapka skill test pass ho gaya.\nAgla kadam: visa stamping (Mumbai). Passport hum bhejenge.\n– Noor Travels Services, Kasia' },
+      { id: 'd', name: 'Naushad Alam · #4488', mobile: '96XXXXXX31', when: 'Balance due · weekly', kind: 'Balance due', chip: chip('#FEE2E2', '#991B1B'), text: 'Naushad ji, stamping se pehle ₹38,000 jama karna hai.\nICICI A/c 320605001885 (IFSC ICIC0003206) ya office mein.\n– Noor Travels Services' }
+    ];
+    const queue = items.filter(q => !s.done[q.id]).map(q => {
+      const op = !!s.opened[q.id];
+      return {
+        ...q,
+        wa: 'https://wa.me/?text=' + encodeURIComponent(q.text),
+        opened: () => this.setState({ opened: { ...this.state.opened, [q.id]: true } }),
+        markSent: () => this.setState({ done: { ...this.state.done, [q.id]: 'sent' } }),
+        skip: () => this.setState({ done: { ...this.state.done, [q.id]: 'skip' } }),
+        markLabel: op ? '✓ Mark sent' : 'Mark sent',
+        markStyle: `flex: 0 1 auto; min-height: 48px; padding: 0 16px; border-radius: 10px; font-family: inherit; font-weight: 700; font-size: 14px; ${op ? 'border: 0; background: #0070B8; color: #FFFFFF;' : 'border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A;'}`
+      };
+    });
+    const sentNow = items.filter(q => s.done[q.id] === 'sent');
+    const logBase = [
+      ['Today 7:30 am', 'Arif Ansari', 'Reminder: skill test 9:30 am today', 'Sent by Sameer'],
+      ['Today 7:32 am', 'Shahid Ali', 'Reminder: VFS 2:00 pm today', 'Sent by Sameer'],
+      ['Today 7:35 am', 'Asif Raza', 'Documents to bring', 'Skipped'],
+      ['Yesterday 6:05 pm', 'Mohd. Salman', 'Reminder: medical tomorrow 11:00 am', 'Sent by Faizan'],
+      ['Yesterday 3:12 pm', 'Sajid Ansari', 'Ticket booked: Lucknow → Doha, 18 Nov', 'Sent by Noor Alam']
+    ];
+    const log = sentNow.map(q => ['Just now', q.name.split(' · ')[0], q.kind, 'Sent by you']).concat(logBase)
+      .map(([time, name, what, status]) => ({ time, name, what, status, chip: status === 'Skipped' ? chip('#F1F5F9', '#475569') : chip('#DCFCE7', '#166534') }));
+    const on = 'flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #0070B8; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer';
+    const offS = 'flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; font-weight: 500; font-size: 14px; font-family: inherit; cursor: pointer';
+    const rulesRaw = [
+      ['File created', 'Right after saving'], ['Visa attached', 'Right after saving'], ['Appointment booked or changed', 'Right after saving'],
+      ['Appointment reminder', 'From 6:00 pm the day before, and the morning of'], ['Stage marked done', 'Right after marking'],
+      ['Medical unfit / test failed', 'After staff confirms'], ['Passport sent / received', 'Right after saving'], ['Visa done', 'Right after marking'],
+      ['Payment received', 'Right after saving'], ['Balance due', 'Every 7 days, and before stamping'], ['Ticket booked', 'Right after saving'], ['Travel day', 'Morning of travel']
+    ];
+    const rules = rulesRaw.map(([name, when]) => {
+      const isOn = !s.off[name];
+      return {
+        name, when, onText: isOn ? 'true' : 'false',
+        track: `flex: 0 0 auto; position: relative; width: 48px; height: 28px; border-radius: 14px; border: 0; padding: 0; cursor: pointer; background: ${isOn ? '#0070B8' : '#CBD5E1'}`,
+        knob: `position: absolute; top: 3px; left: ${isOn ? 23 : 3}px; width: 22px; height: 22px; border-radius: 11px; background: #FFFFFF`,
+        toggle: () => this.setState({ off: { ...this.state.off, [name]: isOn } })
+      };
+    });
+    const t = s.tab;
+    return {
+      tabs: [['queue', `To send (${queue.length})`], ['log', 'Sent log'], ['rules', 'Message rules'], ['tpl', 'Message text']].map(([k, label]) => ({ label, style: k === t ? on : offS, pick: () => this.setState({ tab: k }) })),
+      isQueue: t === 'queue', isLog: t === 'log', isRules: t === 'rules', isTpl: t === 'tpl',
+      queue, allDone: queue.length === 0,
+      dueCount: queue.length, sentCount: 14 + sentNow.length,
+      log, rules
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+{# Design reference: docs/design/Customer.dc.html – profile hub (FR-17.3) #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import pill, stage_pill %}
+{% block page_title %}{{ c.name }}{% endblock %}
+{% block content %}
+{% set profile_photo = (photos | selectattr('kind', 'equalto', 'profile') | map(attribute='path') | first) %}
+<p class="text-sm text-slate-500"><a href="/app/customers" class="text-brand-blue">Customers</a> / {{ c.name }}</p>
+{% if request.query_params.get('saved') %}<p class="mt-3 flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-900" role="status">{{ icon('check-circle', 'icon-sm') }} Details saved.</p>{% endif %}
+<div class="mt-2 mb-5 flex flex-wrap items-start justify-between gap-4">
+  <div class="flex items-start gap-3">
+    <div class="shrink-0 grid place-items-center w-16 h-16 rounded-full bg-brand-navy text-white text-xl font-bold overflow-hidden">
+      {% if profile_photo %}<img src="/app/uploads/{{ profile_photo }}" alt="{{ c.name }}" class="w-full h-full object-cover">{% else %}{{ c.name[:1] | upper }}{% endif %}
+    </div>
+    <div>
+      <h1 class="page-title">{{ c.name }}</h1>
+      <p class="text-sm text-slate-500"><a href="tel:{{ c.mobile }}" class="text-brand-blue">{{ c.mobile }}</a> · Passport <span class="font-mono">{{ c.passport_no or '—' }}</span> (exp. {{ c.passport_expiry | dmy }})</p>
+      <div class="mt-1 flex flex-wrap gap-1.5">{% if c.ecr %}{{ pill(c.ecr, 'amber' if c.ecr == 'ECR' else 'slate') }}{% endif %}{% if not c.whatsapp_consent %}{{ pill('No WhatsApp consent', 'red') }}{% endif %}</div>
+    </div>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    {% if user.role != 'accountant' %}
+    <a href="/app/customers/{{ c.id }}/edit" class="h-11 inline-flex items-center gap-2 px-4 rounded-xl border border-slate-300 bg-white text-sm font-semibold">{{ icon('edit', 'icon-sm') }} Edit details</a>
+    <a href="/app/files/new?customer_id={{ c.id }}" class="h-11 inline-flex items-center px-4 rounded-lg bg-brand-red text-white text-sm font-semibold">New visa file</a>
+    <a href="/app/tickets/new?customer_id={{ c.id }}" class="h-11 inline-flex items-center px-4 rounded-lg bg-brand-blue text-white text-sm font-semibold">New ticket</a>
+    {% endif %}
+    <a href="{{ wa_link(c.mobile, '') }}" target="_blank" rel="noopener" class="h-11 inline-flex items-center px-4 rounded-lg bg-green-600 text-white text-sm font-semibold">WhatsApp</a>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-3 items-start">
+  <section class="card p-4">
+    <h2 class="font-semibold mb-3">Details</h2>
+    <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+      <dt class="text-slate-500">Father</dt><dd>{{ c.father_name or '—' }}</dd>
+      <dt class="text-slate-500">DOB</dt><dd>{{ c.dob | dmy }}</dd>
+      <dt class="text-slate-500">Family</dt><dd>{{ c.family_mobile or '—' }}</dd>
+      <dt class="text-slate-500">Profession</dt><dd>{{ c.profession or '—' }}</dd>
+      <dt class="text-slate-500">Passport</dt><dd>{{ c.passport_place or '' }} {{ ('issued ' ~ (c.passport_issue | dmy)) if c.passport_issue }}</dd>
+      <dt class="text-slate-500">Address</dt><dd>{{ [c.address, c.district, c.state, c.pin] | select | join(', ') or '—' }}</dd>
+      <dt class="text-slate-500">Reference</dt><dd>{% if c.referrer_id %}<a href="/app/partners/referrers/{{ c.referrer_id }}" class="text-brand-blue">{{ c.referrer_name }}</a> {{ c.referrer_mobile or '' }}{% else %}—{% endif %}</dd>
+    </dl>
+    <dl class="grid grid-cols-2 gap-2 text-sm mt-4 pt-4 border-t border-slate-100">
+      <dt class="text-slate-500">To collect</dt><dd class="text-right font-semibold">{{ money.to_collect | inr }}</dd>
+      <dt class="text-slate-500">Received</dt><dd class="text-right font-semibold">{{ money.received | inr }}</dd>
+      {% if money.refunded %}<dt class="text-slate-500">Refunded</dt><dd class="text-right font-semibold">{{ money.refunded | inr }}</dd>{% endif %}
+      <dt class="text-slate-500">Balance</dt><dd class="text-right font-semibold {{ 'text-brand-red' if money.balance > 0 else 'text-green-700' }}">{{ money.balance | inr }}</dd>
+    </dl>
+    {% if photos %}
+    <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-2">
+      {% for ph in photos %}<a href="/app/uploads/{{ ph.path }}" target="_blank" rel="noopener" hx-boost="false" class="block"><img src="/app/uploads/{{ ph.path }}" alt="{{ ph.kind }} photo" class="h-20 w-20 object-cover rounded-lg border border-slate-200"><span class="text-xs text-slate-500">{{ ph.kind | title }}</span></a>{% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <div class="lg:col-span-2 flex flex-col gap-4">
+    <section class="card">
+      <h2 class="px-4 pt-4 pb-2 font-semibold">Visa files</h2>
+      {% for f in files %}
+      <a href="/app/files/{{ f.id }}" class="flex flex-wrap justify-between gap-2 px-4 py-3 border-t border-slate-100 hover:bg-slate-50">
+        <span><span class="font-semibold text-brand-navy">#{{ f.serial_no }}</span> · {{ f.visa_type | title }} · {{ f.country }} <span class="text-sm text-slate-500">· {{ f.created_at | dmy }}</span></span>
+        {{ stage_pill(f.current_stage or f.status) }}
+      </a>
+      {% else %}<p class="px-4 pb-4 text-sm text-slate-500">No visa files yet.</p>{% endfor %}
+    </section>
+    <section class="card">
+      <h2 class="px-4 pt-4 pb-2 font-semibold">Tickets</h2>
+      {% for t in tickets %}
+      <a href="/app/tickets/{{ t.id }}" class="flex justify-between gap-2 px-4 py-3 border-t border-slate-100 hover:bg-slate-50">
+        <span><span class="font-semibold text-brand-navy">T-{{ t.ticket_no }}</span> · {{ t.airline or '' }} {{ t.pnr or '' }}{% if t.file_id %} <span class="text-xs text-slate-500">(visa file)</span>{% endif %}</span>
+        <span class="text-sm text-slate-500">{{ t.travel_date | dmy }} · {{ t.status }}</span>
+      </a>
+      {% else %}<p class="px-4 pb-4 text-sm text-slate-500">No tickets yet.</p>{% endfor %}
+    </section>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <section class="card p-4">
+        <h2 class="font-semibold mb-2">Payments</h2>
+        {% for p in payments %}
+        <div class="flex justify-between gap-2 py-2 border-t border-slate-100 text-sm">
+          <span>{{ p.paid_on | dmy }} · {{ '#' ~ p.serial_no if p.serial_no else 'T-' ~ p.ticket_no }} · {{ p.mode | upper }}{% if p.kind in ('refund', 'reversal') %} · {{ p.kind }}{% endif %}</span>
+          <span class="font-semibold {{ 'text-amber-700' if p.direction == 'out' else '' }}">{% if p.receipt_no %}<a href="/app/payments/{{ p.id }}/receipt" class="text-brand-blue">{{ p.amount | inr }}</a>{% else %}{{ p.amount | inr }}{% endif %}</span>
+        </div>
+        {% else %}<p class="text-sm text-slate-500">No payments yet.</p>{% endfor %}
+      </section>
+      <section class="card p-4">
+        <div class="flex justify-between mb-2"><h2 class="font-semibold">Messages</h2><a href="/app/messages?tab=all&amp;customer_id={{ c.id }}" class="text-sm text-brand-blue">All</a></div>
+        {% for m in messages %}
+        <div class="py-2 border-t border-slate-100 text-sm"><span class="line-clamp-2 [overflow-wrap:anywhere]">{{ m.body }}</span>
+          <span class="text-xs text-slate-500">{{ m.status | replace('_', ' ') }} · {{ (m.done_at or m.created_at) | dmy(true) }}{% if m.done_by_name %} · {{ m.done_by_name }}{% endif %}</span></div>
+        {% else %}<p class="text-sm text-slate-500">No messages yet.</p>{% endfor %}
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}

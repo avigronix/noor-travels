@@ -1,0 +1,37 @@
+{# Design: docs/design/Tickets.dc.html + MobileTickets.dc.html #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import select, page_head %}
+{% block page_title %}Ticket desk{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+  {{ page_head("Ticket desk", "Every air ticket in one list – walk-in customers and tickets inside visa files.", "plane") }}
+  {% if user.role != 'accountant' %}<a href="/app/tickets/new" class="h-11 inline-flex items-center px-4 rounded-lg bg-brand-red text-white text-sm font-semibold">+ New ticket</a>{% endif %}
+</div>
+
+<section aria-label="This month" class="grid gap-3 grid-cols-2 {{ 'lg:grid-cols-5' if user.role == 'owner' else 'lg:grid-cols-4' }} mb-4">
+  {% set boxes = [("Tickets this month", stats.month_count, "/app/tickets?travel=month"), ("Sales", stats.sales | inr, "")] %}
+  {% if user.role == 'owner' %}{% set boxes = boxes + [("Margin (owner)", stats.margin | inr, "")] %}{% endif %}
+  {% set boxes = boxes + [("Flying this week", stats.week, "/app/tickets?travel=7d"), ("Balance due", stats.due | inr, "/app/tickets?pay=due")] %}
+  {% for label, value, href in boxes %}
+  <a {% if href %}href="{{ href }}"{% endif %} class="card card-sm p-3 sm:p-4"><p class="text-xs text-slate-500">{{ label }}</p><p class="mt-1 font-display text-xl font-semibold text-brand-navy">{{ value }}</p></a>
+  {% endfor %}
+</section>
+
+<form id="filters" hx-get="/app/tickets" hx-target="#rows" hx-push-url="true" hx-trigger="input changed delay:300ms from:#q, change" class="flex flex-wrap items-start gap-2 mb-3">
+  <input id="q" type="search" name="q" value="{{ q }}" aria-label="Search tickets" placeholder="Name, PNR, passport, mobile or T-no." class="flex-1 min-w-[200px] h-11 px-3 rounded-lg border border-slate-300 bg-white">
+  <details class="relative" data-filters>
+    <summary class="list-none cursor-pointer h-11 inline-flex items-center gap-2 px-3 rounded-lg border border-slate-300 bg-white text-sm font-medium" aria-label="Filters">
+      Filter{% if filters_on %}<span class="inline-grid place-items-center min-w-5 h-5 px-1 rounded-full bg-brand-red text-white text-xs">{{ filters_on }}</span>{% endif %}</summary>
+    <div class="absolute right-0 z-30 mt-2 w-[min(20rem,calc(100vw-2rem))] card card-sm p-4 shadow-lg grid gap-3">
+      {{ select("travel", "Travel", [("today","Flying today"),("7d","Next 7 days"),("month","Booked this month")], travel, blank="Any date") }}
+      {{ select("source", "Source", [("walkin","Walk-in"),("file","From visa file")], source, blank="All") }}
+      {{ select("status", "Status", [("booked","Booked"),("travelled","Travelled"),("cancelled","Cancelled")], status, blank="Any") }}
+      {{ select("pay", "Payment", [("due","Balance due")], pay, blank="Any") }}
+      {% set sup = [] %}{% for s in suppliers %}{% set _ = sup.append((s.id, s.name)) %}{% endfor %}
+      {{ select("supplier", "Booked through", sup, supplier, blank="All suppliers") }}
+      <label class="flex flex-col gap-1 text-sm font-medium">Airline<input name="airline" value="{{ airline }}" class="h-11 px-3 rounded-lg border border-slate-300 font-normal"></label>
+    </div>
+  </details>
+</form>
+<div id="rows">{% include "tickets/_rows.html" %}</div>
+{% endblock %}

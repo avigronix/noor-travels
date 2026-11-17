@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="settings" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div>
+      <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Settings</h1>
+      <p style="margin: 0; font-size: 14px; color: #475569">Only the owner can change these.</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <nav aria-label="Settings sections" style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 4px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 8px">
+        <a href="#biz" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; background: #EFF6FF; color: #0A2E57; font-weight: 600; font-size: 14px; text-decoration: none">Business & licence</a>
+        <a href="#tpl" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; color: #0F172A; font-size: 14px; text-decoration: none">Country stages</a>
+        <a href="#money" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; color: #0F172A; font-size: 14px; text-decoration: none">GST, cap & refunds</a>
+        <a href="#remind" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; color: #0F172A; font-size: 14px; text-decoration: none">Reminders</a>
+        <a href="#users" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; color: #0F172A; font-size: 14px; text-decoration: none">Users & roles</a>
+        <a href="#safe" style="display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; color: #0F172A; font-size: 14px; text-decoration: none">Backup & security</a>
+      </nav>
+
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+        <section id="biz" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 600">Business & licence</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="bn" style="font-size: 14px; font-weight: 500">Business name</label><input id="bn" value="Noor Travels Services" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="gs" style="font-size: 14px; font-weight: 500">GSTIN</label><input id="gs" value="09XXXXXXXXXX1Z5" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="ra" style="font-size: 14px; font-weight: 500">RA licence number</label><input id="ra" value="B-XXXX/UP/PER/1000+/5/XXXX" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="rav" style="font-size: 14px; font-weight: 500">Licence valid till</label><input id="rav" type="date" value="2028-06-30" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"><span style="font-size: 12px; color: #475569">Reminder 90 days before expiry</span></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; grid-column: 1 / -1"><label for="ad" style="font-size: 14px; font-weight: 500">Office address (on receipts)</label><input id="ad" value="Gorakhpur Road, Near Hitashi Hospital, Kasia, Distt. Kushinagar, U.P. 274402" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="ph1" style="font-size: 14px; font-weight: 500">Office mobile 1</label><input id="ph1" value="99844 14350" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="ph2" style="font-size: 14px; font-weight: 500">Office mobile 2</label><input id="ph2" value="88819 51234" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 12px; border: 1px solid #E2E8F0; border-radius: 10px">
+            <img src="../../static/img/logo.png" alt="Noor Travels Services logo" style="height: 52px; width: auto">
+            <span style="font-size: 13px; color: #475569">Logo used on receipts, WhatsApp PDFs and the customer portal.</span>
+          </div>
+          <h3 style="margin: 4px 0 0; font-size: 15px; font-weight: 600">Bank accounts (shown on receipts)</h3>
+          <div style="overflow-x: auto; border: 1px solid #E2E8F0; border-radius: 10px">
+            <table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px">
+              <thead><tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px"><th style="padding: 10px 14px; font-weight: 600">Bank</th><th style="padding: 10px 14px; font-weight: 600">Account no.</th><th style="padding: 10px 14px; font-weight: 600">IFSC</th><th style="padding: 10px 14px; font-weight: 600">Branch</th></tr></thead>
+              <tbody>
+                <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 10px 14px; font-weight: 600">ICICI Bank</td><td style="padding: 10px 14px">320605001885</td><td style="padding: 10px 14px">ICIC0003206</td><td style="padding: 10px 14px">Kasia, Kushinagar</td></tr>
+                <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 10px 14px; font-weight: 600">HDFC Bank</td><td style="padding: 10px 14px">50200086342104</td><td style="padding: 10px 14px">HDFC0002285</td><td style="padding: 10px 14px">Kasia</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="tpl" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 600">Country stages</h2>
+            <div style="display: flex; gap: 6px; overflow-x: auto">
+              <button type="button" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #0070B8; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 13px; font-family: inherit">Saudi Arabia</button>
+              <button type="button" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-size: 13px; font-family: inherit">Kuwait</button>
+              <button type="button" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #CBD5E1; background: #FFFFFF; font-size: 13px; font-family: inherit">Qatar</button>
+              <button type="button" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px dashed #94A3B8; background: #FFFFFF; font-size: 13px; font-family: inherit">+ Country</button>
+            </div>
+          </div>
+          <p style="margin: 0; font-size: 14px; color: #475569">Change the order, the default cost or which stage must finish first. Changes apply to new files.</p>
+          <div style="overflow-x: auto; border: 1px solid #E2E8F0; border-radius: 10px">
+            <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px">
+              <thead><tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px"><th style="padding: 10px 14px; font-weight: 600">#</th><th style="padding: 10px 14px; font-weight: 600">Stage</th><th style="padding: 10px 14px; font-weight: 600">Needs first</th><th style="padding: 10px 14px; font-weight: 600; text-align: right">Default cost</th><th style="padding: 10px 14px; font-weight: 600">Retest allowed</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ stages }}" as="s" hint-placeholder-count="10">
+                  <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 10px 14px; color: #475569">⋮⋮ {{ s.n }}</td><td style="padding: 10px 14px; font-weight: 600">{{ s.name }}</td><td style="padding: 10px 14px; color: #334155">{{ s.needs }}</td><td style="padding: 10px 14px; text-align: right">{{ s.cost }}</td><td style="padding: 10px 14px">{{ s.retest }}</td></tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <button type="button" style="align-self: flex-start; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px dashed #94A3B8; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">+ Add stage</button>
+        </section>
+
+        <section id="money" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 600">GST, service charge cap & refunds</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="cap" style="font-size: 14px; font-weight: 500">Service charge cap (₹)</label><input id="cap" value="30,000" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="gr" style="font-size: 14px; font-weight: 500">GST on service charge</label><input id="gr" value="18% (CGST 9% + SGST 9%)" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="sac" style="font-size: 14px; font-weight: 500">SAC code</label><input id="sac" placeholder="As advised by CA" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          </div>
+          <h3 style="margin: 4px 0 0; font-size: 15px; font-weight: 600">Service charge earned if a file is cancelled</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px">
+            <sc-for list="{{ refund }}" as="r" hint-placeholder-count="5">
+              <div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; color: #475569">{{ r.after }}</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600">{{ r.pct }}</span></div>
+            </sc-for>
+          </div>
+          <p style="margin: 0; font-size: 13px; color: #475569">Costs already paid to centres and agencies are never refunded. Refund is processed within 15 days.</p>
+        </section>
+
+        <section id="remind" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline"><h2 style="margin: 0; font-size: 18px; font-weight: 600">Messaging defaults</h2><a href="Messages.dc.html" style="font-size: 14px; font-weight: 600">Manage rules & templates in Messages</a></div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="wa" style="font-size: 14px; font-weight: 500">Office WhatsApp number</label><input id="wa" value="99844 14350" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="open" style="font-size: 14px; font-weight: 500">Send button opens</label><select id="open" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>WhatsApp app (phone) / WhatsApp Web (laptop)</option></select></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="quiet" style="font-size: 14px; font-weight: 500">Quiet hours</label><input id="quiet" value="9:00 pm – 7:00 am" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="ch" style="font-size: 14px; font-weight: 500">Channel</label><select id="ch" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>WhatsApp – free click-to-send</option></select></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="tm" style="font-size: 14px; font-weight: 500">Send time</label><input id="tm" type="time" value="18:00" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px"><label for="lg" style="font-size: 14px; font-weight: 500">Language</label><select id="lg" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Hindi (Roman)</option><option>Hindi (Devanagari)</option><option>English</option></select></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 14px"><input type="checkbox" checked style="width: 18px; height: 18px">Day before every appointment</label>
+            <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 14px"><input type="checkbox" checked style="width: 18px; height: 18px">When a stage is completed</label>
+            <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 14px"><input type="checkbox" checked style="width: 18px; height: 18px">Payment receipt</label>
+            <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 14px"><input type="checkbox" style="width: 18px; height: 18px">Balance due reminder every 7 days</label>
+          </div>
+        </section>
+
+        <section id="users" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 600">Users & roles</h2>
+            <span style="font-size: 13px; color: #475569">3 of 4 staff seats used</span>
+          </div>
+          <div style="overflow-x: auto; border: 1px solid #E2E8F0; border-radius: 10px">
+            <table style="width: 100%; min-width: 600px; border-collapse: collapse; font-size: 14px">
+              <thead><tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px"><th style="padding: 10px 14px; font-weight: 600">Name</th><th style="padding: 10px 14px; font-weight: 600">Mobile</th><th style="padding: 10px 14px; font-weight: 600">Role</th><th style="padding: 10px 14px; font-weight: 600">Last login</th><th style="padding: 10px 14px; font-weight: 600">Status</th></tr></thead>
+              <tbody>
+                <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 10px 14px; font-weight: 600">Noor Alam</td><td style="padding: 10px 14px">99XXXXXX01</td><td style="padding: 10px 14px">Owner</td><td style="padding: 10px 14px">Today</td><td style="padding: 10px 14px; color: #166534; font-weight: 600">Active</td></tr>
+                <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 10px 14px; font-weight: 600">Sameer</td><td style="padding: 10px 14px">98XXXXXX12</td><td style="padding: 10px 14px">Staff</td><td style="padding: 10px 14px">Today</td><td style="padding: 10px 14px; color: #166534; font-weight: 600">Active</td></tr>
+                <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 10px 14px; font-weight: 600">Faizan</td><td style="padding: 10px 14px">97XXXXXX33</td><td style="padding: 10px 14px">Staff</td><td style="padding: 10px 14px">Yesterday</td><td style="padding: 10px 14px; color: #166534; font-weight: 600">Active</td></tr>
+                <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 10px 14px; font-weight: 600">Accounts (CA)</td><td style="padding: 10px 14px">96XXXXXX44</td><td style="padding: 10px 14px">Reports only</td><td style="padding: 10px 14px">2 Nov</td><td style="padding: 10px 14px; color: #166534; font-weight: 600">Active</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <button type="button" style="align-self: flex-start; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">+ Invite staff</button>
+        </section>
+
+        <section id="safe" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 600">Backup & security</h2>
+          <span style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap"><span>Last automatic backup</span><strong>Today, 2:00 am · kept 30 days</strong></span>
+          <span style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap"><span>Passport numbers and photos</span><strong>Encrypted · staff see last 4 digits</strong></span>
+          <span style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap"><span>Lock account after wrong passwords</span><strong>5 attempts</strong></span>
+          <span style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap"><span>Activity log</span><a href="#" style="font-weight: 600">View all changes</a></span>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      stages: [
+        { n: 1, name: 'Registration', needs: '—', cost: '—', retest: '—' },
+        { n: 2, name: 'Visa attached', needs: 'Registration', cost: '—', retest: '—' },
+        { n: 3, name: 'Medical', needs: 'Visa attached', cost: '₹9,500', retest: 'Yes' },
+        { n: 4, name: 'MOFA', needs: 'Visa attached', cost: '—', retest: '—' },
+        { n: 5, name: 'VFS biometric', needs: 'MOFA', cost: 'Actual', retest: '—' },
+        { n: 6, name: 'Skill test', needs: 'Visa attached', cost: '₹10,000', retest: 'Yes' },
+        { n: 7, name: 'Visa stamping', needs: 'Medical fit, skill test pass, VFS', cost: '₹5,000', retest: '—' },
+        { n: 8, name: 'Emigration clearance', needs: 'Stamping (ECR only)', cost: 'Govt. fee', retest: '—' },
+        { n: 9, name: 'Ticket', needs: 'Emigration / stamping', cost: 'Actual fare', retest: '—' },
+        { n: 10, name: 'Departed', needs: 'Ticket, no balance due', cost: '—', retest: '—' }
+      ],
+      refund: [
+        { after: 'Before visa attached', pct: '0%' },
+        { after: 'After visa attached', pct: '25%' },
+        { after: 'After MOFA', pct: '50%' },
+        { after: 'After stamping', pct: '75%' },
+        { after: 'After emigration', pct: '100%' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

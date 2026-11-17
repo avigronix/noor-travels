@@ -1,0 +1,191 @@
+{# Design: docs/design/Dashboard.dc.html (laptop), MobileDashboard.dc.html (phone, single column) #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import pill %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+{% set hour = now_hour %}
+{% set greet = "Good morning" if hour < 12 else "Good afternoon" if hour < 17 else "Good evening" %}
+{# Hero: greeting + today's summary + quick actions (FR-10.2) #}
+<section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-navy via-[#0d3a6c] to-brand-blue p-5 sm:p-6 text-white mb-5 shadow-[var(--shadow-pop)]">
+  <div aria-hidden="true" class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-white/5"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute right-24 -bottom-20 h-40 w-40 rounded-full bg-brand-orange/15"></div>
+  <div class="relative flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-sm text-blue-100/80">{{ today.strftime('%A, %d %B %Y') }}</p>
+      <h1 class="mt-1 font-display text-[clamp(1.5rem,1.2rem+1.4vw,2rem)] font-semibold leading-tight">{{ greet }}, {{ user.name.split(' ')[0] }} 👋</h1>
+      <p class="mt-1 text-blue-100">{{ stats.appointments_today }} appointment{{ 's' if stats.appointments_today != 1 }}, {{ stats.flights_today }} flight{{ 's' if stats.flights_today != 1 }} and {{ stats.to_send }} WhatsApp message{{ 's' if stats.to_send != 1 }} today.</p>
+    </div>
+    {% if user.role != 'accountant' %}
+    <div class="hidden sm:flex flex-wrap gap-2">
+      <a href="/app/files/new" class="h-11 inline-flex items-center gap-2 px-4 rounded-xl bg-brand-red text-white text-sm font-semibold">{{ icon('plus', 'icon-sm') }} Registration</a>
+      <a href="/app/tickets/new" class="h-11 inline-flex items-center gap-2 px-4 rounded-xl bg-white/10 ring-1 ring-white/25 text-white text-sm font-semibold hover:bg-white/20">{{ icon('plane', 'icon-sm') }} Ticket</a>
+      <a href="/app/payments/new" class="h-11 inline-flex items-center gap-2 px-4 rounded-xl bg-white/10 ring-1 ring-white/25 text-white text-sm font-semibold hover:bg-white/20">{{ icon('wallet', 'icon-sm') }} Payment</a>
+      <a href="/app/messages" class="h-11 inline-flex items-center gap-2 px-4 rounded-xl bg-green-500 text-white text-sm font-semibold hover:bg-green-600">{{ icon('whatsapp', 'icon-sm') }} Send {{ stats.to_send }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# Key numbers – each opens its filtered list (FR-10.3). The four that need action today are larger. #}
+{% set main = [
+  ("Appointments today", stats.appointments_today, stats.appointments_tomorrow ~ " tomorrow", "/app/appointments?day=today", "calendar", "bg-violet-50 text-violet-600"),
+  ("WhatsApp to send", stats.to_send, "Tap to send now", "/app/messages", "whatsapp", "bg-green-50 text-green-600"),
+  ("Balance due", due.amount | inr, due.customers ~ " customer" ~ ('s' if due.customers != 1 else ''), "/app/files?pay=due&status=active", "rupee", "bg-amber-50 text-amber-600"),
+  ("Active files", stats.active_files, "+" ~ stats.new_month ~ " this month", "/app/files?status=active", "files", "bg-blue-50 text-brand-blue"),
+] %}
+{% set more = [
+  ("Visa done (" ~ today.strftime('%b') ~ ")", stats.visa_done_month, "/app/files?visa_done=month", "stamp", "text-green-600"),
+  ("Departed (" ~ today.strftime('%b') ~ ")", stats.departed_month, "/app/files?status=departed", "plane", "text-green-600"),
+  ("Tickets (" ~ today.strftime('%b') ~ ")", stats.tickets_month, "/app/tickets?travel=month", "plane", "text-brand-red"),
+  ("Passports outside", stats.passports_out, "/app/files?passport=out", "passport", "text-amber-600"),
+  ("New enquiries", stats.new_enquiries, "/app/enquiries", "inbox", "text-brand-blue"),
+  ("Stuck 7+ days", stats.stuck, "/app/files?alert=stuck", "alert", "text-brand-red"),
+] %}
+<section aria-label="Key numbers" class="grid gap-3 grid-cols-2 lg:grid-cols-4 mb-3">
+  {% for label, value, note, href, ic, tone in main %}
+  <a href="{{ href }}" class="card card-link p-4 flex flex-col gap-3">
+    <span class="flex items-center justify-between gap-2"><span class="text-[13px] font-medium text-slate-500">{{ label }}</span><span class="kpi-icon {{ tone }}">{{ icon(ic) }}</span></span>
+    <span class="font-display text-[1.65rem] leading-none font-semibold text-brand-navy">{{ value }}</span>
+    <span class="text-xs text-slate-500">{{ note }}</span>
+  </a>
+  {% endfor %}
+</section>
+<section aria-label="More numbers" class="mb-5 flex gap-2 overflow-x-auto [scrollbar-width:none] -mx-4 px-4 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-6">
+  {% for label, value, href, ic, tone in more %}
+  <a href="{{ href }}" class="card card-sm card-link shrink-0 min-w-[9.5rem] px-3.5 py-3 flex items-center gap-3">
+    <span class="{{ tone }}">{{ icon(ic) }}</span>
+    <span class="min-w-0"><span class="block font-display text-lg font-semibold leading-none text-brand-navy">{{ value }}</span><span class="block truncate text-xs text-slate-500 mt-1">{{ label }}</span></span>
+  </a>
+  {% endfor %}
+</section>
+
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.7fr_1fr] items-start">
+  <div class="flex flex-col gap-4 min-w-0">
+    {# Today & tomorrow (FR-10.4) #}
+    <section class="card p-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <h2 class="font-semibold">Today &amp; tomorrow</h2>
+        <div role="tablist" aria-label="Day" class="flex rounded-lg border border-slate-300 overflow-hidden text-sm font-semibold">
+          {% for key, label in [("today", "Today"), ("tomorrow", "Tomorrow")] %}
+          <button type="button" role="tab" hx-get="/app?day={{ key }}" hx-target="#agenda" aria-selected="{{ 'true' if day == key else 'false' }}"
+                  class="min-h-11 px-4 aria-selected:bg-brand-navy aria-selected:text-white">{{ label }}</button>
+          {% endfor %}
+        </div>
+      </div>
+      <div id="agenda">{% include "dashboard/_agenda.html" %}</div>
+    </section>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {# Files by stage (FR-10.5) #}
+      <section class="card p-4">
+        <div class="flex justify-between mb-2"><h2 class="font-semibold">Files by stage</h2><a href="/app/files?status=active" class="text-sm text-brand-blue">All {{ stats.active_files }}</a></div>
+        {% set top = (pipeline | map(attribute='n') | max) if pipeline else 1 %}
+        {% for s in pipeline %}
+        <a href="/app/files?status=active&amp;stage={{ s.stage }}" class="grid grid-cols-[7.5rem_1fr_2rem] items-center gap-2 min-h-9 text-sm hover:bg-slate-50 rounded">
+          <span class="truncate">{{ s.stage | stage }}</span>
+          <span class="h-2.5 rounded-full bg-slate-100"><span class="block h-2.5 rounded-full bg-brand-blue" style="width: {{ (s.n / top * 100) | round | int }}%"></span></span>
+          <span class="text-right font-semibold">{{ s.n }}</span>
+        </a>
+        {% else %}<p class="text-sm text-slate-500">No active files.</p>{% endfor %}
+      </section>
+      <section class="card p-4">
+        <h2 class="font-semibold mb-2">Active files by visa type</h2>
+        {% set total = by_type | sum(attribute='n') %}
+        {% set colors = {"work": "bg-brand-blue", "umrah": "bg-teal-500", "family": "bg-brand-orange", "tourist": "bg-violet-500"} %}
+        <div role="img" aria-label="{% for t in by_type %}{{ t.visa_type | title }} {{ t.n }}{{ ', ' if not loop.last }}{% endfor %}" class="flex h-3 rounded-full overflow-hidden bg-slate-100">
+          {% for t in by_type %}<span class="{{ colors.get(t.visa_type, 'bg-slate-400') }}" style="width: {{ (t.n / total * 100) | round | int if total else 0 }}%"></span>{% endfor %}
+        </div>
+        <div class="mt-3 grid grid-cols-2 gap-2">
+          {% for t in by_type %}<a href="/app/files?status=active&amp;visa_type={{ t.visa_type }}" class="flex items-center gap-2 min-h-11 text-sm"><span class="w-2.5 h-2.5 rounded-full {{ colors.get(t.visa_type, 'bg-slate-400') }}"></span>{{ t.visa_type | title }} <strong>{{ t.n }}</strong></a>{% endfor %}
+        </div>
+        {% if money %}
+        <h3 class="mt-4 pt-3 border-t border-slate-100 font-semibold">Money this month {% if user.role == 'owner' %}<span class="text-xs font-normal text-slate-500">(owner only)</span>{% endif %}</h3>
+        <dl class="mt-2 grid grid-cols-3 gap-2 text-sm">
+          <div><dt class="text-slate-500">Collected</dt><dd class="font-semibold">{{ money.collected | inr }}</dd></div>
+          <div><dt class="text-slate-500">Paid out</dt><dd class="font-semibold">{{ money.paid_out | inr }}</dd></div>
+          {% if user.role == 'owner' %}<div><dt class="text-slate-500">Margin</dt><dd class="font-semibold text-green-700">{{ money.margin | inr }}</dd></div>{% endif %}
+        </dl>
+        {% set atop = (by_account | map(attribute='n') | max) or 1 %}
+        {% for a in by_account %}
+        <div class="mt-1.5 grid grid-cols-[6rem_1fr_auto] items-center gap-2 text-sm"><span class="truncate">{{ a.name.split(',')[0] }}</span>
+          <span class="h-2 rounded-full bg-slate-100"><span class="block h-2 rounded-full bg-green-600" style="width: {{ (a.n / atop * 100) | round | int if atop else 0 }}%"></span></span><span>{{ a.n | inr }}</span></div>
+        {% endfor %}
+        {% endif %}
+      </section>
+    </div>
+
+    <section class="card p-4">
+      <div class="flex justify-between mb-2"><h2 class="font-semibold">Flights in the next 7 days</h2><a href="/app/tickets?travel=7d" class="text-sm text-brand-blue">Ticket desk</a></div>
+      {% for t in flights %}
+      <a href="/app/tickets/{{ t.id }}" class="grid grid-cols-[4.5rem_1fr_auto] gap-2 items-center py-2 border-t border-slate-100 text-sm hover:bg-slate-50">
+        <span>{{ 'Today' if t.travel_date == today else t.travel_date.strftime('%d %b') }}</span>
+        <span class="min-w-0"><span class="font-medium">{{ t.name }}</span>{% if t.serial_no %} <span class="text-slate-500">#{{ t.serial_no }}</span>{% endif %}
+          <span class="block text-xs text-slate-500 truncate">{{ t.route or '' }} · {{ t.pnr or 'no PNR' }}</span></span>
+        <span class="{{ 'text-green-700' if t.balance <= 0 else 'font-semibold' }}">{{ 'Paid' if t.balance <= 0 else t.balance | inr }}</span>
+      </a>
+      {% else %}<p class="text-sm text-slate-500">No flights in the next 7 days.</p>{% endfor %}
+    </section>
+  </div>
+
+  <aside class="flex flex-col gap-4 min-w-0">
+    <section class="card p-4">
+      <div class="flex justify-between mb-2"><h2 class="font-semibold">WhatsApp to send</h2><a href="/app/messages" class="text-sm text-brand-blue">All {{ stats.to_send }}</a></div>
+      {% for m in to_send %}
+      <div id="msg-{{ m.id }}" class="flex items-center justify-between gap-2 py-2 border-t border-slate-100">
+        <span class="min-w-0 text-sm"><span class="font-medium">{{ m.name }}</span><span class="block text-xs text-slate-500 truncate">{{ m.title or m.trigger }} – {{ m.body }}</span></span>
+        {% if user.role != 'accountant' %}<a href="{{ wa_link(m.mobile, m.body) }}" target="_blank" rel="noopener" data-wa-open="{{ m.id }}" class="shrink-0 h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-xs font-semibold">Send</a>{% endif %}
+      </div>
+      {% else %}<p class="text-sm text-slate-500">All caught up.</p>{% endfor %}
+    </section>
+
+    {# FR-10.6 #}
+    {% set titles = {"failed": "Medical unfit / test failed – book retest", "no_result": "Result not entered", "ppt_late": "Passport not back 7+ days after visa",
+                     "due_stamping": "Balance due before stamping", "expiry": "Passport expires within 6 months", "stuck": "No movement for 7+ days"} %}
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">Needs attention <span class="ml-1 inline-grid place-items-center min-w-6 h-6 px-1.5 rounded-full bg-brand-red text-white text-xs">{{ attention | length }}</span></h2>
+      <div class="flex flex-col gap-2">
+        {% for a in attention %}
+        <a href="/app/files/{{ a.file_id }}" class="block rounded-xl border px-3 py-2 text-sm {{ 'bg-red-50 border-red-200 text-red-900' if a.kind in ('failed', 'no_result') else 'bg-amber-50 border-amber-200 text-amber-900' if a.kind in ('due_stamping', 'expiry', 'ppt_late') else 'bg-slate-50 border-slate-200' }}">
+          <span class="font-semibold block">{{ titles[a.kind] }}</span>
+          #{{ a.serial_no }} {{ a.name }}{% if a.detail %} · {{ a.detail | stage }}{% endif %}{% if a.amount %} · {{ a.amount | inr }}{% endif %}{% if a.on_date %} · {{ a.on_date | dmy }}{% endif %}
+        </a>
+        {% else %}<p class="text-sm text-slate-500">Nothing needs attention. 👍</p>{% endfor %}
+      </div>
+    </section>
+
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">Passports outside office <span class="text-slate-500">{{ stats.passports_out }}</span></h2>
+      {% for f in passports %}
+      <p class="py-1.5 border-t border-slate-100 text-sm"><a href="/app/files/{{ f.id }}" class="font-medium hover:underline">{{ f.name }}</a>
+        <span class="block text-xs text-slate-500">{{ f.passport_location }}{% if f.since %} · since {{ f.since | dmy }}{% endif %}</span></p>
+      {% else %}<p class="text-sm text-slate-500">All passports are in the office.</p>{% endfor %}
+      {% if stats.passports_out > 5 %}<a href="/app/files?passport=out" class="mt-1 inline-flex min-h-11 items-center text-sm text-brand-blue">See all {{ stats.passports_out }}</a>{% endif %}
+    </section>
+
+    <section class="card p-4">
+      <div class="flex justify-between mb-2"><h2 class="font-semibold">New website enquiries <span class="text-slate-500">{{ stats.new_enquiries }} new</span></h2><a href="/app/enquiries" class="text-sm text-brand-blue">All</a></div>
+      {% for e in enquiries %}
+      <div class="flex flex-wrap items-center justify-between gap-2 py-2 border-t border-slate-100">
+        <span class="text-sm"><strong class="block">{{ e.name }}</strong><span class="text-xs text-slate-500">{{ e.service or 'General' }}{% if e.message %} · {{ e.message | truncate(40) }}{% endif %} · {{ e.created_at | dmy(true) }}</span></span>
+        <span class="flex gap-1.5">
+          <a href="tel:{{ e.mobile }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-xs font-medium">Call</a>
+          <a href="{{ wa_link(e.mobile, 'Assalamu alaikum ' ~ e.name.split(' ')[0] ~ ' ji, Noor Travels Services se baat kar rahe hain.') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-xs font-medium">WhatsApp</a>
+          {% if user.role != 'accountant' %}<a href="{{ '/app/tickets/new' if e.service and 'ticket' in e.service | lower else '/app/files/new' }}?enquiry_id={{ e.id }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-brand-red text-brand-red text-xs font-semibold">Convert</a>{% endif %}
+        </span>
+      </div>
+      {% else %}<p class="text-sm text-slate-500">No new enquiries.</p>{% endfor %}
+    </section>
+
+    {% if team %}
+    <section class="card p-4">
+      <h2 class="font-semibold mb-2">Team – active files</h2>
+      {% set ttop = (team | map(attribute='n') | max) or 1 %}
+      {% for t in team %}
+      <div class="grid grid-cols-[6rem_1fr_auto] items-center gap-2 min-h-9 text-sm"><span class="truncate">{{ t.name.split(' ')[0] }}</span>
+        <span class="h-2 rounded-full bg-slate-100"><span class="block h-2 rounded-full bg-brand-navy" style="width: {{ (t.n / ttop * 100) | round | int }}%"></span></span><span>{{ t.n }} files</span></div>
+      {% endfor %}
+    </section>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

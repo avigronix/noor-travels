@@ -1,0 +1,40 @@
+{# Design: docs/design/Candidates.dc.html (laptop) + MobileFiles.dc.html (phone). Same pattern as customers/. #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import select, page_head %}
+{% block page_title %}All files{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+  {{ page_head("All files", "Tap a name for the customer profile, or Open for the file.", "files") }}
+  <div class="flex gap-2">
+    <a href="/app/files/export.csv?{{ export_qs }}" hx-boost="false" class="h-11 inline-flex items-center gap-2 px-4 rounded-xl border border-slate-200 bg-white text-sm font-semibold" title="Export to Excel">{{ icon('download', 'icon-sm') }}<span class="hidden sm:inline">Export</span></a>
+    {% if user.role != 'accountant' %}<a href="/app/files/new" class="hidden sm:inline-flex h-11 items-center gap-2 px-4 rounded-xl bg-brand-red text-white text-sm font-semibold">{{ icon('plus', 'icon-sm') }} New registration</a>{% endif %}
+  </div>
+</div>
+
+<form id="filters" hx-get="/app/files" hx-target="#rows" hx-push-url="true"
+      hx-trigger="input changed delay:300ms from:#q, change"
+      class="flex flex-wrap items-start gap-2 mb-3">
+  <label for="q" class="sr-only">Search files</label>
+  <input id="q" type="search" name="q" value="{{ q }}" placeholder="Name, file no., passport, mobile"
+         class="flex-1 min-w-[200px] h-11 px-3 rounded-lg border border-slate-300 bg-white outline-none focus:border-brand-blue">
+  <input type="hidden" name="stage" value="{{ stage }}">
+  <details class="relative" data-filters>
+    <summary class="list-none cursor-pointer h-11 inline-flex items-center gap-2 px-3 rounded-lg border border-slate-300 bg-white text-sm font-medium" aria-label="Filters, {{ filters_on }} active">
+      Filter{% if filters_on %}<span class="inline-grid place-items-center min-w-5 h-5 px-1 rounded-full bg-brand-red text-white text-xs">{{ filters_on }}</span>{% endif %}
+    </summary>
+    <div class="absolute right-0 z-30 mt-2 w-[min(20rem,calc(100vw-2rem))] card card-sm p-4 shadow-lg grid gap-3">
+      {{ select("visa_type", "Visa type", [("work","Work"),("umrah","Umrah"),("family","Family"),("tourist","Tourist")], visa_type, blank="All visa types") }}
+      {{ select("status", "Status", [("active","Active"),("departed","Departed"),("cancelled","Cancelled")], status, blank="Any status") }}
+      {{ select("country", "Country", countries, country, blank="All countries") }}
+      {{ select("pay", "Payment", [("due","Balance due"),("paid","Fully paid")], pay, blank="Any payment") }}
+      {% set staff_opts = [] %}{% for s in staff %}{% set _ = staff_opts.append((s.id, s.name)) %}{% endfor %}
+      {{ select("assigned", "Handled by", staff_opts, assigned, blank="All staff") }}
+      {{ select("passport", "Passport", [("out","Outside the office")], passport, blank="Anywhere") }}
+      {{ select("visa_done", "Visa done", [("month","This month")], visa_done, blank="Any time") }}
+      {{ select("alert", "Needs attention", [("courier","Courier not received in 3 days"),("ppt","Passport not back 7 days after visa"),("stuck","No update for 7+ days"),("failed","Medical unfit / test failed")], alert, blank="—") }}
+    </div>
+  </details>
+</form>
+
+<div id="rows">{% include "files/_rows.html" %}</div>
+{% endblock %}

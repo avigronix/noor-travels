@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – All files</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="files" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px">
+      <div>
+        <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600">All files <span style="font-size: 16px; color: #64748B; font-weight: 500">{{ shown }} of 9</span></h1>
+        <p style="margin: 0; font-size: 14px; color: #475569">Tap a name for the customer profile, or Open for the file.</p>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" style="min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; font-weight: 600; font-size: 14px; font-family: inherit">Export</button>
+        <a href="NewFile.dc.html" style="display: flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 10px; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 14px; text-decoration: none">+ New</a>
+      </div>
+    </div>
+
+    <section aria-label="Search and filters" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; gap: 8px; align-items: center">
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 46px; border: 1px solid #CBD5E1; border-radius: 10px; box-sizing: border-box">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search files</label>
+          <input id="q" type="search" value="{{ q }}" onChange="{{ setQ }}" placeholder="Name, file no., passport, mobile" style="flex: 1 1 auto; min-width: 0; height: 42px; border: 0; outline: none; font-size: 15px; font-family: inherit; background: transparent">
+        </div>
+        <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ toggleFilters }}" aria-expanded="{{ filtersOpenText }}" aria-label="Filters, {{ activeCount }} active" style="{{ filterBtn }}">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+            <sc-if value="{{ hasActive }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: #E8202A; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ activeCount }}</span></sc-if>
+          </button>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ chipsRow }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; gap: 6px; overflow-x: auto">
+          <sc-for list="{{ activeChips }}" as="c" hint-placeholder-count="2">
+            <button type="button" onClick="{{ c.clear }}" aria-label="Remove filter {{ c.label }}" style="flex: 0 0 auto; display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #BFDBFE; background: #EFF6FF; color: #0A2E57; font-family: inherit; font-size: 13px; font-weight: 600">{{ c.label }} <span aria-hidden="true">×</span></button>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showFilters }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px">
+            <sc-for list="{{ selects }}" as="s" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 4px">
+                <label for="{{ s.id }}" style="font-size: 13px; font-weight: 600; color: #334155">{{ s.label }}</label>
+                <select id="{{ s.id }}" value="{{ s.value }}" onChange="{{ s.onChange }}" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 10px; padding: 0 10px; font-size: 14px; font-family: inherit; background: #FFFFFF">
+                  <sc-for list="{{ s.options }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for>
+                </select>
+              </div>
+            </sc-for>
+          </div>
+          <div role="group" aria-label="Filter by stage" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="8">
+              <button type="button" onClick="{{ t.pick }}" style="{{ t.style }}">{{ t.label }} <span style="opacity: 0.75">{{ t.count }}</span></button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 8px">
+              <button type="button" onClick="{{ clearAll }}" style="flex: 1 1 0; min-height: 46px; border-radius: 10px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">Clear all</button>
+              <button type="button" onClick="{{ toggleFilters }}" style="flex: 2 1 0; min-height: 46px; border-radius: 10px; border: 0; background: #0070B8; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 14px">Show {{ shown }} files</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </section>
+
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; overflow-x: auto">
+        <table style="width: 100%; min-width: 960px; border-collapse: collapse; font-size: 14px">
+          <thead>
+            <tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px">
+              <th style="padding: 12px 16px; font-weight: 600">File</th><th style="padding: 12px 16px; font-weight: 600">Customer</th><th style="padding: 12px 16px; font-weight: 600">Country · visa · job</th><th style="padding: 12px 16px; font-weight: 600">Current stage</th><th style="padding: 12px 16px; font-weight: 600">Next date</th><th style="padding: 12px 16px; font-weight: 600; text-align: right">Balance</th><th style="padding: 12px 16px; font-weight: 600">Updated</th><th style="padding: 12px 16px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Action</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+              <tr style="border-top: 1px solid #EEF2F6">
+                <td style="padding: 12px 16px; font-weight: 700">#{{ r.serial }}</td>
+                <td style="padding: 12px 16px"><a href="Customer.dc.html" style="display: block; font-weight: 600; color: #0F172A">{{ r.name }}</a><span style="display: block; font-size: 13px; color: #475569">Passport ••••{{ r.pp }} · {{ r.ecr }}</span></td>
+                <td style="padding: 12px 16px"><span style="display: block">{{ r.country }} · {{ r.vt }}</span><span style="display: block; font-size: 13px; color: #475569">{{ r.job }}</span></td>
+                <td style="padding: 12px 16px"><span style="{{ r.chip }}">{{ r.stage }}</span></td>
+                <td style="padding: 12px 16px">{{ r.next }}</td>
+                <td style="{{ r.balStyle }}">{{ r.balance }}</td>
+                <td style="padding: 12px 16px; color: #475569; font-size: 13px">{{ r.updated }}</td>
+                <td style="padding: 8px 16px"><a href="FileDetail.dc.html" style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #CBD5E1; color: #0F172A; text-decoration: none; font-weight: 600; font-size: 13px">Open</a></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <article style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+              <div style="min-width: 0">
+                <a href="Customer.dc.html" style="display: block; font-weight: 700; font-size: 16px; color: #0F172A; text-decoration: none">{{ r.name }}</a>
+                <span style="font-size: 13px; color: #475569">#{{ r.serial }} · {{ r.vt }} · {{ r.country }}</span>
+              </div>
+              <span style="{{ r.balChip }}">{{ r.balance }}</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between">
+              <span style="{{ r.chip }}">{{ r.stage }}</span>
+              <span style="font-size: 13px; color: #334155">Next: <strong>{{ r.next }}</strong></span>
+            </div>
+            <a href="FileDetail.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 10px; background: #F1F5F9; color: #0A2E57; font-weight: 700; font-size: 14px; text-decoration: none">Open file</a>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ noRows }}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 24px; text-align: center; background: #FFFFFF; border: 1px dashed #CBD5E1; border-radius: 14px; color: #475569">No files match. <button type="button" onClick="{{ clearAll }}" style="border: 0; background: transparent; color: #0070B8; font-weight: 700; font-family: inherit; font-size: 14px; cursor: pointer">Clear filters</button></div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { narrow: false, open: false, q: '', stage: 'All', country: 'All countries', visa: 'All visa types', pay: 'Any payment', staff: 'All staff' };
+  }
+  componentDidMount() {
+    this.mq = window.matchMedia('(max-width: 720px)');
+    this.onMq = () => this.setState({ narrow: this.mq.matches });
+    this.onMq();
+    this.mq.addEventListener('change', this.onMq);
+  }
+  componentWillUnmount() { if (this.mq) this.mq.removeEventListener('change', this.onMq); }
+  renderVals() {
+    const s = this.state;
+    const pill = (bg, fg) => `display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: ${bg}; color: ${fg}; white-space: nowrap`;
+    const chips = { ok: pill('#DBEAFE', '#1E40AF'), warn: pill('#FEF3C7', '#92400E'), bad: pill('#FEE2E2', '#991B1B'), done: pill('#DCFCE7', '#166534') };
+    const all = [
+      { serial: '4493', name: 'Sameer Alam', pp: '9920', ecr: 'ECNR', country: 'Saudi Arabia', vt: 'Umrah', job: 'Pilgrim', group: 'Ticket', stage: 'Umrah visa done', k: 'done', next: 'Flight 18 Nov', balance: '₹14,100', updated: 'Today', staff: 'Faizan' },
+      { serial: '4492', name: 'Imtiyaz Ahmad', pp: '3381', ecr: 'ECR', country: 'Saudi Arabia', vt: 'Work', job: 'House Driver', group: 'Stamping', stage: 'Passport to Mumbai', k: 'ok', next: '13 Nov courier', balance: '₹62,000', updated: 'Today', staff: 'Sameer' },
+      { serial: '4491', name: 'Mohd. Salman', pp: '7720', ecr: 'ECR', country: 'Saudi Arabia', vt: 'Work', job: 'House Driver', group: 'Medical', stage: 'Medical · today', k: 'ok', next: '11 Nov, 11:00', balance: '₹45,000', updated: 'Today', staff: 'Faizan' },
+      { serial: '4489', name: 'Shahid Ali', pp: '1054', ecr: 'ECR', country: 'Saudi Arabia', vt: 'Work', job: 'Heavy Driver', group: 'VFS', stage: 'VFS biometric', k: 'ok', next: '11 Nov, 2:00', balance: '₹20,000', updated: 'Yesterday', staff: 'Sameer' },
+      { serial: '4488', name: 'Naushad Alam', pp: '6610', ecr: 'ECR', country: 'Saudi Arabia', vt: 'Work', job: 'House Driver', group: 'Stamping', stage: 'Visa stamping', k: 'ok', next: '12 Nov', balance: '₹38,000', updated: '2 days ago', staff: 'Noor Alam' },
+      { serial: '4486', name: 'Arif Ansari', pp: '2248', ecr: 'ECR', country: 'Saudi Arabia', vt: 'Work', job: 'House Driver', group: 'Skill test', stage: 'Skill test · attempt 2', k: 'warn', next: '11 Nov, 9:30', balance: '₹30,000', updated: 'Today', staff: 'Sameer' },
+      { serial: '4484', name: 'Pintu Gupta', pp: '9017', ecr: 'ECNR', country: 'Kuwait', vt: 'Work', job: 'Cook', group: 'MOFA', stage: 'MOFA · 9 days', k: 'warn', next: '—', balance: '₹50,000', updated: '9 days ago', staff: 'Faizan' },
+      { serial: '4483', name: 'Rakesh Yadav', pp: '5532', ecr: 'ECR', country: 'Saudi Arabia', vt: 'Work', job: 'Light Driver', group: 'Emigration', stage: 'Emigration', k: 'ok', next: '12 Nov, 10:00', balance: 'Paid', updated: 'Yesterday', staff: 'Sameer' },
+      { serial: '4481', name: 'Sajid Ansari', pp: '4406', ecr: 'ECR', country: 'Qatar', vt: 'Work', job: 'Labour', group: 'Ticket', stage: 'Ticket booked', k: 'done', next: 'Flight 18 Nov', balance: 'Paid', updated: '3 days ago', staff: 'Noor Alam' }
+    ];
+    const defs = { country: 'All countries', visa: 'All visa types', pay: 'Any payment', staff: 'All staff', stage: 'All' };
+    const q = s.q.trim().toLowerCase();
+    const match = r =>
+      (s.stage === 'All' || r.group === s.stage) &&
+      (s.country === defs.country || r.country === s.country) &&
+      (s.visa === defs.visa || r.vt === s.visa) &&
+      (s.pay === defs.pay || (s.pay === 'Balance due' ? r.balance !== 'Paid' : r.balance === 'Paid')) &&
+      (s.staff === defs.staff || r.staff === s.staff) &&
+      (!q || [r.name, r.serial, r.pp].join(' ').toLowerCase().includes(q));
+    const rows = all.filter(match).map(r => ({
+      ...r, chip: chips[r.k],
+      balStyle: r.balance === 'Paid' ? 'padding: 12px 16px; text-align: right; color: #166534; font-weight: 600' : 'padding: 12px 16px; text-align: right; font-weight: 600',
+      balChip: r.balance === 'Paid' ? pill('#DCFCE7', '#166534') : pill('#FFF8EC', '#5A3818')
+    }));
+    const setF = k => e => this.setState({ [k]: e.target.value });
+    const selects = [
+      { id: 'f-country', label: 'Country', key: 'country', options: ['All countries', 'Saudi Arabia', 'Kuwait', 'Qatar', 'UAE'] },
+      { id: 'f-visa', label: 'Visa type', key: 'visa', options: ['All visa types', 'Work', 'Umrah', 'Family', 'Tourist'] },
+      { id: 'f-pay', label: 'Payment', key: 'pay', options: ['Any payment', 'Balance due', 'Fully paid'] },
+      { id: 'f-staff', label: 'Handled by', key: 'staff', options: ['All staff', 'Noor Alam', 'Sameer', 'Faizan'] }
+    ].map(x => ({ ...x, value: s[x.key], onChange: setF(x.key) }));
+    const active = ['stage', 'country', 'visa', 'pay', 'staff'].filter(k => s[k] !== defs[k]);
+    const tabOn = 'flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #0070B8; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 13px; font-family: inherit; cursor: pointer';
+    const tabOff = 'flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; font-weight: 500; font-size: 13px; font-family: inherit; cursor: pointer';
+    const groups = ['All', 'Medical', 'MOFA', 'VFS', 'Skill test', 'Stamping', 'Emigration', 'Ticket'];
+    const open = s.narrow ? s.open : true;
+    return {
+      narrow: s.narrow, wide: !s.narrow,
+      q: s.q, setQ: e => this.setState({ q: e.target.value }),
+      showFilters: open,
+      toggleFilters: () => this.setState({ open: !this.state.open }),
+      filtersOpenText: open ? 'true' : 'false',
+      filterBtn: `position: relative; flex: 0 0 auto; width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; ${s.open ? 'border: 0; background: #0070B8; color: #FFFFFF;' : 'border: 1px solid #CBD5E1; background: #FFFFFF; color: #0A2E57;'}`,
+      activeCount: active.length, hasActive: active.length > 0,
+      chipsRow: s.narrow && !s.open && active.length > 0,
+      activeChips: active.map(k => ({ label: s[k], clear: () => this.setState({ [k]: defs[k] }) })),
+      clearAll: () => this.setState({ ...defs, q: '' }),
+      selects,
+      tabs: groups.map(g => ({ label: g, count: g === 'All' ? all.length : all.filter(r => r.group === g).length, style: g === s.stage ? tabOn : tabOff, pick: () => this.setState({ stage: g }) })),
+      rows, shown: rows.length, noRows: rows.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

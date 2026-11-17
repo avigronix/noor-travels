@@ -1,0 +1,59 @@
+{# Record a payment (FR-14.2, 14.4). Design: Payments.dc.html "Record a payment". #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, select, btn %}
+{% block page_title %}Record payment{% endblock %}
+{% block content %}
+{% set e = errors %}
+<p class="text-sm text-slate-500"><a href="/app/payments" class="text-brand-blue">Payments</a> / Record payment</p>
+<h1 class="mt-1 mb-4 page-title">Record a payment{% if target %} – {{ target.label }}{% endif %}</h1>
+
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr] items-start">
+<form method="post" action="/app/payments" class="card p-4 sm:p-6 flex flex-col gap-4">
+  {% if target %}
+    <input type="hidden" name="{{ 'file_id' if target.kind == 'file' else 'booking_id' }}" value="{{ target.id }}">
+  {% else %}
+    {{ input("ref", "File no. or ticket no.", v.ref, e.ref, required=true, placeholder="e.g. 4277 or T-3453") }}
+  {% endif %}
+  <fieldset class="flex flex-col gap-2"><legend class="text-sm font-medium text-slate-700 mb-1">Type</legend>
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      {% for val, label in [("in", "Received from candidate"), ("out", "Paid to centre / agency / supplier")] %}
+      <label class="flex items-center gap-2.5 min-h-12 px-3 rounded-xl border border-slate-300 cursor-pointer has-[:checked]:border-2 has-[:checked]:border-brand-blue has-[:checked]:bg-blue-50 font-semibold text-sm">
+        <input type="radio" name="direction" value="{{ val }}" {{ 'checked' if (v.direction or 'in') == val }} class="w-5 h-5" data-pay-direction>{{ label }}</label>
+      {% endfor %}
+    </div>
+  </fieldset>
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    {{ input("amount", "Amount (₹)", v.amount, e.amount, required=true, attrs='inputmode="numeric"') }}
+    {{ input("paid_on", "Date", v.paid_on or today, type="date", required=true) }}
+    <div data-for="in">{{ select("against", "Against", [("service_charge","Service charge (GST applies)"),("costs","Costs – medical, test, stamping, ticket"),("retest","Retest charge")], v.against) }}</div>
+    {{ select("mode", "Mode", modes, v.mode or 'upi', e.mode, required=true) }}
+    {{ input("ref_no", "Reference no.", v.ref_no, placeholder="UTR / cheque no.") }}
+    <div data-for="in">{% set bk = [] %}{% for b in banks %}{% set _ = bk.append((b.id, b.name)) %}{% endfor %}
+      {{ select("bank_account_id", "Received into", bk, v.bank_account_id, e.bank_account_id, blank="Select…") }}</div>
+    <div data-for="out">{% set pt = [] %}{% for p in parties %}{% set _ = pt.append((p.id, p.name ~ (' (' ~ (p.default_rate | inr) ~ ')' if p.default_rate else ''))) %}{% endfor %}
+      {{ select("party_id", "Paid to", pt, v.party_id, e.party_id, blank="Select…") }}</div>
+    {{ input("note", "Note", v.note, placeholder="e.g. Instalment 2 / medical fee attempt 1") }}
+  </div>
+  <p class="text-xs text-slate-500" data-for="in">Service charge must be taken by UPI, bank transfer, cheque or DD. Cash is allowed only for costs.</p>
+  {% if warn %}
+  <div role="alert" class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">⚠ {{ warn }}
+    <label class="mt-2 flex items-center gap-3 min-h-11 font-semibold"><input type="checkbox" name="cash_ok" value="1" class="w-5 h-5"> Record anyway</label></div>
+  {% endif %}
+  <label class="flex items-center gap-3 min-h-11 text-sm" data-for="in"><input type="checkbox" name="send_receipt" value="1" {{ 'checked' if v.send_receipt or not v.amount }} class="w-5 h-5"> Send receipt on WhatsApp</label>
+  <div class="flex justify-end">{{ btn("Save and make receipt") }}</div>
+</form>
+
+{% if target %}
+<section class="card p-4">
+  <h2 class="font-semibold mb-2">{{ target.label }}</h2>
+  <dl class="grid grid-cols-2 gap-2 text-sm">
+    <dt class="text-slate-500">To collect</dt><dd class="text-right font-semibold">{{ target.totals.to_collect | inr }}</dd>
+    <dt class="text-slate-500">Received</dt><dd class="text-right font-semibold">{{ target.totals.received | inr }}</dd>
+    <dt class="text-slate-500">Balance</dt><dd class="text-right font-semibold text-brand-red">{{ target.totals.balance | inr }}</dd>
+    <dt class="text-slate-500">Paid out</dt><dd class="text-right font-semibold">{{ target.totals.expenses | inr }}</dd>
+  </dl>
+  <a href="/app/payments?{{ 'file_id' if target.kind == 'file' else 'booking_id' }}={{ target.id }}" class="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-brand-blue">See all entries →</a>
+</section>
+{% endif %}
+</div>
+{% endblock %}

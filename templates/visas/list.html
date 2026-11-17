@@ -1,0 +1,58 @@
+{# Design: docs/design/Visas.dc.html #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, select, btn, page_head %}
+{% block page_title %}Visas & sponsors{% endblock %}
+{% block content %}
+<div class="mb-5">{{ page_head("Visas & sponsors", "Every visa that comes from the Gulf is entered here, then attached to a candidate file.", "stamp") }}</div>
+
+{% if target %}
+<div class="mb-4 rounded-xl border border-brand-blue/40 bg-blue-50 px-4 py-3 text-sm">
+  Attaching a visa to <a href="/app/files/{{ target.id }}" class="font-semibold text-brand-navy">#{{ target.serial_no }} {{ target.name }}</a> –
+  add a new visa below, or tap <strong>Attach</strong> on a free visa in the list.</div>
+{% endif %}
+
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.4fr] items-start">
+  {% if user.role != 'accountant' %}
+  <section class="card p-4 sm:p-5">
+    <h2 class="font-semibold mb-3">Add a visa</h2>
+    {% set e = errors %}
+    <form method="post" action="/app/visas" enctype="multipart/form-data" class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {{ input("visa_no", "Visa number", v.visa_no, e.visa_no, required=true) }}
+      {{ input("sponsor_no", "Sponsor ID", v.sponsor_no, e.sponsor_no, required=true) }}
+      {{ select("sponsor_type", "Sponsor type", ["Individual (private)", "Company"], v.sponsor_type) }}
+      {{ input("sponsor_name", "Sponsor name", v.sponsor_name, placeholder="As on visa copy") }}
+      {{ input("visa_date_hijri", "Visa date (Hijri)", v.visa_date_hijri, e.visa_date_hijri, placeholder="DD-MM-YYYY e.g. 14-05-1448",
+               attrs='hx-get="/app/visas/hijri" hx-trigger="input changed delay:400ms, change" hx-target="#hijri-out"') }}
+      <div id="hijri-out">{% include "visas/_hijri.html" %}</div>
+      {{ select("country", "Country", countries, v.country or 'Saudi Arabia', required=true) }}
+      {{ input("profession", "Profession", v.profession, e.profession, required=true, placeholder="e.g. House Driver") }}
+      {% set ff = [] %}{% for f in free_files %}{% set _ = ff.append((f.id, '#' ~ f.serial_no ~ ' ' ~ f.name ~ ' (no visa yet)')) %}{% endfor %}
+      {{ select("file_id", "Attach to file", ff, v.file_id or attach, blank="Keep free for now", cls="sm:col-span-2") }}
+      <label class="sm:col-span-2 flex items-center justify-between gap-3 rounded-xl border border-dashed border-slate-300 px-4 py-3 cursor-pointer">
+        <span class="text-sm"><strong class="block">Visa photo</strong><span class="text-slate-500">One photo of the visa – camera or gallery (JPG/PNG/WEBP, max 5 MB)</span>
+          {% if e.photo %}<span class="block text-red-700 text-xs">{{ e.photo }}</span>{% endif %}</span>
+        <span class="shrink-0 h-11 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">Add photo</span>
+        <input type="file" name="photo" accept="image/*" capture="environment" class="sr-only">
+      </label>
+      <div class="sm:col-span-2 flex justify-end">{{ btn("Save visa", "navy") }}</div>
+    </form>
+  </section>
+  {% endif %}
+
+  <section class="flex flex-col gap-3 {{ 'lg:col-span-2' if user.role == 'accountant' }}">
+    <div class="grid grid-cols-3 gap-3">
+      {% for label, n in [("Visas in hand", stats.total), ("Attached", stats.attached), ("Free to give", stats.total - stats.attached)] %}
+      <div class="card card-sm p-3"><p class="text-xs text-slate-500">{{ label }}</p><p class="page-title">{{ n }}</p></div>
+      {% endfor %}
+    </div>
+    <form id="filters" hx-get="/app/visas" hx-target="#rows" hx-push-url="true" hx-trigger="input changed delay:300ms from:#q, change" class="flex flex-wrap gap-2">
+      <input type="hidden" name="attach" value="{{ attach }}">
+      <input id="q" type="search" name="q" value="{{ q }}" placeholder="Visa no., sponsor, profession" class="flex-1 min-w-[180px] h-11 px-3 rounded-lg border border-slate-300 bg-white">
+      <select name="status" class="h-11 px-2 rounded-lg border border-slate-300 bg-white text-sm">
+        <option value="">All visas</option><option value="free" {{ 'selected' if status == 'free' }}>Free</option><option value="attached" {{ 'selected' if status == 'attached' }}>Attached</option>
+      </select>
+    </form>
+    <div id="rows">{% include "visas/_rows.html" %}</div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{# Swapped into #rows by HTMX on search/filter/page change. #}
+{# Filter chips – tap × to remove one filter #}
+{% set chips = [] %}
+{% if state %}{% set _ = chips.append(("state", state)) %}{% endif %}
+{% if has_active %}{% set _ = chips.append(("has_active", "Active file: " ~ has_active)) %}{% endif %}
+{% if chips %}
+<div class="flex flex-wrap gap-2 mb-3">
+  {% for key, label in chips %}
+  <button type="button" data-clear-filter="{{ key }}"
+          class="inline-flex items-center gap-1 h-8 px-3 rounded-full bg-brand-blue/10 text-brand-navy text-sm">{{ label }} <span aria-hidden="true">×</span><span class="sr-only">remove filter</span></button>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if result.rows %}
+{# Laptop: table #}
+<div class="hidden md:block overflow-x-auto card card-sm">
+  <table class="w-full text-sm">
+    <thead class="thead">
+      <tr><th class="px-4 py-3 font-medium">Name</th><th class="px-4 py-3 font-medium">Mobile</th>
+          <th class="px-4 py-3 font-medium">Passport</th><th class="px-4 py-3 font-medium">Expiry</th>
+          <th class="px-4 py-3 font-medium">Place</th><th class="px-4 py-3 font-medium text-right">Files / Tickets</th></tr>
+    </thead>
+    <tbody>
+      {% for c in result.rows %}
+      <tr class="border-t border-slate-100 hover:bg-slate-50">
+        <td class="px-4 py-3 font-medium"><a href="/app/customers/{{ c.id }}" class="hover:underline">{{ c.name }}</a></td>
+        <td class="px-4 py-3">{{ c.mobile }}</td>
+        <td class="px-4 py-3 font-mono">{{ c.passport_no or '—' }}</td>
+        <td class="px-4 py-3">{{ c.passport_expiry | dmy }}</td>
+        <td class="px-4 py-3 text-slate-500">{{ c.district or '' }}{{ ', ' if c.district and c.state }}{{ c.state or '' }}</td>
+        <td class="px-4 py-3 text-right">{{ c.files }} / {{ c.tickets }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{# Phone: cards #}
+<ul class="md:hidden space-y-2">
+  {% for c in result.rows %}
+  <li>
+    <a href="/app/customers/{{ c.id }}" class="block card card-sm p-4">
+      <div class="flex justify-between gap-2"><span class="font-semibold">{{ c.name }}</span><span class="text-sm text-slate-500">{{ c.files }} files</span></div>
+      <p class="mt-1 text-sm text-slate-500">{{ c.mobile }} · <span class="font-mono">{{ c.passport_no or 'No passport' }}</span></p>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+{% else %}
+<p class="empty-state">No customers found.</p>
+{% endif %}

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Appointments</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="appointments" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Appointments</h1>
+        <p style="margin: 0; font-size: 14px; color: #475569">Medical, VFS, skill test, emigration and travel dates for all files. The evening before, each reminder appears in the To-send list with a WhatsApp button.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center">
+        <button type="button" aria-label="Previous week" style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-size: 18px">‹</button>
+        <span style="font-weight: 600; font-size: 15px; padding: 0 6px">11 – 17 Nov 2026</span>
+        <button type="button" aria-label="Next week" style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-size: 18px">›</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}"><div style="display: flex"><button type="button" onClick="{{ toggleFilters }}" aria-expanded="{{ filtersOpenText }}" aria-label="Filters" style="{{ filterBtn }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg><span>{{ filterLabel }}</span></button></div></sc-if>
+    <sc-if value="{{ showFilters }}" hint-placeholder-val="{{ true }}">
+    <div role="group" aria-label="Filter by type" style="display: flex; gap: 6px; overflow-x: auto; flex-wrap: wrap">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="6">
+        <button type="button" onClick="{{ f.pick }}" style="{{ f.style }}">{{ f.label }}</button>
+      </sc-for>
+    </div>
+    </sc-if>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <sc-for list="{{ days }}" as="d" hint-placeholder-count="3">
+          <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px 20px">
+            <h2 style="margin: 0 0 6px; font-size: 16px; font-weight: 600">{{ d.label }}</h2>
+            <sc-for list="{{ d.items }}" as="a" hint-placeholder-count="2">
+              <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid #EEF2F6">
+                <span style="flex: 0 0 72px; font-weight: 700; font-size: 15px">{{ a.time }}</span>
+                <span style="flex: 1 1 220px; min-width: 0">
+                  <a href="FileDetail.dc.html" style="display: block; font-weight: 600; font-size: 14px; color: #0F172A; text-decoration: none">{{ a.name }} · #{{ a.serial }}</a>
+                  <span style="display: block; font-size: 13px; color: #475569">{{ a.place }}</span>
+                </span>
+                <span style="{{ a.chip }}">{{ a.type }}</span>
+                <span style="flex: 0 0 auto; font-size: 12px; color: #475569">{{ a.reminder }}</span>
+                <button type="button" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 13px">Mark result</button>
+              </div>
+            </sc-for>
+          </section>
+        </sc-for>
+      </div>
+
+      <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <section style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #7F1D1D">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600">Missed or not updated</h2>
+          <a href="FileDetail.dc.html" style="color: #7F1D1D">#4484 Pintu Gupta – MOFA follow-up due 07 Nov</a>
+          <a href="FileDetail.dc.html" style="color: #7F1D1D">#4490 Asif Raza – medical 08 Nov, result not entered</a>
+        </section>
+        <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600">Reminder message (preview)</h2>
+          <div style="background: #DCF8C6; border-radius: 10px; padding: 12px; color: #0F172A; line-height: 1.5">Assalamu alaikum Arif ji, kal 11 Nov subah 9:30 baje Lucknow mein aapka skill test hai. Licence aur passport saath laayein. – Noor Travels Services, Kasia</div>
+          <span style="font-size: 13px; color: #475569">Appears in the To-send list at 6:00 pm the day before – tap Send on WhatsApp.</span>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { f: 'All', narrow: false, open: false }; }
+  componentDidMount() {
+    this.mq = window.matchMedia('(max-width: 720px)');
+    this.onMq = () => this.setState({ narrow: this.mq.matches });
+    this.onMq();
+    this.mq.addEventListener('change', this.onMq);
+  }
+  componentWillUnmount() { if (this.mq) this.mq.removeEventListener('change', this.onMq); }
+
+  renderVals() {
+    const chip = (bg, fg) => `flex: 0 0 auto; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: ${bg}; color: ${fg}`;
+    const types = { 'Medical': chip('#DBEAFE', '#1E40AF'), 'Skill test': chip('#FEF3C7', '#92400E'), 'VFS': chip('#EDE9FE', '#5B21B6'), 'Emigration': chip('#DBEAFE', '#005A94'), 'Stamping': chip('#F1F5F9', '#334155'), 'Flight': chip('#DCFCE7', '#166534') };
+    const raw = [
+      { day: 'Today · Wed 11 Nov', time: '9:30 am', name: 'Arif Ansari', serial: '4486', place: 'Skill test centre, Lucknow · attempt 2', type: 'Skill test', reminder: 'Reminder sent' },
+      { day: 'Today · Wed 11 Nov', time: '11:00 am', name: 'Mohd. Salman', serial: '4491', place: 'Approved medical centre, Lucknow', type: 'Medical', reminder: 'Reminder sent' },
+      { day: 'Today · Wed 11 Nov', time: '2:00 pm', name: 'Shahid Ali', serial: '4489', place: 'VFS, Lucknow', type: 'VFS', reminder: 'Reminder sent' },
+      { day: 'Thu 12 Nov', time: '10:00 am', name: 'Rakesh Yadav', serial: '4483', place: 'eMigrate – clearance', type: 'Emigration', reminder: 'In To-send list at 6 pm' },
+      { day: 'Thu 12 Nov', time: '3:00 pm', name: 'Naushad Alam', serial: '4488', place: 'Passport to Siddiqui Travel, Mumbai (courier)', type: 'Stamping', reminder: 'No reminder' },
+      { day: 'Wed 18 Nov', time: '4:45 am', name: 'Sajid Ansari', serial: '4481', place: 'Lucknow → Doha', type: 'Flight', reminder: 'In To-send list on 17 Nov' }
+    ];
+    const f = this.state.f;
+    const list = raw.filter(r => f === 'All' || r.type === f).map(r => ({ ...r, chip: types[r.type] }));
+    const dayNames = [...new Set(list.map(r => r.day))];
+    const on = 'flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #0070B8; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 13px; font-family: inherit; cursor: pointer';
+    const off = 'flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; font-weight: 500; font-size: 13px; font-family: inherit; cursor: pointer';
+    return {
+      filterLabel: f === 'All' ? 'Filter by type' : 'Type: ' + f,
+      narrow: this.state.narrow,
+      showFilters: this.state.narrow ? this.state.open : true,
+      toggleFilters: () => this.setState({ open: !this.state.open }),
+      filtersOpenText: (this.state.narrow ? this.state.open : true) ? 'true' : 'false',
+      filterBtn: `flex: 0 0 auto; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-family: inherit; font-weight: 600; font-size: 14px; cursor: pointer; ${this.state.open ? 'border: 0; background: #0070B8; color: #FFFFFF;' : 'border: 1px solid #CBD5E1; background: #FFFFFF; color: #0A2E57;'}`,
+      filters: ['All', 'Medical', 'VFS', 'Skill test', 'Stamping', 'Emigration', 'Flight'].map(x => ({ label: x, style: x === f ? on : off, pick: () => this.setState({ f: x, open: false }) })),
+      days: dayNames.map(d => ({ label: d, items: list.filter(r => r.day === d) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

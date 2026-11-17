@@ -1,0 +1,44 @@
+{# Design: docs/design/Payments.dc.html (ledger tab). Totals for the filtered range come from one aggregate query. #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import select, input, page_head %}
+{% block page_title %}Payments{% endblock %}
+{% block content %}
+{% if subject %}<p class="text-sm text-slate-500"><a href="{{ '/app/files/' ~ subject.id if subject.serial_no else '/app/tickets/' ~ subject.id }}" class="text-brand-blue">{{ '#' ~ subject.serial_no if subject.serial_no else 'T-' ~ subject.ticket_no }} {{ subject.name }}</a> / Payments</p>{% endif %}
+<div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+  {{ page_head(('Payments for ' ~ ('#' ~ subject.serial_no if subject.serial_no else 'T-' ~ subject.ticket_no)) if subject else 'Payments', "Money in from candidates, money out to centres and agencies, receipts and refunds.", "wallet") }}
+  {% if user.role != 'accountant' %}
+  <div class="flex gap-2">
+    {% set qs = ('file_id=' ~ file_id) if file_id else ('booking_id=' ~ booking_id) if booking_id else '' %}
+    <a href="/app/payments/new?{{ qs }}" class="h-11 inline-flex items-center px-4 rounded-lg bg-brand-red text-white text-sm font-semibold">Record payment</a>
+    {% if file_id %}<a href="/app/payments/refund?file_id={{ file_id }}" class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 bg-white text-sm font-semibold">Cancel &amp; refund</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if money %}
+<section class="grid gap-3 grid-cols-2 {{ 'lg:grid-cols-5' if user.role == 'owner' else 'lg:grid-cols-4' }} mb-4">
+  {% set boxes = [("To collect (incl. retest)", money.to_collect), ("Received", money.received), ("Balance", money.balance), ("Paid out so far", money.expenses)] %}
+  {% if user.role == 'owner' %}{% set boxes = boxes + [("Margin so far (owner)", money.margin)] %}{% endif %}
+  {% for label, val in boxes %}<div class="card card-sm p-3"><p class="text-xs text-slate-500">{{ label }}</p><p class="font-display text-xl font-semibold">{{ val | inr }}</p></div>{% endfor %}
+</section>
+{% endif %}
+
+<form id="filters" hx-get="/app/payments" hx-target="#rows" hx-push-url="true" hx-trigger="change" class="flex flex-wrap items-start gap-2 mb-3">
+  <input type="hidden" name="file_id" value="{{ file_id }}"><input type="hidden" name="booking_id" value="{{ booking_id }}"><input type="hidden" name="party" value="{{ party }}">
+  <label class="flex items-center gap-2 text-sm">From<input type="date" name="start" value="{{ start }}" class="h-11 px-2 rounded-lg border border-slate-300 bg-white"></label>
+  <label class="flex items-center gap-2 text-sm">To<input type="date" name="end" value="{{ end }}" class="h-11 px-2 rounded-lg border border-slate-300 bg-white"></label>
+  <details class="relative" data-filters>
+    <summary class="list-none cursor-pointer h-11 inline-flex items-center gap-2 px-3 rounded-lg border border-slate-300 bg-white text-sm font-medium">
+      Filter{% if filters_on %}<span class="inline-grid place-items-center min-w-5 h-5 px-1 rounded-full bg-brand-red text-white text-xs">{{ filters_on }}</span>{% endif %}</summary>
+    <div class="absolute right-0 z-30 mt-2 w-[min(20rem,calc(100vw-2rem))] card card-sm p-4 shadow-lg grid gap-3">
+      {{ select("direction", "Type", [("in","Money in"),("out","Money out")], direction, blank="In and out") }}
+      {{ select("mode", "Mode", modes, mode, blank="Any mode") }}
+      {% set bk = [] %}{% for b in banks %}{% set _ = bk.append((b.id, b.name)) %}{% endfor %}
+      {{ select("bank", "Account", bk, bank, blank="All accounts") }}
+      {% set st = [] %}{% for s in staff_list %}{% set _ = st.append((s.id, s.name)) %}{% endfor %}
+      {{ select("staff", "Recorded by", st, staff, blank="All staff") }}
+    </div>
+  </details>
+</form>
+<div id="rows">{% include "payments/_rows.html" %}</div>
+{% endblock %}

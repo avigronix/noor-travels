@@ -1,0 +1,43 @@
+{# Reference list page. Copy this pattern for files, tickets, payments, appointments, messages.
+   Phone: only search on top, filters behind a Filter button with count + chips, rows become cards (SRS 7). #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import page_head %}
+{% block page_title %}Customers{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+  {{ page_head("Customers", "Every person once – all their files, tickets and payments in one profile.", "users") }}
+</div>
+
+<form id="filters" hx-get="/app/customers" hx-target="#rows" hx-push-url="true"
+      hx-trigger="input changed delay:300ms from:#q, change"
+      class="flex flex-wrap items-start gap-2 mb-4">
+  <input id="q" type="search" name="q" value="{{ q }}" placeholder="Name, mobile or passport"
+         class="flex-1 min-w-[200px] h-11 px-3 rounded-lg border border-slate-300 bg-white outline-none focus:border-brand-blue">
+
+  {# <details> = Filter button with count; panel drops down, closes on outside click (app.js) #}
+  <details class="group relative" data-filters>
+    <summary class="list-none cursor-pointer h-11 inline-flex items-center gap-2 px-3 rounded-lg border border-slate-300 bg-white text-sm font-medium">
+      Filter{% if filters_on %}<span class="inline-grid place-items-center min-w-5 h-5 px-1 rounded-full bg-brand-red text-white text-xs">{{ filters_on }}</span>{% endif %}
+    </summary>
+    <div class="absolute right-0 z-30 mt-2 w-72 card card-sm p-4 shadow-lg space-y-3">
+      <label class="block text-sm">State
+        <select name="state" class="mt-1 w-full h-11 px-2 rounded-lg border border-slate-300">
+          <option value="">All</option>
+          {% for s in ["Uttar Pradesh", "Bihar", "Jharkhand", "West Bengal"] %}
+          <option {{ 'selected' if state == s }}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="block text-sm">Active file
+        <select name="has_active" class="mt-1 w-full h-11 px-2 rounded-lg border border-slate-300">
+          <option value="">Any</option>
+          <option value="yes" {{ 'selected' if has_active == 'yes' }}>Has active file</option>
+          <option value="no" {{ 'selected' if has_active == 'no' }}>No active file</option>
+        </select>
+      </label>
+    </div>
+  </details>
+</form>
+
+<div id="rows">{% include "customers/_rows.html" %}</div>
+{% endblock %}

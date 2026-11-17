@@ -1,0 +1,25 @@
+{# Edit a message template in Hindi (Roman), Hindi (Devanagari) and English with a live preview (FR-11.4) #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, btn %}
+{% block page_title %}{{ t.title }}{% endblock %}
+{% block content %}
+<p class="text-sm text-slate-500"><a href="/app/messages?tab=templates" class="text-brand-blue">Message wording</a> / {{ t.title }}</p>
+<h1 class="mt-1 mb-4 page-title">{{ t.title }}</h1>
+{% if saved %}<p class="mb-3 rounded-lg bg-green-50 border border-green-200 px-3 py-2 text-sm text-green-900" role="status">✓ Saved. New messages use this text.</p>{% endif %}
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr] items-start">
+  <form method="post" action="/app/messages/templates/{{ t.trigger }}" class="card p-4 sm:p-5 flex flex-col gap-3">
+    {{ input("title", "Name", t.title, required=true) }}
+    {% for name, label, val in [("body_hi", "Hindi (Roman)", t.body_hi), ("body_hi_dev", "हिंदी (Devanagari)", t.body_hi_dev), ("body_en", "English", t.body_en)] %}
+    <label class="flex flex-col gap-1 text-sm font-medium">{{ label }}
+      <textarea name="{{ name }}" rows="4" {{ 'required' if name == 'body_en' }} hx-post="/app/messages/templates/{{ t.trigger }}/preview" hx-trigger="keyup changed delay:300ms, focus" hx-target="#preview"
+                class="px-3 py-2 rounded-lg border border-slate-300 font-normal">{{ val or '' }}</textarea></label>
+    {% endfor %}
+    <p class="text-xs text-slate-500">Insert: {% for p in placeholders %}<code class="mr-1">{{ '{' ~ p ~ '}' }}</code>{% endfor %}</p>
+    <div class="flex justify-end">{{ btn("Save text", "navy") }}</div>
+  </form>
+  <aside class="card p-4">
+    <p class="text-xs font-bold tracking-wider text-slate-500 mb-2">PREVIEW (sample customer)</p>
+    <div id="preview" class="rounded-2xl rounded-tl-sm bg-[#DCF8C6] px-3 py-2 text-sm"><div class="whitespace-pre-line">{{ preview }}</div></div>
+  </aside>
+</div>
+{% endblock %}

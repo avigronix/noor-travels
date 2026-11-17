@@ -1,0 +1,108 @@
+{# Stage timeline (FR-4.1–4.8). Swapped as a whole (outerHTML) after every stage action. #}
+{% from "partials/_fields.html" import pill %}
+{% set can_write = user.role != 'accountant' and f.status != 'cancelled' %}
+<section id="stages" class="card p-4 sm:p-5">
+  <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+    <h2 class="font-display text-lg font-semibold text-brand-navy">Stages</h2>
+    <span class="text-sm text-slate-500">{{ done_count }} of {{ total_count }} done · tap Mark done when a stage is complete</span>
+  </div>
+
+  {% if toast or toast_msg %}
+  <div role="status" class="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3">
+    <span class="text-sm font-medium text-green-900">✓ {{ toast or 'Saved' }}</span>
+    {% if toast_msg and toast_msg.status == 'to_send' %}
+    <span class="flex flex-wrap gap-2">
+      <a href="{{ wa_link(toast_msg.mobile, toast_msg.body) }}" target="_blank" rel="noopener" data-wa-open="{{ toast_msg.id }}"
+         class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-sm font-semibold">Send update on WhatsApp</a>
+      <button hx-post="/app/messages/{{ toast_msg.id }}/sent" hx-target="closest div[role=status]" hx-swap="outerHTML"
+              class="h-10 px-3 rounded-lg border border-green-300 bg-white text-sm font-semibold text-green-800">Mark sent</button>
+    </span>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% macro row(n, name, state, detail="", last=false) -%}
+  {% set dot = {"done": "bg-green-600 border-green-600 text-white", "now": "bg-white border-amber-500 text-amber-700",
+                "failed": "bg-red-600 border-red-600 text-white", "cancelled": "bg-slate-200 border-slate-300 text-slate-500"}.get(state, "bg-white border-slate-300 text-slate-400") %}
+  <li class="relative flex gap-3 pb-4">
+    <div class="flex flex-col items-center">
+      <span class="grid place-items-center w-7 h-7 shrink-0 rounded-full border-2 text-xs font-bold {{ dot }}">{{ '✓' if state == 'done' else '!' if state == 'failed' else '•' if state == 'now' else '' }}</span>
+      {% if not last %}<span class="mt-1 w-0.5 flex-1 {{ 'bg-green-300' if state == 'done' else 'bg-slate-200' }}"></span>{% endif %}
+    </div>
+    <div class="flex-1 min-w-0 pt-0.5">{{ caller() }}</div>
+  </li>
+  {%- endmacro %}
+
+  <ol>
+    {% call row(1, 'Registration', 'done') %}
+      <div class="flex flex-wrap items-center gap-2"><span class="font-semibold">1. Registration</span>{{ pill('Done', 'green') }}</div>
+      <p class="text-sm text-slate-500">{{ f.created_at | dmy }} · package {{ f.package_total | inr }}</p>
+    {% endcall %}
+
+    {% call row(2, 'Visa', 'done' if f.visa_id else 'pending') %}
+      <div class="flex flex-wrap items-center gap-2"><span class="font-semibold">2. Visa attached</span>{{ pill('Done', 'green') if f.visa_id else pill('Pending') }}
+        {% if not f.visa_id and can_write %}<a href="/app/visas?attach={{ f.id }}" class="ml-auto h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">Attach visa</a>{% endif %}</div>
+      <p class="text-sm text-slate-500">{{ ('Visa ' ~ f.visa_no ~ (' · ' ~ f.sponsor_name if f.sponsor_name else '')) if f.visa_id else 'Not attached yet' }}</p>
+    {% endcall %}
+
+    {% for s in services %}
+    {% set spec = SERVICES[s.service] %}
+    {% set state = 'done' if s.status == 'done' else 'failed' if s.status == 'failed' else 'cancelled' if s.status == 'cancelled' else 'now' if (s.status == 'scheduled' or f.current_stage == s.service) else 'pending' %}
+    {% call row(loop.index + 2, spec.label, state) %}
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="font-semibold {{ 'line-through text-slate-400' if s.status == 'cancelled' }}">{{ loop.index + 2 }}. {{ spec.label }}</span>
+        {% if s.status == 'done' %}{{ pill(s.data.result if s.data.result and s.data.result != 'Pending' else 'Done', 'green') }}
+        {% elif s.status == 'failed' %}{{ pill((spec.fail or 'Failed') ~ ' – retest needed', 'red') }}
+        {% elif s.status == 'cancelled' %}{{ pill('Cancelled') }}
+        {% elif s.next %}{{ pill('Attempt ' ~ s.next.attempt_no ~ ' · ' ~ (s.next.on_date | dmy) ~ ((' ' ~ (s.next.at_time | hm)) if s.next.at_time else ''), 'amber') }}
+        {% else %}{{ pill('Pending') }}{% endif %}
+        {% if s.status == 'done' and (s.details_pending or s.missing) %}{{ pill('Details pending', 'amber') }}{% endif %}
+        <span class="ml-auto flex flex-wrap gap-1.5">
+          {% if can_write and s.status not in ('done', 'cancelled', 'failed') %}
+          <button hx-post="/app/files/{{ f.id }}/services/{{ s.id }}/done" hx-target="#stages" hx-swap="outerHTML"
+                  class="h-10 px-3 rounded-lg bg-green-600 text-white text-sm font-semibold">✓ Mark done</button>
+          {% endif %}
+          {% if can_write and s.status != 'cancelled' and (s.status != 'done' or user.role == 'owner') %}
+          <button hx-get="/app/files/{{ f.id }}/services/{{ s.id }}/modal?mode={{ 'retest' if s.status == 'failed' else 'edit' }}" hx-target="#modal"
+                  class="h-10 px-3 rounded-lg border border-slate-300 text-sm font-semibold">{{ 'Book retest' if s.status == 'failed' else 'Details' }}</button>
+          {% endif %}
+          {% if s.status == 'done' and user.role == 'owner' %}
+          <button hx-post="/app/files/{{ f.id }}/services/{{ s.id }}/reopen" hx-target="#stages" hx-swap="outerHTML"
+                  data-confirm="Reopen {{ spec.label }}? This is written to the activity log." class="h-10 px-3 rounded-lg border border-slate-300 text-sm">Reopen</button>
+          {% endif %}
+        </span>
+      </div>
+      {% set bits = [] %}
+      {% for fk, label, kind, ph in spec.fields %}{% if s.data.get(fk) and fk not in ('result',) and s.data.get(fk) != 'Pending' %}{% set _ = bits.append((s.data[fk] | inr) if fk in ('cost', 'sell') else (s.data[fk] | dmy) if kind == 'date' else (s.data[fk] | hm_str) if kind == 'time' else s.data[fk]) %}{% endif %}{% endfor %}
+      <p class="text-sm text-slate-500">{{ bits[:5] | join(' · ') or spec.note }}{% if s.waiting_on and s.status != 'done' %} · <span class="text-amber-700">waits for {{ s.waiting_on | join(', ') }}</span>{% endif %}</p>
+      {% if s.cancel_reason %}<p class="text-sm text-slate-500">Reason: {{ s.cancel_reason }}</p>{% endif %}
+      {% if s.attempts | length > 1 or (s.attempts and s.attempts[0].status in ('failed', 'cancelled')) %}
+      <div class="mt-2 flex flex-col gap-1.5">
+        {% for a in s.attempts %}
+        <div class="text-[13px] px-3 py-2 rounded-lg border {{ 'bg-red-50 border-red-200' if a.status == 'failed' else 'bg-amber-50 border-amber-200' if a.status in ('scheduled', 'cancelled') else 'bg-green-50 border-green-200' }}">
+          <strong>Attempt {{ loop.index }}</strong> · {{ a.on_date | dmy }}{% if a.at_time %}, {{ a.at_time | hm }}{% endif %}{% if a.city %} · {{ a.city }}{% endif %} –
+          {{ {"failed": "failed" ~ (' (' ~ a.result ~ ')' if a.result else ''), "cancelled": "moved / cancelled", "scheduled": "booked", "done": "done" ~ (' (' ~ a.result ~ ')' if a.result else '')}[a.status] }}{% if a.remarks %} · {{ a.remarks }}{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if s.service == 'ticket' %}
+      <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+        {% for t in tickets %}<a href="/app/tickets/{{ t.id }}" class="rounded-lg border border-slate-200 px-2.5 py-1 text-brand-blue">T-{{ t.ticket_no }} · {{ t.pnr or 'no PNR' }} · {{ t.travel_date | dmy }}</a>{% endfor %}
+        {% if can_write and not tickets %}<a href="/app/tickets/new?file_id={{ f.id }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-brand-red text-brand-red font-semibold">Book ticket on the ticket desk</a>{% endif %}
+      </div>
+      {% endif %}
+    {% endcall %}
+    {% endfor %}
+
+    {% call row(0, 'Departed', 'done' if f.status == 'departed' else 'pending', last=true) %}
+      <div class="flex flex-wrap items-center gap-2"><span class="font-semibold">{{ services | length + 3 }}. Departed</span>
+        {{ pill('Done', 'green') if f.status == 'departed' else pill('Pending') }}
+        {% if can_write and f.status == 'active' %}
+        <button hx-post="/app/files/{{ f.id }}/departed" hx-target="#stages" hx-swap="outerHTML" data-confirm="Mark #{{ f.serial_no }} as departed?"
+                class="ml-auto h-10 px-3 rounded-lg border border-slate-300 text-sm font-semibold">Mark departed</button>
+        {% endif %}</div>
+      <p class="text-sm text-slate-500">File closes when all dues are settled</p>
+    {% endcall %}
+  </ol>
+</section>

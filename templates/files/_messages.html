@@ -1,0 +1,18 @@
+{# Message history on the file (FR-11.5) #}
+{% from "partials/_fields.html" import pill %}
+<section id="file-messages" {% if oob %}hx-swap-oob="true"{% endif %} class="card p-4">
+  <div class="flex items-center justify-between mb-2"><h2 class="font-semibold">Messages to candidate</h2>
+    <a href="/app/messages?file_id={{ f.id }}&amp;tab=all" class="text-sm text-brand-blue">All</a></div>
+  <ul class="flex flex-col">
+    {% for m in messages %}
+    <li class="flex items-start justify-between gap-2 py-2 border-t border-slate-100 text-sm">
+      <span class="min-w-0"><span class="line-clamp-2 [overflow-wrap:anywhere]">{{ m.body }}</span>
+        <span class="block text-xs text-slate-500">{{ (m.done_at or m.created_at) | dmy(true) }}{% if m.done_by_name %} · {{ m.status }} by {{ m.done_by_name }}{% endif %}</span></span>
+      {% if m.status == 'to_send' %}
+        <a href="{{ wa_link(c.mobile, m.body) }}" target="_blank" rel="noopener" data-wa-open="{{ m.id }}" class="shrink-0 h-9 inline-flex items-center px-2.5 rounded-lg bg-green-600 text-white text-xs font-semibold">Send</a>
+      {% else %}{{ pill(m.status | title, 'green' if m.status == 'sent' else 'slate') }}{% endif %}
+    </li>
+    {% else %}<li class="text-sm text-slate-500">No messages yet.</li>{% endfor %}
+  </ul>
+  <a href="{{ wa_link(c.mobile, '') }}" target="_blank" rel="noopener" class="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-green-700">Send a message to {{ c.name.split(' ')[0] }}</a>
+</section>

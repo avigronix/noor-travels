@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noor Travels Services – Reports</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0070B8}a:hover{color:#005A94}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+  <dc-import name="Nav" active="reports" hint-size="100%,120px"></dc-import>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <h1 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Reports</h1>
+        <p style="margin: 0; font-size: 14px; color: #475569">Pick a report, choose the period, then export to Excel or PDF.</p>
+      </div>
+      <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ toggleFilters }}" aria-expanded="{{ filtersOpenText }}" aria-label="Filters" style="{{ filterBtn }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg><span>{{ filterLabel }}</span></button></sc-if>
+      <sc-if value="{{ showFilters }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 4px"><label for="per" style="font-size: 13px; font-weight: 500">Period</label><select id="per" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-size: 14px; font-family: inherit; background: #FFFFFF"><option>Last 6 months</option><option>This month</option><option>This financial year</option><option>Custom…</option></select></div>
+        <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">Excel</button>
+        <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">PDF</button>
+      </div>
+      </sc-if>
+    </div>
+
+    <div role="tablist" aria-label="Report" style="display: flex; gap: 6px; overflow-x: auto">
+      <button type="button" role="tab" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #0070B8; background: #0070B8; color: #FFFFFF; font-weight: 600; font-size: 14px; font-family: inherit">Monthly summary</button>
+      <button type="button" role="tab" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 500; font-size: 14px; font-family: inherit">Balance due</button>
+      <button type="button" role="tab" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 500; font-size: 14px; font-family: inherit">Payable to partners</button>
+      <button type="button" role="tab" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 500; font-size: 14px; font-family: inherit">File-wise margin</button>
+      <button type="button" role="tab" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 500; font-size: 14px; font-family: inherit">GST register</button>
+      <button type="button" role="tab" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 500; font-size: 14px; font-family: inherit">Departed & cancelled</button>
+      <button type="button" role="tab" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: #FFFFFF; font-weight: 500; font-size: 14px; font-family: inherit">Retest log</button>
+    </div>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 600">Departures climbed from 6 to 12 a month since June</h2>
+        <span style="display: flex; gap: 14px; font-size: 13px; color: #334155">
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #BFDBFE"></span>Files opened</span>
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #0070B8"></span>Departed</span>
+        </span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; align-items: end; height: 220px; border-bottom: 1px solid #CBD5E1; padding: 0 4px">
+        <sc-for list="{{ months }}" as="m" hint-placeholder-count="6">
+          <div style="display: flex; justify-content: center; align-items: flex-end; gap: 4px; height: 100%">
+            <span style="{{ m.openBar }}"><span style="font-size: 11px; font-weight: 600; color: #0A2E57; position: relative; top: -18px">{{ m.opened }}</span></span>
+            <span style="{{ m.depBar }}"><span style="font-size: 11px; font-weight: 600; color: #0A2E57; position: relative; top: -18px">{{ m.departed }}</span></span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; padding: 0 4px; font-size: 13px; color: #475569; text-align: center">
+        <sc-for list="{{ months }}" as="m" hint-placeholder-count="6"><span>{{ m.label }}</span></sc-for>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow-x: auto">
+      <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px">
+        <thead><tr style="background: #F8FAFC; text-align: left; color: #334155; font-size: 13px"><th style="padding: 12px 16px; font-weight: 600">Month</th><th style="padding: 12px 16px; font-weight: 600; text-align: right">Opened</th><th style="padding: 12px 16px; font-weight: 600; text-align: right">Departed</th><th style="padding: 12px 16px; font-weight: 600; text-align: right">Cancelled</th><th style="padding: 12px 16px; font-weight: 600; text-align: right">Received (₹)</th><th style="padding: 12px 16px; font-weight: 600; text-align: right">Paid out (₹)</th><th style="padding: 12px 16px; font-weight: 600; text-align: right">Margin (₹) · owner</th></tr></thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+            <tr style="border-top: 1px solid #EEF2F6"><td style="padding: 12px 16px; font-weight: 600">{{ r.label }}</td><td style="padding: 12px 16px; text-align: right">{{ r.opened }}</td><td style="padding: 12px 16px; text-align: right">{{ r.departed }}</td><td style="padding: 12px 16px; text-align: right">{{ r.cancelled }}</td><td style="padding: 12px 16px; text-align: right">{{ r.inn }}</td><td style="padding: 12px 16px; text-align: right">{{ r.out }}</td><td style="padding: 12px 16px; text-align: right; font-weight: 600">{{ r.margin }}</td></tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </section>
+    <p style="margin: 0; font-size: 13px; color: #475569">Sample numbers for the design only. Margin columns are hidden for staff logins.</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { narrow: false, open: false }; }
+  componentDidMount() {
+    this.mq = window.matchMedia('(max-width: 720px)');
+    this.onMq = () => this.setState({ narrow: this.mq.matches });
+    this.onMq();
+    this.mq.addEventListener('change', this.onMq);
+  }
+  componentWillUnmount() { if (this.mq) this.mq.removeEventListener('change', this.onMq); }
+  renderVals() {
+    const s = this.state;
+    const data = [
+      ['Jun', 9, 6, 0, '6,10,000', '3,40,000', '2,70,000'],
+      ['Jul', 11, 7, 1, '7,45,000', '4,12,000', '3,33,000'],
+      ['Aug', 12, 9, 0, '8,20,000', '4,80,500', '3,39,500'],
+      ['Sep', 14, 10, 1, '9,05,000', '5,32,000', '3,73,000'],
+      ['Oct', 16, 11, 0, '10,40,000', '6,01,000', '4,39,000'],
+      ['Nov', 15, 12, 1, '9,86,000', '5,64,500', '4,21,500']
+    ];
+    const max = 16;
+    const bar = (v, c) => `display: flex; justify-content: center; width: 40%; max-width: 34px; height: ${Math.round(v / max * 190)}px; background: ${c}; border-radius: 4px 4px 0 0`;
+    return {
+      filterLabel: 'Period & export',
+      narrow: s.narrow,
+      showFilters: s.narrow ? s.open : true,
+      toggleFilters: () => this.setState({ open: !this.state.open }),
+      filtersOpenText: (s.narrow ? s.open : true) ? 'true' : 'false',
+      filterBtn: `flex: 0 0 auto; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-family: inherit; font-weight: 600; font-size: 14px; cursor: pointer; ${s.open ? 'border: 0; background: #0070B8; color: #FFFFFF;' : 'border: 1px solid #CBD5E1; background: #FFFFFF; color: #0A2E57;'}`,
+      months: data.map(d => ({ label: d[0], opened: d[1], departed: d[2], openBar: bar(d[1], '#BFDBFE'), depBar: bar(d[2], '#0070B8') })),
+      rows: data.slice().reverse().map(d => ({ label: d[0] + ' 2026', opened: d[1], departed: d[2], cancelled: d[3], inn: d[4], out: d[5], margin: d[6] }))
+    };
+  }
+}
+</script>
+</body>
+</html>

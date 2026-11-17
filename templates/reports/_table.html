@@ -1,0 +1,50 @@
+{% macro cell(r, key, kind) -%}
+{% set v = r[key] %}
+{% if v is none %}—
+{% elif kind == 'inr' %}{{ v | inr }}
+{% elif kind == 'money' %}{{ '%.2f' | format(v) }}
+{% elif kind == 'month' %}{{ v.strftime('%b %Y') }}
+{% elif kind == 'date' %}{{ v | dmy }}
+{% elif kind == 'title' %}{{ v | replace('_', ' ') | title }}
+{% elif kind == 'upper' %}{{ v | upper }}
+{% elif kind == 'stage' %}{{ v | stage }}
+{% elif kind == 'file' %}<a href="/app/files/{{ r.file_id }}" class="font-semibold text-brand-navy">#{{ v }}</a>
+{% elif kind == 'customer' %}<a href="/app/customers/{{ r.customer_id }}" class="hover:underline">{{ v }}</a>
+{% else %}{{ v }}{% endif %}
+{%- endmacro %}
+
+{% if chart and chart.rows %}
+<section class="mb-4 card p-4 print:hidden">
+  <div class="flex flex-wrap items-center gap-4 text-sm mb-3"><h2 class="font-semibold mr-auto">Files opened and departed by month</h2>
+    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-blue-200"></span>Files opened</span>
+    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-brand-blue"></span>Departed</span></div>
+  <div class="flex items-end gap-3 h-40 overflow-x-auto">
+    {% for m in chart.rows %}
+    <div class="flex flex-col items-center gap-1 min-w-12 flex-1">
+      <div class="flex items-end gap-1 h-32">
+        <span class="w-4 rounded-t bg-blue-200" style="height: {{ (m.opened / chart.top * 100) | round | int }}%" title="Opened {{ m.opened }}"></span>
+        <span class="w-4 rounded-t bg-brand-blue" style="height: {{ (m.departed / chart.top * 100) | round | int }}%" title="Departed {{ m.departed }}"></span>
+      </div>
+      <span class="text-xs text-slate-500">{{ m.month.strftime('%b') }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if result.rows %}
+<div class="overflow-x-auto card card-sm print:border-0">
+  <table class="w-full text-sm">
+    <thead class="thead"><tr>{% for key, label, kind in cols %}<th class="px-4 py-3 font-medium whitespace-nowrap {{ 'text-right' if kind in ('inr', 'n', 'money') }}">{{ label }}</th>{% endfor %}</tr></thead>
+    <tbody>
+      {% for r in result.rows %}
+      <tr class="border-t border-slate-100">{% for key, label, kind in cols %}<td class="px-4 py-2.5 whitespace-nowrap {{ 'text-right' if kind in ('inr', 'n', 'money') }}">{{ cell(r, key, kind) }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="print:hidden">{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}</div>
+{% else %}
+<p class="empty-state">Nothing in this period.</p>
+{% endif %}
+{% if user.role != 'owner' %}<p class="mt-2 text-xs text-slate-500">Margin columns are shown to the owner only.</p>{% endif %}

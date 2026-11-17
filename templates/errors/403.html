@@ -1,0 +1,12 @@
+{% extends "layouts/base.html" %}
+{% block title %}{{ '403' }} · {{ biz.name }}{% endblock %}
+{% block body %}
+<main class="flex-1 grid place-items-center px-4 py-16 text-center">
+  <div class="card max-w-md w-full p-8">
+    <span class="mx-auto grid place-items-center w-14 h-14 rounded-2xl {{ 'bg-amber-50 text-amber-600' if '403' == '403' else 'bg-blue-50 text-brand-blue' }}">{{ icon('lock' if '403' == '403' else 'search', 'icon-lg') }}</span>
+    <p class="mt-4 font-display text-5xl font-semibold text-brand-navy">403</p>
+    <p class="mt-2 text-slate-600">{{ 'Your login does not have access to this page. Ask the owner if you need it.' if '403' == '403' else 'This page does not exist, or the link is old.' }}</p>
+    <a href="{{ '/app' if user else '/' }}" class="mt-6 inline-flex h-11 items-center gap-2 px-5 rounded-xl bg-brand-red text-white font-semibold">{{ icon('home', 'icon-sm') }} Go to {{ 'dashboard' if user else 'home' }}</a>
+  </div>
+</main>
+{% endblock %}

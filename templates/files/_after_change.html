@@ -1,0 +1,9 @@
+{# Response to any in-page change on the file: new stages panel (main swap) + money / courier / messages
+   refreshed out-of-band, and the pop-up closed. #}
+{% include "files/_stages.html" %}
+{% with oob=true %}
+  {% include "files/_money.html" %}
+  {% include "files/_courier.html" %}
+  {% include "files/_messages.html" %}
+{% endwith %}
+<div id="modal" hx-swap-oob="true"></div>

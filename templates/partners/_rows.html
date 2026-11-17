@@ -1,0 +1,21 @@
+{% from "partials/_fields.html" import pill %}
+{% set kind_names = dict(kinds) %}
+{% if result.rows %}
+<div class="grid gap-3 grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))]">
+  {% for p in result.rows %}
+  <article class="card p-4 flex flex-col gap-2 {{ 'opacity-60' if not p.is_active }}">
+    <div class="flex justify-between gap-2"><h2 class="font-semibold text-brand-navy">{{ p.name }}</h2>{{ pill(kind_names[p.kind], 'blue') }}</div>
+    <span class="text-sm text-slate-500">{{ [p.city, p.contact, p.mobile] | select | join(' · ') or '—' }}</span>
+    {% if p.default_rate %}<span class="flex justify-between text-sm rounded-lg bg-slate-50 px-3 py-2"><span>Default rate</span><strong>{{ p.default_rate | inr }}</strong></span>{% endif %}
+    <span class="flex justify-between text-sm"><span class="text-slate-500">{{ p.files_month }} file{{ 's' if p.files_month != 1 }} this month</span><span>Paid {{ p.paid_month | inr }}</span></span>
+    {% if p.notes %}<p class="text-xs text-slate-500">{{ p.notes }}</p>{% endif %}
+    <div class="mt-auto flex gap-2 pt-1">
+      {% if user.role == 'owner' %}<a href="/app/partners/{{ p.id }}/edit" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">Edit rates</a>{% endif %}
+      <a href="/app/payments?party={{ p.id }}&amp;direction=out" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">Statement</a>
+      {% if p.mobile %}<a href="tel:{{ p.mobile }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm">Call</a>{% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}
+{% else %}<p class="empty-state">No centres or agencies.</p>{% endif %}

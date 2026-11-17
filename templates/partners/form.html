@@ -1,0 +1,19 @@
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, select, textarea, btn %}
+{% block page_title %}{{ p.name or 'New centre / agency' }}{% endblock %}
+{% block content %}
+<p class="text-sm text-slate-500"><a href="/app/partners" class="text-brand-blue">Centres &amp; agencies</a> / {{ p.name or 'New' }}</p>
+<h1 class="mt-1 mb-4 page-title">{{ 'Edit ' ~ p.name if p.id else 'Add centre / agency' }}</h1>
+<form method="post" action="/app/partners/save" class="max-w-2xl card p-4 sm:p-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+  <input type="hidden" name="pid" value="{{ p.id or '' }}">
+  {{ select("kind", "Type", kinds, p.kind, required=true) }}
+  {{ input("name", "Name", p.name, errors.name, required=true) }}
+  {{ input("city", "City", p.city) }}
+  {{ input("contact", "Contact person / phone", p.contact) }}
+  {{ input("mobile", "Mobile", p.mobile, type="tel") }}
+  {{ input("default_rate", "Default rate (₹)", (p.default_rate | int) if p.default_rate else '', attrs='inputmode="numeric"', hint="Used as the default cost / retest fee") }}
+  {{ textarea("notes", "Notes", p.notes, cls="sm:col-span-2") }}
+  {% if p.id %}<label class="sm:col-span-2 flex items-center gap-3 min-h-11 text-sm"><input type="checkbox" name="is_active" value="1" {{ 'checked' if p.is_active }} class="w-5 h-5"> Active</label>{% endif %}
+  <div class="sm:col-span-2 flex justify-end gap-2"><a href="/app/partners" class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 text-sm font-semibold">Cancel</a>{{ btn("Save", "navy") }}</div>
+</form>
+{% endblock %}

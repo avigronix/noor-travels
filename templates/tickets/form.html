@@ -1,0 +1,67 @@
+{# New / edit ticket (FR-7.1 – 7.4). Design: Tickets.dc.html "New ticket" panel. #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, select, btn %}
+{% block page_title %}{{ 'Edit T-' ~ b.ticket_no if mode == 'edit' else 'New ticket' }}{% endblock %}
+{% block content %}
+{% set edit = mode == 'edit' %}
+<p class="text-sm text-slate-500"><a href="/app/tickets" class="text-brand-blue">Ticket desk</a> / {{ 'T-' ~ b.ticket_no ~ ' / Edit' if edit else 'New ticket' }}</p>
+<h1 class="mt-1 mb-1 page-title">{{ 'Edit ticket T-' ~ b.ticket_no if edit else 'New ticket · T-' ~ next_no }}</h1>
+{% if v.file_id %}<p class="mb-3 text-sm rounded-lg bg-blue-50 px-3 py-2">For visa file <a href="/app/files/{{ v.file_id }}" class="font-semibold text-brand-navy">#{{ v.file_serial or b.serial_no }}</a> – the ticket fills its Ticket stage and shows in the file, here and on the profile.</p>
+{% else %}<p class="mb-3 text-sm text-slate-600">Customer already registered? Search by passport or mobile – the ticket is linked to that customer.</p>{% endif %}
+{% if errors %}<div role="alert" class="mb-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{% for k, m in errors.items() %}<p>{{ m }}</p>{% endfor %}</div>{% endif %}
+
+<form method="post" action="{{ '/app/tickets/' ~ b.id if edit else '/app/tickets' }}" data-ticket-form class="flex flex-col gap-4 pb-28 lg:pb-0">
+  <input type="hidden" name="file_id" value="{{ v.file_id or '' }}"><input type="hidden" name="enquiry_id" value="{{ v.enquiry_id or '' }}">
+  <section class="card p-4 sm:p-5">
+    <h2 class="font-semibold mb-3">Passengers</h2>
+    {% if edit %}
+    <ul class="flex flex-col gap-1 text-sm">{% for p in pax %}<li><a href="/app/customers/{{ p.id }}" class="font-semibold text-brand-navy">{{ p.name }}</a> · {{ p.passport_no or 'no passport' }} · {{ p.mobile }}</li>{% endfor %}</ul>
+    <p class="mt-2 text-xs text-slate-500">Passengers are fixed once booked; cancel and re-book to change them.</p>
+    {% else %}
+    <div id="pax-rows" class="flex flex-col gap-3">{% for p in pax %}{% include "tickets/_pax_row.html" %}{% endfor %}</div>
+    <button type="button" hx-get="/app/tickets/row?kind=pax" hx-target="#pax-rows" hx-swap="beforeend" class="mt-3 min-h-11 px-3 rounded-lg border border-slate-300 text-sm font-semibold">+ Add passenger</button>
+    {% endif %}
+  </section>
+
+  <section class="card p-4 sm:p-5">
+    <h2 class="font-semibold mb-3">Flight</h2>
+    <div id="leg-rows" class="flex flex-col gap-3">{% for l in legs %}{% set removable = not loop.first %}{% include "tickets/_leg_row.html" %}{% endfor %}</div>
+    <button type="button" hx-get="/app/tickets/row?kind=leg" hx-target="#leg-rows" hx-swap="beforeend" class="mt-3 min-h-11 px-3 rounded-lg border border-slate-300 text-sm font-semibold">+ Add connecting flight / return</button>
+    <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      {{ input("airline", "Airline", v.airline, placeholder="e.g. 6E IndiGo") }}
+      {% set sup = [] %}{% for s in suppliers %}{% set _ = sup.append((s.id, s.name)) %}{% endfor %}
+      {% set default_sup = (suppliers | selectattr('name', 'equalto', 'Akbar Travels') | map(attribute='id') | first) %}
+      {{ select("supplier_id", "Booked through", sup, v.supplier_id or default_sup, blank="Airline website / other") }}
+      {{ input("pnr", "PNR", v.pnr, attrs='autocapitalize="characters"') }}
+    </div>
+  </section>
+
+  <section class="card p-4 sm:p-5">
+    <h2 class="font-semibold mb-3">Money</h2>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      {% if user.role == 'owner' %}
+      {{ input("cost_price", "Cost price (₹)", v.cost_price, attrs='inputmode="numeric"') }}
+      {% else %}<input type="hidden" name="cost_price" value="{{ v.cost_price or '' }}">{% endif %}
+      {{ input("selling_price", "Selling price (₹)", v.selling_price, errors.selling_price, required=true, attrs='inputmode="numeric"') }}
+      {% if user.role == 'owner' %}<div class="flex flex-col gap-1 text-sm font-medium">Margin (owner)<output data-margin class="h-11 flex items-center px-3 rounded-lg bg-green-50 text-green-800 font-bold text-lg">—</output></div>{% endif %}
+      {% if edit %}
+      {{ select("status", "Status", [("booked","Booked"),("travelled","Travelled"),("cancelled","Cancelled")], v.status) }}
+      {% else %}
+      {{ input("received", "Received now (₹)", v.received, attrs='inputmode="numeric"') }}
+      {% set bank_opts = [] %}{% for bk in banks %}{% set _ = bank_opts.append((bk.id, bk.name)) %}{% endfor %}
+      {{ select("bank_account_id", "Received into", bank_opts, v.bank_account_id, errors.bank_account_id, blank="Select…") }}
+      {{ select("mode_pay", "Mode", [("cash","Cash"),("upi","UPI"),("bank","Bank transfer"),("cheque","Cheque")], v.mode_pay or 'cash') }}
+      {% endif %}
+    </div>
+    {% if not edit %}
+    <label class="mt-3 flex items-center gap-3 min-h-11 text-sm"><input type="checkbox" name="send_details" value="1" checked class="w-5 h-5"> Send flight details (PNR, date, times) on WhatsApp</label>
+    <label class="flex items-center gap-3 min-h-11 text-sm"><input type="checkbox" name="travel_reminder" value="1" checked class="w-5 h-5"> Travel-day reminder (morning of the flight)</label>
+    {% endif %}
+  </section>
+
+  <div class="fixed lg:static inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] lg:bottom-auto z-30 flex justify-end gap-2 border-t lg:border-0 border-slate-200 bg-white/95 backdrop-blur lg:bg-transparent p-3 lg:p-0 shadow-[0_-6px_16px_-10px_rgb(15_23_42/.25)] lg:shadow-none">
+    <a href="{{ '/app/tickets/' ~ b.id if edit else '/app/tickets' }}" class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 bg-white text-sm font-semibold">Cancel</a>
+    {{ btn('Save changes' if edit else 'Save ticket', cls="flex-1 md:flex-none") }}
+  </div>
+</form>
+{% endblock %}

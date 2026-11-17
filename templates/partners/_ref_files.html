@@ -1,0 +1,11 @@
+{% from "partials/_fields.html" import stage_pill %}
+<section class="card">
+  <h2 class="px-4 pt-4 pb-2 font-semibold">Files</h2>
+  {% for f in result.rows %}
+  <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-t border-slate-100 text-sm">
+    <span><a href="/app/files/{{ f.id }}" class="font-semibold text-brand-navy">#{{ f.serial_no }}</a> <a href="/app/customers/{{ f.customer_id }}" class="hover:underline">{{ f.name }}</a>
+      <span class="text-slate-500">· {{ f.visa_type | title }} · {{ f.created_at | dmy }}</span></span>{{ stage_pill(f.current_stage) }}
+  </div>
+  {% else %}<p class="px-4 pb-4 text-sm text-slate-500">No files yet.</p>{% endfor %}
+  <div class="px-4 pb-3">{% with r=result, target="#rows" %}{% include "partials/pagination.html" %}{% endwith %}</div>
+</section>

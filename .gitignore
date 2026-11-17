@@ -1,0 +1,52 @@
+# Noor Travels Services – WHITELIST: everything is ignored, then only what the app needs to run
+# (plus its deploy files and the spec) is allowed back in. A new top-level file or folder stays out of
+# git until it is added below – so test dumps, scratch files and binaries can never slip in.
+
+/*
+
+# ---- app code ----
+!/main.py
+!/migrate.py
+!/jobs.py
+!/requirements.txt
+!/.env.example
+!/common/
+!/routes/
+!/templates/
+!/static/
+!/migrations/
+!/deploy/
+
+# ---- docs for the next developer (spec + how to run / deploy) ----
+!/README.md
+!/CLAUDE.md
+!/docs/
+!/.gitignore
+
+# ---- never, even inside allowed folders ----
+__pycache__/
+*.py[cod]
+.DS_Store
+*.log
+*.swp
+*~
+# tests / tooling output
+tests/
+test/
+test_*.py
+*_test.py
+conftest.py
+.pytest_cache/
+.coverage*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+# runtime data: customer photos, backups (UPLOAD_DIR lives outside the repo in prod)
+uploads/
+backups/
+*.dump
+*.sql.gz
+# unused originals – the app serves the .webp versions and favicon.png
+/static/img/logo.png
+/static/img/logo-sm.png
+/static/img/logo-md.png

@@ -1,0 +1,47 @@
+{# Edit one customer's details – also for ticket-only customers who have no visa file (FR-17.1). #}
+{% extends "layouts/app.html" %}
+{% from "partials/_fields.html" import input, select, btn, page_head %}
+{% block page_title %}Edit {{ c.name }}{% endblock %}
+{% block content %}
+{% set e = errors %}
+<p class="text-sm text-slate-500"><a href="/app/customers" class="text-brand-blue">Customers</a> / <a href="/app/customers/{{ c.id }}" class="text-brand-blue">{{ c.name }}</a> / Edit</p>
+<div class="mt-2 mb-5">{{ page_head("Edit customer", "Changes apply to every file and ticket of this person.", "user") }}</div>
+{% if e %}<div role="alert" class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><strong>Please check the highlighted fields.</strong></div>{% endif %}
+<form method="post" action="/app/customers/{{ c.id }}" enctype="multipart/form-data" class="flex flex-col gap-4 pb-28 lg:pb-0">
+  <section class="card p-4 sm:p-6">
+    <h2 class="font-display text-lg font-semibold text-brand-navy mb-4">Personal &amp; contact</h2>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {{ input("name", "Full name (as on passport)", c.name, e.name, required=true) }}
+      {{ input("father_name", "Father's name", c.father_name) }}
+      {{ input("dob", "Date of birth", c.dob, type="date", hint="Used for the customer portal login") }}
+      {{ input("mobile", "Mobile (WhatsApp)", c.mobile, e.mobile, type="tel", required=true, attrs='inputmode="numeric"') }}
+      {{ input("family_mobile", "Family contact mobile", c.family_mobile, type="tel") }}
+      {{ input("profession", "Profession", c.profession) }}
+      {{ input("address", "Address (village, post)", c.address) }}
+      {{ input("district", "District", c.district) }}
+      {{ select("state", "State", states, c.state or '', blank="—") }}
+      {{ input("pin", "PIN", c.pin, e.pin, attrs='inputmode="numeric" maxlength="6"') }}
+      {% set ref_opts = [] %}{% for r in referrers %}{% set _ = ref_opts.append((r.id, r.name ~ (' (' ~ r.place ~ ')' if r.place else ''))) %}{% endfor %}
+      {{ select("referrer_id", "Reference person", ref_opts, c.referrer_id or '', blank="No reference") }}
+      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Profile photo (optional)
+        <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" class="h-11 py-2 text-sm font-normal file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:font-semibold">
+        {% if e.photo %}<span class="text-xs text-red-700">{{ e.photo }}</span>{% endif %}</label>
+    </div>
+  </section>
+  <section class="card p-4 sm:p-6">
+    <h2 class="font-display text-lg font-semibold text-brand-navy mb-4">Passport</h2>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {{ input("passport_no", "Passport number", c.passport_no, e.passport_no, attrs='autocapitalize="characters" maxlength="12"') }}
+      {{ input("passport_issue", "Issue date", c.passport_issue, type="date") }}
+      {{ input("passport_expiry", "Expiry date", c.passport_expiry, type="date") }}
+      {{ input("passport_place", "Place of issue", c.passport_place) }}
+      {{ select("ecr", "Passport type", ["ECR", "ECNR"], c.ecr or '', blank="—") }}
+    </div>
+    <label class="mt-4 flex items-start gap-3 min-h-11 text-sm"><input type="checkbox" name="whatsapp_consent" value="1" {{ 'checked' if c.whatsapp_consent }} class="mt-0.5 w-5 h-5"> Customer agrees to get updates and reminders on WhatsApp.</label>
+  </section>
+  <div class="fixed lg:static inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] lg:bottom-auto z-30 flex justify-end gap-2 border-t lg:border-0 border-slate-200 bg-white/95 backdrop-blur lg:bg-transparent p-3 lg:p-0">
+    <a href="/app/customers/{{ c.id }}" class="h-11 inline-flex items-center px-4 rounded-xl border border-slate-300 bg-white text-sm font-semibold">Cancel</a>
+    {{ btn("Save changes", cls="flex-1 lg:flex-none") }}
+  </div>
+</form>
+{% endblock %}
