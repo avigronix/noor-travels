@@ -7,7 +7,7 @@
   {% if e.customer_id %}<a href="/app/customers/{{ e.customer_id }}" class="text-sm text-brand-blue">Customer profile →</a>{% endif %}
   <div class="flex flex-wrap gap-2 pt-1">
     <a href="tel:{{ e.mobile }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-sm font-semibold">Call</a>
-    <a href="{{ wa_link(e.mobile, 'Assalamu alaikum ' ~ e.name.split(' ')[0] ~ ' ji, Noor Travels Services, Kasia se baat kar rahe hain. Aapki ' ~ (e.service or 'enquiry') ~ ' ke baare me.') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-sm font-semibold">WhatsApp</a>
+    <a href="{{ wa_link(e.mobile, 'Hello ' ~ e.name.split(' ')[0] ~ ', this is Noor Travels Services, Kasia, about your ' ~ (e.service or 'enquiry') ~ ' enquiry.') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-sm font-semibold">WhatsApp</a>
     {% if user.role != 'accountant' and e.status in ('new', 'follow_up') %}
     <a href="/app/files/new?enquiry_id={{ e.id }}" class="h-10 inline-flex items-center px-3 rounded-lg bg-brand-red text-white text-sm font-semibold">→ Registration</a>
     <a href="/app/tickets/new?enquiry_id={{ e.id }}" class="h-10 inline-flex items-center px-3 rounded-lg bg-brand-blue text-white text-sm font-semibold">→ Ticket</a>

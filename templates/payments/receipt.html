@@ -48,7 +48,7 @@
   <div class="print:hidden mt-6 flex flex-wrap gap-2">
     <button type="button" data-print class="h-11 px-4 rounded-lg bg-brand-navy text-white text-sm font-semibold">Print / Save as PDF</button>
     {% if staff_view %}
-    <a href="{{ wa_link(p.mobile, 'Aapki receipt ' ~ p.receipt_no ~ ': ' ~ public_url) }}" target="_blank" rel="noopener" class="h-11 inline-flex items-center px-4 rounded-lg bg-green-600 text-white text-sm font-semibold">Send on WhatsApp</a>
+    <a href="{{ wa_link(p.mobile, 'Your receipt ' ~ p.receipt_no ~ ': ' ~ public_url) }}" target="_blank" rel="noopener" class="h-11 inline-flex items-center px-4 rounded-lg bg-green-600 text-white text-sm font-semibold">Send on WhatsApp</a>
     {% if p.file_id %}<a href="/app/files/{{ p.file_id }}" class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 text-sm font-semibold">Back to file</a>{% elif p.booking_id %}<a href="/app/tickets/{{ p.booking_id }}" class="h-11 inline-flex items-center px-4 rounded-lg border border-slate-300 text-sm font-semibold">Back to ticket</a>{% endif %}
     {% endif %}
   </div>

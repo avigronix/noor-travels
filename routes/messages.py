@@ -148,7 +148,7 @@ def edit_template(trigger: str, request: Request, user=Depends(require_role("own
     t = fetch_one("SELECT * FROM message_templates WHERE trigger = %s", (trigger,))
     if not t:
         raise HTTPException(404)
-    return render(request, "messages/template.html", {"t": t, "preview": _preview(t["body_hi"] or t["body_en"]),
+    return render(request, "messages/template.html", {"t": t, "preview": _preview(t["body_en"]),
                                                        "placeholders": list(SAMPLE), "active": "messages", "saved": False})
 
 
@@ -161,9 +161,8 @@ def _preview(text):
 
 @router.post("/templates/{trigger}/preview")
 def template_preview(trigger: str, request: Request, form=Depends(form_data), user=Depends(require_role("owner"))):
-    """Live preview of the textarea being typed in (htmx sends its name in HX-Trigger-Name)."""
-    name = request.headers.get("HX-Trigger-Name") or "body_en"
-    return HTMLResponse(f'<div class="whitespace-pre-line">{_escape(_preview(form.get(name, "")))}</div>')
+    """Live preview of the message text while it is typed."""
+    return HTMLResponse(f'<div class="whitespace-pre-line">{_escape(_preview(form.get("body_en", "")))}</div>')
 
 
 def _escape(s):
@@ -172,21 +171,12 @@ def _escape(s):
 
 @router.post("/templates/{trigger}")
 def save_template(trigger: str, request: Request, title: str = Form(..., max_length=80), body_en: str = Form(..., max_length=1000),
-                  body_hi: str = Form("", max_length=1000), body_hi_dev: str = Form("", max_length=1000),
                   user=Depends(require_role("owner"))):
-    t = fetch_one("UPDATE message_templates SET title = %s, body_en = %s, body_hi = %s, body_hi_dev = %s, updated_at = now()"
-                  " WHERE trigger = %s RETURNING *", (title.strip(), body_en.strip(), body_hi.strip() or None,
-                                                       body_hi_dev.strip() or None, trigger))
+    t = fetch_one("UPDATE message_templates SET title = %s, body_en = %s, updated_at = now() WHERE trigger = %s RETURNING *",
+                  (title.strip(), body_en.strip(), trigger))
     if not t:
         raise HTTPException(404)
     audit(user["id"], "update", "message_template", t["id"], {"trigger": trigger})
-    return render(request, "messages/template.html", {"t": t, "preview": _preview(t["body_hi"] or t["body_en"]),
+    return render(request, "messages/template.html", {"t": t, "preview": _preview(t["body_en"]),
                                                        "placeholders": list(SAMPLE), "active": "messages", "saved": True})
 
-
-@router.post("/language")
-def set_language(lang: str = Form(...), user=Depends(require_role("owner"))):
-    if lang in ("hi", "hi_dev", "en"):
-        execute("INSERT INTO settings (key, value) VALUES ('message_lang', %s) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value", (lang,))
-        audit(user["id"], "update", "setting", None, {"message_lang": lang})
-    return RedirectResponse("/app/messages?tab=templates", status_code=303)

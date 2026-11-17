@@ -3,7 +3,6 @@
 {% extends "layouts/base.html" %}
 {% block body %}
   {% set nav = [("/", "Home"), ("/services", "Services"), ("/umrah", "Umrah"), ("/about", "About us"), ("/contact", "Contact")] %}
-  {% set wa_text = "Namaste, mujhe visa / ticket ke baare me jaankari chahiye." %}
   <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
     <div class="max-w-[1200px] mx-auto px-4 min-h-[68px] flex items-center gap-3">
       <a href="/" class="shrink-0" aria-label="{{ biz.name }} – home"><img src="{{ asset('img/logo-sm.webp') }}" alt="{{ biz.name }}" class="h-11 w-auto" width="132" height="44"></a>
@@ -48,7 +47,7 @@
         <h2 class="text-xs font-bold tracking-widest text-white mb-1">VISIT OR CALL</h2>
         <span class="leading-relaxed">{{ biz.address }}</span>
         {% for p in biz.phones %}<a href="tel:+91{{ p | replace(' ', '') }}" class="py-1 font-semibold text-white">{{ p }}</a>{% endfor %}
-        <a href="{{ wa_link(biz.whatsapp, wa_text) }}" target="_blank" rel="noopener" class="py-1 hover:text-white">Chat on WhatsApp</a>
+        <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="py-1 hover:text-white">Chat on WhatsApp</a>
       </div>
     </div>
     <div class="border-t border-white/10">
@@ -62,6 +61,6 @@
   {# Sticky Call + WhatsApp on phones (FR-15.2) #}
   <div class="md:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-2 p-2 bg-white/95 backdrop-blur border-t border-slate-200">
     <a href="tel:+91{{ biz.phones[0] | replace(' ', '') }}" class="h-12 grid place-items-center rounded-lg bg-brand-navy text-white font-semibold">Call</a>
-    <a href="{{ wa_link(biz.whatsapp, wa_text) }}" target="_blank" rel="noopener" class="h-12 grid place-items-center rounded-lg bg-green-600 text-white font-semibold">WhatsApp</a>
+    <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="h-12 grid place-items-center rounded-lg bg-green-600 text-white font-semibold">WhatsApp</a>
   </div>
 {% endblock %}

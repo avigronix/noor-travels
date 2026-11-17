@@ -18,8 +18,11 @@ BUSINESS = {
     "name": "Noor Travels Services",
     "short": "NTS",
     "address": "Gorakhpur Road, Near Hitashi Hospital, Kasia, Distt. Kushinagar, U.P. 274402",
-    "phones": ["99844 14350", "88819 51234"],
-    "whatsapp": os.getenv("OFFICE_WHATSAPP", "919984414350"),
+    # first number = main "Call" button; comma-separated in .env
+    "phones": [p.strip() for p in os.getenv("OFFICE_PHONES", "88819 51234, 88819 61234, 99844 14350").split(",") if p.strip()],
+    "whatsapp": os.getenv("OFFICE_WHATSAPP", "918881951234"),
+    # Text pre-filled when a visitor taps a WhatsApp button to the office (wording chosen by the office)
+    "wa_hello": "Assalamu alaikum, mujhe jaankari chahiye.",
     # Open questions in SRS 10 – left empty until the office confirms them (FR-15.4, no invented data)
     "email": os.getenv("OFFICE_EMAIL", ""),
     "hours": os.getenv("OFFICE_HOURS", ""),

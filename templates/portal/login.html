@@ -1,28 +1,28 @@
 {# Design: docs/design/CandidateLogin.dc.html (390px, phone first). No OTP – mobile + date of birth (FR-12.1). #}
 {% extends "layouts/base.html" %}
-{% block title %}Apni file dekhein · {{ biz.name }}{% endblock %}
+{% block title %}Check your file · {{ biz.name }}{% endblock %}
 {% block body %}
-<main lang="hi" class="flex-1 grid place-items-center px-4 py-10 bg-gradient-to-b from-white to-slate-100">
+<main class="flex-1 grid place-items-center px-4 py-10 bg-gradient-to-b from-white to-slate-100">
   <div class="w-full max-w-sm">
     <a href="/" class="block mb-6"><img src="{{ asset('img/logo-sm.webp') }}" alt="{{ biz.name }}" class="h-14 mx-auto"></a>
     <form method="post" action="/my" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-      <div><h1 class="font-display text-xl font-semibold text-brand-navy">Apni file ka status dekhein</h1>
-        <p class="text-sm text-slate-600" lang="en">Check your visa file status, next appointment and payments.</p></div>
+      <div><h1 class="font-display text-xl font-semibold text-brand-navy">Check your file status</h1>
+        <p class="text-sm text-slate-600">See your visa file status, next appointment and payments.</p></div>
       {% if error %}<p class="rounded-lg bg-red-50 text-red-700 text-sm px-3 py-2" role="alert">{{ error }}</p>{% endif %}
-      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Mobile number / मोबाइल नंबर
+      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Mobile number
         <span class="flex items-center h-11 rounded-lg border border-slate-300 focus-within:border-brand-blue overflow-hidden">
           <span class="px-3 text-slate-500 border-r border-slate-200">+91</span>
           <input name="mobile" type="tel" inputmode="numeric" maxlength="14" value="{{ mobile or '' }}" required autocomplete="tel" class="flex-1 min-w-0 h-full px-3 outline-none font-normal">
         </span>
-        <span class="text-xs font-normal text-slate-500">Wahi number jo office mein diya tha.</span>
+        <span class="text-xs font-normal text-slate-500">The number you gave at the office.</span>
       </label>
-      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Date of birth / जन्म तिथि
+      <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">Date of birth
         <input name="dob" type="date" value="{{ dob or '' }}" required class="h-11 px-3 rounded-lg border border-slate-300 font-normal">
-        <span class="text-xs font-normal text-slate-500">Passport par jo janam tithi hai.</span>
+        <span class="text-xs font-normal text-slate-500">As written on your passport.</span>
       </label>
-      <button class="w-full h-12 rounded-lg bg-brand-red text-white font-semibold">Meri file dekhein</button>
-      <p class="text-center text-sm text-slate-500">Madad ke liye office: {{ biz.name }}, Kasia</p>
-      <a href="{{ wa_link(biz.whatsapp, 'Namaste, mujhe apni file ka status janna hai.') }}" target="_blank" rel="noopener" class="h-11 grid place-items-center rounded-lg border border-green-600 text-green-700 font-semibold">WhatsApp par baat karein</a>
+      <button class="w-full h-12 rounded-lg bg-brand-red text-white font-semibold">View my file</button>
+      <p class="text-center text-sm text-slate-500">Need help? {{ biz.name }}, Kasia</p>
+      <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="h-11 grid place-items-center rounded-lg border border-green-600 text-green-700 font-semibold">Chat on WhatsApp</a>
       <p class="text-center text-xs text-slate-400"><a href="/login">Staff login</a></p>
     </form>
   </div>

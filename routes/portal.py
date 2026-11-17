@@ -33,20 +33,20 @@ def portal_login_submit(request: Request, mobile: str = Form(""), dob: str = For
     born = to_date(dob)
     ctx = {"mobile": digits, "dob": dob}
     if len(digits) != 10 or not born:
-        return render(request, "portal/login.html", {**ctx, "error": "Mobile number (10 digits) aur janam tithi dono bharein."})
+        return render(request, "portal/login.html", {**ctx, "error": "Please enter your 10-digit mobile number and date of birth."})
     people = fetch_all("SELECT id, dob, portal_failed, portal_locked_until FROM customers WHERE mobile = %s LIMIT 20", (digits,))
     now = datetime.now(timezone.utc)
     locked = [p for p in people if p["portal_locked_until"] and p["portal_locked_until"] > now]
     if locked:
         mins = int((max(p["portal_locked_until"] for p in locked) - now).total_seconds() // 60) + 1
-        return render(request, "portal/login.html", {**ctx, "error": f"Bahut baar galat koshish. {mins} minute baad try karein."})
+        return render(request, "portal/login.html", {**ctx, "error": f"Too many wrong tries. Please try again in {mins} minutes."})
     match = next((p for p in people if p["dob"] == born), None)
     if not match:
         for p in people:       # count the wrong try against everyone on that mobile (FR-12.1)
             failed = p["portal_failed"] + 1
             execute("UPDATE customers SET portal_failed = %s, portal_locked_until = %s WHERE id = %s",
                     (0 if failed >= MAX_TRIES else failed, now + timedelta(minutes=LOCK_MINUTES) if failed >= MAX_TRIES else None, p["id"]))
-        return render(request, "portal/login.html", {**ctx, "error": "Mobile number ya janam tithi match nahi hui. Office se sampark karein."})
+        return render(request, "portal/login.html", {**ctx, "error": "Mobile number and date of birth do not match. Please contact the office."})
     execute("UPDATE customers SET portal_failed = 0, portal_locked_until = NULL WHERE id = %s", (match["id"],))
     request.session["cid"] = match["id"]
     return RedirectResponse("/my/file", status_code=303)
@@ -110,19 +110,19 @@ def _file_view(f, c):
                        " FROM ticket_legs l WHERE l.booking_id = t.id) AS route FROM ticket_bookings t WHERE t.file_id = %s"
                        " AND t.status = 'booked' ORDER BY travel_date LIMIT 1", (f["id"],))
     location = fetch_one("SELECT passport_location FROM files WHERE id = %s", (f["id"],))["passport_location"]
-    steps = [("Registration", "done", "✓ Ho gaya"), ("Visa", "done" if visa else "wait", "✓ Ho gaya" if visa else "Baaki")]
+    steps = [("Registration", "done", "✓ Done"), ("Visa", "done" if visa else "wait", "✓ Received" if visa else "Pending")]
     for s in services:
         label = SERVICES[s["service"]]["label"]
         if s["status"] == "done":
             res = (s["data"] or {}).get("result")
-            steps.append((label, "done", "✓ " + (res if res and res != "Pending" else "Ho gaya")))
+            steps.append((label, "done", "✓ " + (res if res and res != "Pending" else "Done")))
         elif s["status"] == "failed":
-            steps.append((label, "now", "Dobara test hoga"))
+            steps.append((label, "now", "Retest needed"))
         elif s["status"] == "scheduled":
-            steps.append((label, "now", "Book ho gaya"))
+            steps.append((label, "now", "Booked"))
         else:
-            steps.append((label, "wait", "Baaki"))
-    steps.append(("Rawana (departure)", "done" if f["status"] == "departed" else "wait", "✓ Ho gaya" if f["status"] == "departed" else "Baaki"))
+            steps.append((label, "wait", "Pending"))
+    steps.append(("Departure", "done" if f["status"] == "departed" else "wait", "✓ Departed" if f["status"] == "departed" else "Pending"))
     money = file_totals(f["id"])
     retest = fetch_one("SELECT coalesce(sum(amount), 0) AS n FROM charges WHERE file_id = %s AND kind = 'retest'", (f["id"],))["n"]
     return {"steps": steps, "done": sum(1 for s in steps if s[1] == "done"), "next": nxt, "flight": flight,

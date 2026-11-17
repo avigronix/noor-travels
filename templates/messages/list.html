@@ -22,14 +22,10 @@
 <p class="text-sm text-slate-600 mb-3">Choose which messages the app prepares. Nothing is prepared 9 pm – 7 am except travel-day checklists.</p>
 <div class="card divide-y divide-slate-100">{% for t in templates %}{% include "messages/_rule.html" %}{% endfor %}</div>
 {% elif tab == 'templates' %}
-<form method="post" action="/app/messages/language" class="mb-3 flex flex-wrap items-center gap-2 text-sm">
-  <span>Messages go out in:</span>
-  {% for k, l in [("hi", "Hindi (Roman)"), ("hi_dev", "हिंदी"), ("en", "English")] %}<button name="lang" value="{{ k }}" class="h-10 px-3 rounded-lg border border-slate-300 bg-white font-semibold">{{ l }}</button>{% endfor %}
-</form>
 <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
   {% for t in templates %}
   <li><a href="/app/messages/templates/{{ t.trigger }}" class="block card card-sm p-4 hover:border-brand-blue">
-    <span class="font-semibold text-brand-navy">{{ t.title }}</span><span class="block text-sm text-slate-500 line-clamp-2">{{ t.body_hi or t.body_en }}</span></a></li>
+    <span class="font-semibold text-brand-navy">{{ t.title }}</span><span class="block text-sm text-slate-500 line-clamp-2">{{ t.body_en }}</span></a></li>
   {% endfor %}
 </ul>
 {% else %}

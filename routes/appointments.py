@@ -71,11 +71,11 @@ def appointment_list(request: Request, day: str = "week", start: str = "", type:
         WHERE a.status = 'scheduled' AND a.on_date < current_date AND f.status = 'active'
         ORDER BY a.on_date LIMIT 10
     """)
-    tpl = fetch_one("SELECT body_hi, body_en FROM message_templates WHERE trigger = 'appointment_reminder'")
+    tpl = fetch_one("SELECT body_en FROM message_templates WHERE trigger = 'appointment_reminder'")
     return render(request, "appointments/list.html", {
         "result": result, "days": days, "day": day, "first": first, "last": last, "today": today, "tomorrow": today + timedelta(days=1),
         "type": type, "city": city, "types": TYPES, "cities": [c for c in CITIES if c], "missed": missed,
-        "preview": tpl and (tpl["body_hi"] or tpl["body_en"]), "docs": DOCUMENTS, "active": "appointments",
+        "preview": tpl and tpl["body_en"], "docs": DOCUMENTS, "active": "appointments",
         "filters_on": sum(1 for x in (type, city) if x),
         "prev": first - timedelta(days=7), "next": first + timedelta(days=7),
     }, partial="appointments/_rows.html")

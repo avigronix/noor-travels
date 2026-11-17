@@ -4,7 +4,7 @@
 <section id="enquiry" aria-label="Send an enquiry" class="scroll-mt-24 rounded-2xl bg-white border border-slate-200 p-5 sm:p-6 shadow-sm">
   <div class="mb-4">
     <h2 class="font-display text-xl sm:text-2xl font-semibold text-brand-navy">Send us your enquiry</h2>
-    <p class="mt-1 text-sm text-slate-600">We call you back the same working day. <span lang="hi">हम आपको उसी दिन कॉल करेंगे।</span></p>
+    <p class="mt-1 text-sm text-slate-600">We call you back the same working day.</p>
   </div>
   <form hx-post="/enquiry" hx-target="closest section" hx-swap="outerHTML" class="flex flex-col gap-3" novalidate>
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -31,7 +31,7 @@
     {% if errors %}<p class="text-sm font-medium text-red-700" role="alert">{{ errors.values() | first }}</p>{% endif %}
     <div class="flex flex-wrap items-center gap-3">
       <button class="h-11 px-6 rounded-lg bg-brand-red text-white font-semibold hover:bg-brand-red/90">Send enquiry</button>
-      <a href="{{ wa_link(biz.whatsapp, 'Namaste, mujhe jaankari chahiye.') }}" target="_blank" rel="noopener" class="min-h-11 inline-flex items-center font-semibold text-green-700">Or WhatsApp us</a>
+      <a href="{{ wa_link(biz.whatsapp, biz.wa_hello) }}" target="_blank" rel="noopener" class="min-h-11 inline-flex items-center font-semibold text-green-700">Or WhatsApp us</a>
     </div>
   </form>
 </section>

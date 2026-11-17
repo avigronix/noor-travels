@@ -47,9 +47,7 @@ def queue_message(conn, trigger, customer_id, file_id=None, booking_id=None, due
     cust = conn.execute("SELECT name, mobile, whatsapp_consent FROM customers WHERE id = %s", (customer_id,)).fetchone()
     if not tpl or not cust or not cust["whatsapp_consent"]:
         return None
-    lang = conn.execute("SELECT value FROM settings WHERE key = 'message_lang'").fetchone()
-    lang = lang["value"] if lang else "hi"
-    body = {"hi": tpl["body_hi"], "hi_dev": tpl["body_hi_dev"]}.get(lang) or tpl["body_en"]
+    body = tpl["body_en"]
 
     vals = _Blank(name=cust["name"].split(" ")[0], portal_link=portal_link(conn))
     for k, v in values.items():

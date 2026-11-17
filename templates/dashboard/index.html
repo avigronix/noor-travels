@@ -169,7 +169,7 @@
         <span class="text-sm"><strong class="block">{{ e.name }}</strong><span class="text-xs text-slate-500">{{ e.service or 'General' }}{% if e.message %} · {{ e.message | truncate(40) }}{% endif %} · {{ e.created_at | dmy(true) }}</span></span>
         <span class="flex gap-1.5">
           <a href="tel:{{ e.mobile }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-slate-300 text-xs font-medium">Call</a>
-          <a href="{{ wa_link(e.mobile, 'Assalamu alaikum ' ~ e.name.split(' ')[0] ~ ' ji, Noor Travels Services se baat kar rahe hain.') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-xs font-medium">WhatsApp</a>
+          <a href="{{ wa_link(e.mobile, 'Hello ' ~ e.name.split(' ')[0] ~ ', this is Noor Travels Services, Kasia, about your enquiry.') }}" target="_blank" rel="noopener" class="h-10 inline-flex items-center px-3 rounded-lg bg-green-600 text-white text-xs font-medium">WhatsApp</a>
           {% if user.role != 'accountant' %}<a href="{{ '/app/tickets/new' if e.service and 'ticket' in e.service | lower else '/app/files/new' }}?enquiry_id={{ e.id }}" class="h-10 inline-flex items-center px-3 rounded-lg border border-brand-red text-brand-red text-xs font-semibold">Convert</a>{% endif %}
         </span>
       </div>
